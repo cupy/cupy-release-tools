@@ -2,7 +2,6 @@ ARG base_image
 FROM ${base_image}
 
 RUN apt-get -y update && \
-    apt-get -y upgrade && \
     apt-get -y install gcc g++ make patch git && \
     apt-get -y install libbz2-dev libssl-dev libreadline-dev && \
     apt-get -y install python && \
