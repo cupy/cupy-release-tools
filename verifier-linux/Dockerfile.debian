@@ -32,7 +32,8 @@ RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
       pip install -U pip setuptools && \
-      pip install pytest; \
+      pip install pytest mock; \
+      pip install 'numpy==1.13.3' 'scipy==0.19.1'; \
     done && \
     pyenv global system
 
