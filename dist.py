@@ -202,8 +202,11 @@ class Controller(object):
                 '(version {}, for CUDA {} + Python {})'.format(
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
+            # Rename wheels to manylinux1.
             asset_name = wheel_name(
                 cuda_version, version, python_version, 'linux_x86_64')
+            asset_dest_name = wheel_name(
+                cuda_version, version, python_version, 'manylinux1_x86_64')
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
@@ -213,6 +216,7 @@ class Controller(object):
                 source, version))
             action = 'sdist'
             asset_name = sdist_name('cupy', version)
+            asset_dest_name = asset_name
             image_tag = 'cupy-builder-sdist'
             base_image = SDIST_CONFIG['image']
             nccl_config = SDIST_CONFIG['nccl']
@@ -269,8 +273,9 @@ class Controller(object):
 
             # Copy assets.
             asset_path = '{}/cupy/dist/{}'.format(workdir, asset_name)
-            log('Copying asset from {} to {}'.format(asset_path, output))
-            shutil.copy(asset_path, output)
+            output_path = '{}/{}'.format(output, asset_dest_name)
+            log('Copying asset from {} to {}'.format(asset_path, output_path))
+            shutil.copy2(asset_path, output_path)
 
         finally:
             log('Removing working directory: {}'.format(workdir))
