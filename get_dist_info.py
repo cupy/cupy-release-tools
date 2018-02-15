@@ -10,7 +10,7 @@ from dist_config import (
 
 from dist_utils import (
     sdist_name,
-    wheel_linux_name,
+    wheel_name,
     get_version_from_source_tree,
 )  # NOQA
 
@@ -42,7 +42,8 @@ class DistInfoPrinter(object):
         version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
             print('DIST_FILE_NAME="{}"'.format(
-                wheel_linux_name(args.cuda, version, args.python),
+                wheel_name(
+                    args.cuda, version, args.python, 'manylinux1_x86_64'),
             ))
             print('DIST_PACKAGE_NAME="{}"'.format(
                 WHEEL_LINUX_CONFIGS[args.cuda]['name'],

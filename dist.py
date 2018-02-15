@@ -23,7 +23,7 @@ from dist_config import (
 
 from dist_utils import (
     sdist_name,
-    wheel_linux_name,
+    wheel_name,
     get_version_from_source_tree,
 )  # NOQA
 
@@ -202,8 +202,8 @@ class Controller(object):
                 '(version {}, for CUDA {} + Python {})'.format(
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
-            asset_name = wheel_linux_name(
-                cuda_version, version, python_version)
+            asset_name = wheel_name(
+                cuda_version, version, python_version, 'linux_x86_64')
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']

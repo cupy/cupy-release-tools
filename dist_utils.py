@@ -15,7 +15,7 @@ def sdist_name(package_name, version):
     )
 
 
-def wheel_linux_name(cuda, version, python_version):
+def wheel_name(cuda, version, python_version, platform_tag):
     # https://www.python.org/dev/peps/pep-0491/#file-name-convention
     return (
         '{distribution}-{version}-{python_tag}-{abi_tag}-'
@@ -24,7 +24,7 @@ def wheel_linux_name(cuda, version, python_version):
             version=version,
             python_tag=WHEEL_PYTHON_VERSIONS[python_version]['python_tag'],
             abi_tag=WHEEL_PYTHON_VERSIONS[python_version]['linux_abi_tag'],
-            platform_tag='linux_x86_64',
+            platform_tag=platform_tag,
         )
 
 
