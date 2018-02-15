@@ -6,6 +6,7 @@
 # - PYTHON (python version; 2.7.6, 3.6.0, etc.)
 # - NVGET_USER (Username for nvget)
 # - NVGET_PASSWORD (Password for nvget)
+# This script also expects that `cupy` source tree exists in the same directory.
 
 NVGET="docker run --rm -e NVGET_USER -e NVGET_PASSWORD -u ${UID} -v ${PWD}:/download kmaehashi/nvget"
 
