@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-The agent code must be runnable on Python 2.6 (CentOS 6).
-Additional dependency can be specified in Dockerfile.
-"""
-
 import argparse
 import glob
 import os
@@ -38,8 +33,8 @@ class BuilderAgent(object):
             '--nccl', type=str,
             help='Path to the extracted NCCL binary distribution directory')
         parser.add_argument(
-            '--python', type=str,
-            help='Python version to use for setup')
+            '--python-tag', type=str,
+            help='Python implementation tag to use for build')
         parser.add_argument(
             '--requires', action='append', type=str, default=[],
             help='Python requirements to install prior to setup')
@@ -61,22 +56,20 @@ class BuilderAgent(object):
         else:
             self._log('Skip NCCL installation')
 
-        if args.python:
-            os.environ['PYENV_VERSION'] = args.python
-            self._log('Using Python {0}'.format(args.python))
-        else:
-            self._log('Using Python from system')
+        if args.python_tag:
+            os.environ['PATH'] = '/opt/python/{0}/bin:{1}'.format(
+                args.python_tag, os.environ['PATH'])
+            self._log('Using Python Tag {0}'.format(args.python_tag))
 
         if 0 < len(args.requires):
             self._log('Installing python libraries...')
-            self._run('pyenv', 'exec', 'pip', 'install', *args.requires)
+            self._run('pip', 'install', *args.requires)
 
         self._log('Changing directory to cupy source tree')
         os.chdir(args.source)
         try:
             self._log('Running CuPy setup...')
             self._run(
-                'pyenv', 'exec',
                 'python', 'setup.py', args.action, *setup_args)
         finally:
             if args.chown:
