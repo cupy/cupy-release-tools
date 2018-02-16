@@ -303,10 +303,11 @@ class Controller(object):
 
         for system in systems:
             image = base_image.format(system=system)
+            image_tag_system = '{}-{}'.format(image_tag, system)
             log('Starting verification for {} on {} with Python {}'.format(
                 dist, image, python_version))
             self._verify_linux(
-                image_tag, image, dist, tests,
+                image_tag_system, image, dist, tests,
                 python_version, nccl_assets, nccl_config)
 
     def _verify_linux(
