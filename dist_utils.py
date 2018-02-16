@@ -22,7 +22,7 @@ def wheel_name(cuda, version, python_version, platform_tag):
         '{platform_tag}.whl').format(
             distribution=WHEEL_LINUX_CONFIGS[cuda]['name'].replace('-', '_'),
             version=version,
-            python_tag=WHEEL_PYTHON_VERSIONS[python_version]['python_tag'],
+            python_tag=python_version,
             abi_tag=WHEEL_PYTHON_VERSIONS[python_version]['linux_abi_tag'],
             platform_tag=platform_tag,
         )

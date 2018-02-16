@@ -94,42 +94,39 @@ WHEEL_LINUX_CONFIGS = {
     },
 }
 
-# Key-value of python version (used in pyenv) to use for build and its
+# Key-value of a CPython implementation tag to use for build and its
 # corresponding configurations.
 # Keys of the configuration are as follows:
-# - `python_tag`: a CPython implementation tag
 # - `linux_abi_tag`: a CPython ABI tag for Linux
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '2.7.6': {
-        'python_tag': 'cp27',
+    'cp27': {
         'linux_abi_tag': 'cp27mu',
         'requires': ['numpy<1.10'],
     },
-    '3.4.7': {
-        'python_tag': 'cp34',
+    'cp34': {
         'linux_abi_tag': 'cp34m',
         'requires': ['numpy<1.10'],
     },
-    '3.5.1': {
-        'python_tag': 'cp35',
+    'cp35': {
         'linux_abi_tag': 'cp35m',
         'requires': ['numpy<1.10'],
     },
-    '3.6.0': {
-        'python_tag': 'cp36',
+    'cp36': {
         'linux_abi_tag': 'cp36m',
         # Use NumPy 1.11.3 for Python 3.6.
         'requires': ['numpy<1.12'],
     },
 }
 
-# Python versions available for verification.
-VERIFY_PYTHON_VERSIONS = sorted(list(WHEEL_PYTHON_VERSIONS.keys()))
-
-# Sorted list of all possible python versions used in build process.
-PYTHON_VERSIONS = sorted(set(
-    list(WHEEL_PYTHON_VERSIONS.keys()) +
-    VERIFY_PYTHON_VERSIONS
-    ))
+# Key-value of a CPython implementation tag and its corresponding Python
+# version number used for verification. All keys in WHEEL_PYTHON_VERSIONS
+# must be defined.
+# The version number must be one of `pyenv versions`.
+VERIFY_PYTHON_VERSIONS = {
+    'cp27': '2.7.6',
+    'cp34': '3.4.7',
+    'cp35': '3.5.1',
+    'cp36': '3.6.0',
+}
