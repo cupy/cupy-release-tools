@@ -78,14 +78,14 @@ See the section above for ``--nccl-assets``.
 
 ::
 
-  ./dist.py --action build --target sdist --nccl-assets ~/nccl_assets --python 3.6.0 --source ~/dev/cupy
+  ./dist.py --action build --target sdist --nccl-assets ~/nccl_assets --python cp36 --source ~/dev/cupy
 
 To build a wheel, use the following command.
 This example builds wheel of CuPy with CUDA 8.0 for Python 3.6.
 
 ::
 
-  ./dist.py --action build --target wheel-linux --nccl-assets ~/nccl_assets --python 3.6.0 --cuda 8.0 --source ~/dev/cupy
+  ./dist.py --action build --target wheel-linux --nccl-assets ~/nccl_assets --python cp36 --cuda 8.0 --source ~/dev/cupy
 
 Working Directory
 ~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@ To verify the built distribution, use the following command:
 
 ::
 
-  ./dist.py --action verify --target wheel-linux --nccl-assets ~/nccl_assets --python 3.6.0 --cuda 8.0 --dist cupy_cuda80-4.0.0b2-cp36-cp36m-linux_x86_64.whl --test release-tests/common --test release-tests/cudnn --test release-tests/nccl
+  ./dist.py --action verify --target wheel-linux --nccl-assets ~/nccl_assets --python cp36 --cuda 8.0 --dist cupy_cuda80-4.0.0b2-cp36-cp36m-linux_x86_64.whl --test release-tests/common --test release-tests/cudnn --test release-tests/nccl
 
 You can specify test suites directory to ``--test`` argument.
 ``release-tests`` is a minimal test cases handy for final check before release.
