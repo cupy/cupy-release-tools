@@ -18,6 +18,7 @@ SDIST_CONFIG = {
     'verify_systems': ['ubuntu16.04'],
 }
 
+
 # Key-value of CUDA version and its corresponding build settings.
 # Keys of the build settings are as follows:
 # - `name`: a package name
@@ -96,6 +97,17 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu16.04'],
     },
 }
+
+
+# Long description of the wheel package in reST syntax.
+# `{cuda}` will be replaced by the CUDA version (e.g., `9.0`).
+WHEEL_LONG_DESCRIPTION = '''\
+This CuPy wheel (precompiled binary) package requires CUDA {cuda}.
+You need to install `CUDA Toolkit {cuda} <https://developer.nvidia.com/cuda-toolkit-archive>`_ to use these packages.
+
+If you have another version of CUDA, please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for instructions.
+If you want to build CuPy from `source distribution <https://pypi.python.org/pypi/cupy>`_, use ``pip install cupy`` instead.
+'''
 
 # Key-value of python version (used in pyenv) to use for build and its
 # corresponding configurations.
