@@ -7,7 +7,7 @@ CYTHON_VERSION = '0.27.3'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 # Note that cuDNN and NCCL must be available for sdist.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:9.0-cudnn7-devel-centos7',
+    'image': 'kmaehashi/cuda-manylinux1:9.0-cudnn7-devel',
     'nccl': {
         'type': 'v2-tar',
         'files': [
@@ -29,12 +29,9 @@ SDIST_CONFIG = {
 #                     `verify_image`.
 WHEEL_LINUX_CONFIGS = {
     '7.0': {
-        # Notes:
-        # (1) NVIDIA does not provide CentOS 6 Docker image for CUDA 7.0.
-        #     Therefore, the built wheel will not work on CentOS 6.
-        # (2) NCCL is not available in CUDA 7.0.
+        # Note: NCCL is not available in CUDA 7.0.
         'name': 'cupy-cuda70',
-        'image': 'nvidia/cuda:7.0-cudnn4-devel-centos7',
+        'image': 'kmaehashi/cuda-manylinux1:7.0-cudnn4-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.4',  # cuDNN v4
         ],
@@ -45,7 +42,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '7.5': {
         'name': 'cupy-cuda75',
-        'image': 'nvidia/cuda:7.5-cudnn6-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:7.5-cudnn6-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.6',  # cuDNN v6
             '/usr/local/cuda/lib64/libnccl.so.1',  # NCCL v1
@@ -63,7 +60,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '8.0': {
         'name': 'cupy-cuda80',
-        'image': 'nvidia/cuda:8.0-cudnn7-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:8.0-cudnn7-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -80,7 +77,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '9.0': {
         'name': 'cupy-cuda90',
-        'image': 'nvidia/cuda:9.0-cudnn7-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:9.0-cudnn7-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
