@@ -18,7 +18,6 @@ from dist_config import (
     WHEEL_LINUX_CONFIGS,
     WHEEL_PYTHON_VERSIONS,
     VERIFY_PYTHON_VERSIONS,
-    PYTHON_VERSIONS,
 )  # NOQA
 
 from dist_utils import (
@@ -95,7 +94,8 @@ class Controller(object):
             '--cuda', type=str,
             help='CUDA version for the wheel distribution')
         parser.add_argument(
-            '--python', type=str, choices=PYTHON_VERSIONS, required=True,
+            '--python', type=str, required=True,
+            choices=sorted(WHEEL_PYTHON_VERSIONS.keys()),
             help='python version')
 
         # Build mode options:
@@ -142,13 +142,11 @@ class Controller(object):
     def _create_builder_linux(self, image_tag, base_image):
         """Create a docker image to build distributions."""
 
-        python_versions = ' '.join(PYTHON_VERSIONS)
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
-            '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
             'builder-linux',
         )
@@ -167,7 +165,7 @@ class Controller(object):
             raise RuntimeError(
                 'cannot detect OS from image name: '.format(base_image))
 
-        python_versions = ' '.join(VERIFY_PYTHON_VERSIONS)
+        python_versions = ' '.join(sorted(VERIFY_PYTHON_VERSIONS.values()))
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
@@ -231,7 +229,9 @@ class Controller(object):
         agent_args = [
             '--action', action,
             '--source', 'cupy',
-            '--python', python_version,
+            '--python-tag', '{}-{}'.format(
+                python_version,
+                WHEEL_PYTHON_VERSIONS[python_version]['linux_abi_tag']),
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
         if nccl_config:
@@ -304,11 +304,13 @@ class Controller(object):
         for system in systems:
             image = base_image.format(system=system)
             image_tag_system = '{}-{}'.format(image_tag, system)
-            log('Starting verification for {} on {} with Python {}'.format(
-                dist, image, python_version))
+            pyenv_python_version = VERIFY_PYTHON_VERSIONS[python_version]
+            log('Starting verification for {} on {} '
+                'with Python {} ({})'.format(
+                    dist, image, python_version, pyenv_python_version))
             self._verify_linux(
                 image_tag_system, image, dist, tests,
-                python_version, nccl_assets, nccl_config)
+                pyenv_python_version, nccl_assets, nccl_config)
 
     def _verify_linux(
             self, image_tag, base_image, dist, tests, python_version,

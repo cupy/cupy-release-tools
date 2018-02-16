@@ -7,7 +7,7 @@ CYTHON_VERSION = '0.27.3'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 # Note that cuDNN and NCCL must be available for sdist.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:9.0-cudnn7-devel-centos7',
+    'image': 'kmaehashi/cuda-manylinux1:9.0-cudnn7-devel',
     'nccl': {
         'type': 'v2-tar',
         'files': [
@@ -29,12 +29,9 @@ SDIST_CONFIG = {
 #                     `verify_image`.
 WHEEL_LINUX_CONFIGS = {
     '7.0': {
-        # Notes:
-        # (1) NVIDIA does not provide CentOS 6 Docker image for CUDA 7.0.
-        #     Therefore, the built wheel will not work on CentOS 6.
-        # (2) NCCL is not available in CUDA 7.0.
+        # Note: NCCL is not available in CUDA 7.0.
         'name': 'cupy-cuda70',
-        'image': 'nvidia/cuda:7.0-cudnn4-devel-centos7',
+        'image': 'kmaehashi/cuda-manylinux1:7.0-cudnn4-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.4',  # cuDNN v4
         ],
@@ -45,7 +42,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '7.5': {
         'name': 'cupy-cuda75',
-        'image': 'nvidia/cuda:7.5-cudnn6-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:7.5-cudnn6-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.6',  # cuDNN v6
             '/usr/local/cuda/lib64/libnccl.so.1',  # NCCL v1
@@ -63,7 +60,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '8.0': {
         'name': 'cupy-cuda80',
-        'image': 'nvidia/cuda:8.0-cudnn7-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:8.0-cudnn7-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -80,7 +77,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '9.0': {
         'name': 'cupy-cuda90',
-        'image': 'nvidia/cuda:9.0-cudnn7-devel-centos6',
+        'image': 'kmaehashi/cuda-manylinux1:9.0-cudnn7-devel',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -97,42 +94,39 @@ WHEEL_LINUX_CONFIGS = {
     },
 }
 
-# Key-value of python version (used in pyenv) to use for build and its
+# Key-value of a CPython implementation tag to use for build and its
 # corresponding configurations.
 # Keys of the configuration are as follows:
-# - `python_tag`: a CPython implementation tag
 # - `linux_abi_tag`: a CPython ABI tag for Linux
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '2.7.6': {
-        'python_tag': 'cp27',
+    'cp27': {
         'linux_abi_tag': 'cp27mu',
         'requires': ['numpy<1.10'],
     },
-    '3.4.7': {
-        'python_tag': 'cp34',
+    'cp34': {
         'linux_abi_tag': 'cp34m',
         'requires': ['numpy<1.10'],
     },
-    '3.5.1': {
-        'python_tag': 'cp35',
+    'cp35': {
         'linux_abi_tag': 'cp35m',
         'requires': ['numpy<1.10'],
     },
-    '3.6.0': {
-        'python_tag': 'cp36',
+    'cp36': {
         'linux_abi_tag': 'cp36m',
         # Use NumPy 1.11.3 for Python 3.6.
         'requires': ['numpy<1.12'],
     },
 }
 
-# Python versions available for verification.
-VERIFY_PYTHON_VERSIONS = sorted(list(WHEEL_PYTHON_VERSIONS.keys()))
-
-# Sorted list of all possible python versions used in build process.
-PYTHON_VERSIONS = sorted(set(
-    list(WHEEL_PYTHON_VERSIONS.keys()) +
-    VERIFY_PYTHON_VERSIONS
-    ))
+# Key-value of a CPython implementation tag and its corresponding Python
+# version number used for verification. All keys in WHEEL_PYTHON_VERSIONS
+# must be defined.
+# The version number must be one of `pyenv versions`.
+VERIFY_PYTHON_VERSIONS = {
+    'cp27': '2.7.6',
+    'cp34': '3.4.7',
+    'cp35': '3.5.1',
+    'cp36': '3.6.0',
+}
