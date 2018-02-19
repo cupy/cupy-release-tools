@@ -41,7 +41,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'nccl': None,
         'verify_image': 'nvidia/cuda:7.0-devel-{system}',
-        #'verify_systems': ['ubuntu14.04', 'centos7'],
+        # 'verify_systems': ['ubuntu14.04', 'centos7'],
         'verify_systems': ['ubuntu14.04'],
     },
     '7.5': {
@@ -59,7 +59,7 @@ WHEEL_LINUX_CONFIGS = {
             ],
         },
         'verify_image': 'nvidia/cuda:7.5-devel-{system}',
-        #'verify_systems': ['ubuntu14.04', 'centos7', 'centos6'],
+        # 'verify_systems': ['ubuntu14.04', 'centos7', 'centos6'],
         'verify_systems': ['centos7'],
     },
     '8.0': {
@@ -76,7 +76,8 @@ WHEEL_LINUX_CONFIGS = {
             ],
         },
         'verify_image': 'nvidia/cuda:8.0-devel-{system}',
-        #'verify_systems': ['ubuntu16.04', 'ubuntu14.04', 'centos7', 'centos6'],
+        # 'verify_systems': ['ubuntu16.04', 'ubuntu14.04',
+        #                    'centos7', 'centos6'],
         'verify_systems': ['ubuntu14.04'],
     },
     '9.0': {
@@ -93,7 +94,7 @@ WHEEL_LINUX_CONFIGS = {
             ],
         },
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
-        #'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
+        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
     },
 }
@@ -107,7 +108,7 @@ You need to install `CUDA Toolkit {cuda} <https://developer.nvidia.com/cuda-tool
 
 If you have another version of CUDA, please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for instructions.
 If you want to build CuPy from `source distribution <https://pypi.python.org/pypi/cupy>`_, use ``pip install cupy`` instead.
-'''
+'''  # NOQA
 
 # Key-value of python version (used in pyenv) to use for build and its
 # corresponding configurations.
