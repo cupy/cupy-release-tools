@@ -17,6 +17,7 @@ from dist_config import (
     SDIST_CONFIG,
     WHEEL_LINUX_CONFIGS,
     WHEEL_PYTHON_VERSIONS,
+    WHEEL_LONG_DESCRIPTION,
     VERIFY_PYTHON_VERSIONS,
     PYTHON_VERSIONS,
 )  # NOQA
@@ -211,6 +212,7 @@ class Controller(object):
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
+            long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
         elif target == 'sdist':
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
@@ -220,6 +222,7 @@ class Controller(object):
             image_tag = 'cupy-builder-sdist'
             base_image = SDIST_CONFIG['image']
             nccl_config = SDIST_CONFIG['nccl']
+            long_description = None
             assert nccl_config is not None
         else:
             raise RuntimeError('unknown target')
@@ -243,7 +246,10 @@ class Controller(object):
                 agent_args += ['--requires', req]
 
             # Add arguments to pass to setup.py.
-            setup_args = ['--cupy-package-name', package_name]
+            setup_args = [
+                '--cupy-package-name', package_name,
+                '--cupy-long-description', '../description.rst',
+            ]
             for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
                 setup_args += ['--cupy-wheel-lib', lib]
             agent_args += setup_args
@@ -265,6 +271,11 @@ class Controller(object):
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
                 log('NCCL is not used for this package')
+
+            # Add long description file.
+            if long_description is not None:
+                with open('{}/description.rst'.format(workdir), 'w') as f:
+                    f.write(long_description)
 
             # Build.
             log('Starting build')
