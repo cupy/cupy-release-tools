@@ -25,7 +25,7 @@ def wheel_name(cuda, version, python_version, platform_tag):
             python_tag=WHEEL_PYTHON_VERSIONS[python_version]['python_tag'],
             abi_tag=WHEEL_PYTHON_VERSIONS[python_version]['linux_abi_tag'],
             platform_tag=platform_tag,
-        )
+    )
 
 
 def get_version_from_source_tree(source_tree):
