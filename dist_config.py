@@ -135,4 +135,4 @@ VERIFY_PYTHON_VERSIONS = sorted(list(WHEEL_PYTHON_VERSIONS.keys()))
 PYTHON_VERSIONS = sorted(set(
     list(WHEEL_PYTHON_VERSIONS.keys()) +
     VERIFY_PYTHON_VERSIONS
-    ))
+))
