@@ -55,17 +55,21 @@ class VerifierAgent(object):
         else:
             self._log('Skip NCCL installation')
 
+        pycommand = [sys.executable]
         if args.python:
             os.environ['PYENV_VERSION'] = args.python
             self._log('Using Python {0}'.format(args.python))
+            pycommand = ['pyenv', 'exec', 'python']
         else:
             self._log('Using Python from system')
 
         self._log('Installing distribution...')
-        self._run('pyenv', 'exec', 'pip', 'install', '-vvv', args.dist)
+        cmdline = pycommand + ['-m', 'pip', 'install', '-vvv', args.dist]
+        self._run(*cmdline)
 
         try:
-            self._run('pyenv', 'exec', 'python', '-m', 'pytest', *pytest_args)
+            cmdline = pycommand + ['-m', 'pytest'] + pytest_args
+            self._run(*cmdline)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
