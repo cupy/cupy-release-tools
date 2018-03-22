@@ -17,13 +17,20 @@ def sdist_name(package_name, version):
 
 def wheel_name(cuda, version, python_version, platform_tag):
     # https://www.python.org/dev/peps/pep-0491/#file-name-convention
+    if platform_tag.startswith('linux'):
+        abi_key = 'abi_tag_linux'
+    elif platform_tag.startswith('win'):
+        abi_key = 'abi_tag_win'
+    else:
+        raise RuntimeError('unsupported platform')
+
     return (
         '{distribution}-{version}-{python_tag}-{abi_tag}-'
         '{platform_tag}.whl').format(
             distribution=WHEEL_LINUX_CONFIGS[cuda]['name'].replace('-', '_'),
             version=version,
             python_tag=WHEEL_PYTHON_VERSIONS[python_version]['python_tag'],
-            abi_tag=WHEEL_PYTHON_VERSIONS[python_version]['linux_abi_tag'],
+            abi_tag=WHEEL_PYTHON_VERSIONS[python_version][abi_key],
             platform_tag=platform_tag,
     )
 
