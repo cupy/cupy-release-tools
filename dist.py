@@ -144,11 +144,13 @@ class Controller(object):
                     args.source, args.output)
         elif args.action == 'verify':
             if args.target == 'wheel-win':
-                raise RuntimeError('Windows wheels cannot be verified')
-
-            self.verify_linux(
-                args.target, args.nccl_assets, args.cuda, args.python,
-                args.dist, args.test)
+                self.verify_windows(
+                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.dist, args.test)
+            else:
+                self.verify_linux(
+                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.dist, args.test)
 
     def _create_builder_linux(self, image_tag, base_image):
         """Create a docker image to build distributions."""
@@ -185,8 +187,8 @@ class Controller(object):
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
-            '--file', 'verifier-linux/Dockerfile.{}'.format(template),
-            'verifier-linux',
+            '--file', 'verifier/Dockerfile.{}'.format(template),
+            'verifier',
         )
 
     def _run_container(self, image_tag, workdir, agent_args):
@@ -306,22 +308,11 @@ class Controller(object):
             log('Removing working directory: {}'.format(workdir))
             shutil.rmtree(workdir)
 
-    def build_windows(
-            self, target, nccl_assets, cuda_version, python_version,
-            source, output):
-        """Build a single wheel distribution for Windows.
-
-        Note that Windows build is not isolated."""
-
+    def _check_windows_environment(self, cuda_version, python_version):
+        # Check if this script is running on Windows.
         if not sys.platform.startswith('win32'):
-            raise ValueError(
-                'cannot build wheel for Windows on {}'.format(sys.platform))
-
-        if target != 'wheel-win':
-            raise ValueError('unknown target')
-
-        if nccl_assets is not None:
-            raise RuntimeError('NCCL not supported on Windows')
+            raise RuntimeError(
+                'you are on non-Windows system: {}'.format(sys.platform))
 
         # Check Python version.
         current_python_version = '.'.join(map(str, sys.version_info[0:3]))
@@ -342,7 +333,21 @@ class Controller(object):
                 'Cannot build wheel for CUDA {} using CUDA {}'.format(
                     cuda_version, current_cuda_version))
 
-        # Proceed to build.
+    def build_windows(
+            self, target, nccl_assets, cuda_version, python_version,
+            source, output):
+        """Build a single wheel distribution for Windows.
+
+        Note that Windows build is not isolated."""
+
+        self._check_windows_environment(cuda_version, python_version)
+
+        if target != 'wheel-win':
+            raise ValueError('unknown target')
+
+        if nccl_assets is not None:
+            raise RuntimeError('NCCL not supported on Windows')
+
         version = get_version_from_source_tree(source)
 
         log(
@@ -486,6 +491,60 @@ class Controller(object):
             # Verify.
             log('Starting verification')
             self._run_container(image_tag, workdir, agent_args)
+            log('Finished verification')
+
+        finally:
+            log('Removing working directory: {}'.format(workdir))
+            shutil.rmtree(workdir)
+
+    def verify_windows(
+            self, target, nccl_assets, cuda_version, python_version,
+            dist, tests):
+        """Verify a single distribution for Windows."""
+
+        self._check_windows_environment(cuda_version, python_version)
+
+        if target != 'wheel-win':
+            raise ValueError('unknown target')
+
+        if nccl_assets is not None:
+            raise RuntimeError('NCCL not supported on Windows')
+
+        log('Starting verification for {} with Python {}'.format(
+            dist, python_version))
+
+        dist_basename = os.path.basename(dist)
+
+        # Arguments for the agent.
+        agent_args = [
+            '--dist', dist,
+        ]
+
+        # Add arguments for `python -m pytest`.
+        agent_args += ['tests']
+
+        # Create a working directory.
+        workdir = tempfile.mkdtemp(prefix='cupy-dist-')
+
+        try:
+            log('Using working directory: {}'.format(workdir))
+
+            # Copy dist and tests to working directory.
+            log('Copying distribution from: {}'.format(dist))
+            shutil.copy2(dist, '{}/{}'.format(workdir, dist_basename))
+            tests_dir = '{}/tests'.format(workdir)
+            os.mkdir(tests_dir)
+            for test in tests:
+                log('Copying tests from: {}'.format(test))
+                shutil.copytree(
+                    test,
+                    '{}/{}'.format(tests_dir, os.path.basename(test)))
+
+            # Verify.
+            log('Starting verification')
+            run_command(
+                sys.executable, '{}/verifier/agent.py'.format(os.getcwd()),
+                *agent_args, cwd=workdir)
             log('Finished verification')
 
         finally:
