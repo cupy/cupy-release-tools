@@ -61,23 +61,25 @@ class BuilderAgent(object):
         else:
             self._log('Skip NCCL installation')
 
+        pycommand = [sys.executable]
         if args.python:
             os.environ['PYENV_VERSION'] = args.python
             self._log('Using Python {0}'.format(args.python))
+            pycommand = ['pyenv', 'exec', 'python']
         else:
             self._log('Using Python from system')
 
         if 0 < len(args.requires):
             self._log('Installing python libraries...')
-            self._run('pyenv', 'exec', 'pip', 'install', *args.requires)
+            cmdline = pycommand + ['-m', 'pip', 'install'] + args.requires
+            self._run(*cmdline)
 
         self._log('Changing directory to cupy source tree')
         os.chdir(args.source)
         try:
             self._log('Running CuPy setup...')
-            self._run(
-                'pyenv', 'exec',
-                'python', 'setup.py', args.action, *setup_args)
+            cmdline = pycommand + ['setup.py', args.action] + setup_args
+            self._run(cmdline)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
