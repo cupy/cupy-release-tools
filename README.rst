@@ -12,9 +12,17 @@ The release process consists of 3 steps:
 Requirements
 ------------
 
+To build ``sdist`` and wheels for Linux, you will need:
+
+* Linux
 * ``nvidia-docker``
 * ``tar`` with ``xz`` support
 * ``dpkg``
+
+To build wheels for Windows, you will need:
+
+* Windows
+* Visual Studio
 
 Build
 -----
@@ -27,7 +35,7 @@ Note that CuPy v4.0.0 / v5.0.0a1 or later is required to build wheels.
 Wheel Matrix
 ~~~~~~~~~~~~
 
-This tool builds wheels for Linux (x86_64) containing:
+This tool builds wheels for Linux & Windows (x86_64) containing:
 
 * CUDA 7.0 with cuDNN v4
 * CUDA 7.5 with cuDNN v6 and NCCL v1
@@ -41,8 +49,8 @@ This tool builds wheels for Linux (x86_64) containing:
 * 3.5
 * 3.6
 
-Preparing NCCL Assets
-~~~~~~~~~~~~~~~~~~~~~
+Preparing NCCL Assets for Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When building a wheel, shared libraries (cuDNN / NCCL) are copied into the distribution.
 cuDNN will be copied from the `base Docker image provided by NVIDIA <https://hub.docker.com/r/nvidia/cuda/>`_.
