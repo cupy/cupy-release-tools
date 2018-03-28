@@ -22,7 +22,7 @@ Build
 This tool can be used to create both source distribution (``sdist``) and wheels.
 To ensure the reproducibility of builds, the environment is isolated by Docker, and Cython version is specified explicitly.
 
-Note that CuPy v4.0.0b4 or later is required to build wheels.
+Note that CuPy v4.0.0 / v5.0.0a1 or later is required to build wheels.
 
 Wheel Matrix
 ~~~~~~~~~~~~
