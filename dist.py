@@ -249,6 +249,7 @@ class Controller(object):
             setup_args = [
                 '--cupy-package-name', package_name,
                 '--cupy-long-description', '../description.rst',
+                '--cupy-no-rpath',
             ]
             for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
                 setup_args += ['--cupy-wheel-lib', lib]
