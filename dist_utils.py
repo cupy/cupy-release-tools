@@ -41,8 +41,9 @@ def get_version_from_source_tree(source_tree):
     version_file_path = '{}/cupy/_version.py'.format(source_tree)
     return imp.load_source('_version', version_file_path).__version__
 
-def get_system_cuda_version():
-    filename = ctypes.util.find_library('cudart')
+
+def get_system_cuda_version(cudart_name='cudart'):
+    filename = ctypes.util.find_library(cudart_name)
     if filename is None:
         return None
     libcudart = ctypes.CDLL(filename)

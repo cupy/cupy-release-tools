@@ -322,9 +322,9 @@ class Controller(object):
                     python_version, current_python_version))
 
         # Check CUDA runtime version.
-        cuda_check_version = (
-            WHEEL_WINDOWS_CONFIGS[cuda_version]['check_version'])
-        current_cuda_version = get_system_cuda_version()
+        config = WHEEL_WINDOWS_CONFIGS[cuda_version]
+        cuda_check_version = config['check_version']
+        current_cuda_version = get_system_cuda_version(config['cudart_lib'])
         if current_cuda_version is None:
             raise RuntimeError(
                 'Cannot build wheel without CUDA Runtime installed')

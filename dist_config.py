@@ -123,6 +123,7 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [
             'cudnn64_7.dll',  # cuDNN v7
         ],
+        'cudart_lib': 'cudart64_90',
         'check_version': lambda x: 9000 <= x < 9010,
     },
     '9.1': {
@@ -130,6 +131,7 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [
             'cudnn64_7.dll',  # cuDNN v7
         ],
+        'cudart_lib': 'cudart64_91',
         'check_version': lambda x: 9010 <= x < 9020,
     },
 }
