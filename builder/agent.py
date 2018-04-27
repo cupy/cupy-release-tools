@@ -79,7 +79,7 @@ class BuilderAgent(object):
         try:
             self._log('Running CuPy setup...')
             cmdline = pycommand + ['setup.py', args.action] + setup_args
-            self._run(cmdline)
+            self._run(*cmdline)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
