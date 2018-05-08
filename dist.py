@@ -28,6 +28,7 @@ from dist_utils import (
     wheel_name,
     get_version_from_source_tree,
     get_system_cuda_version,
+    find_executable,
 )  # NOQA
 
 
@@ -377,9 +378,7 @@ class Controller(object):
                 '--cupy-long-description', '../description.rst',
         ]
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
-            # TODO need to resolve to full path
-            # TODO is this effective?
-            setup_args += ['--cupy-wheel-lib', lib]
+            setup_args += ['--cupy-wheel-lib', find_executable(lib)]
         agent_args += setup_args
 
         # Create a working directory.
