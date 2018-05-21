@@ -318,9 +318,8 @@ class Controller(object):
         # Check Python version.
         current_python_version = '.'.join(map(str, sys.version_info[0:3]))
         if python_version != current_python_version:
-            raise RuntimeError(
-                'Cannot build wheel for Python {} using Python {}'.format(
-                    python_version, current_python_version))
+            log('Note: Building wheel for Python {} using Python {}'.format(
+                python_version, current_python_version))
 
         # Check CUDA runtime version.
         config = WHEEL_WINDOWS_CONFIGS[cuda_version]
@@ -342,6 +341,7 @@ class Controller(object):
         Note that Windows build is not isolated.
         """
 
+        # Perform additional check as Windows environment is not isoalted.
         self._check_windows_environment(cuda_version, python_version)
 
         if target != 'wheel-win':
@@ -501,6 +501,7 @@ class Controller(object):
             dist, tests):
         """Verify a single distribution for Windows."""
 
+        # Perform additional check as Windows environment is not isoalted.
         self._check_windows_environment(cuda_version, python_version)
 
         if target != 'wheel-win':
