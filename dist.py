@@ -379,7 +379,11 @@ class Controller(object):
             '--cupy-long-description', '../description.rst',
         ]
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
-            setup_args += ['--cupy-wheel-lib', find_file_in_path(lib)]
+            libpath = find_file_in_path(lib)
+            if libpath is None:
+                raise RuntimeError(
+                    'Library {} could not be found in PATH'.format(lib))
+            setup_args += ['--cupy-wheel-lib', libpath]
         agent_args += setup_args
 
         # Create a working directory.
