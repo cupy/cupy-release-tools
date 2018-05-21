@@ -153,33 +153,28 @@ If you want to build CuPy from `source distribution <https://pypi.python.org/pyp
 # corresponding configurations.
 # Keys of the configuration are as follows:
 # - `python_tag`: a CPython implementation tag
-# - `abi_tag_linux`: a CPython ABI tag for Linux
-# - `abi_tag_win`: a CPython ABI tag for Windows
+# - `abi_tag`: a CPython ABI tag
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
     '2.7.6': {
         'python_tag': 'cp27',
-        'abi_tag_linux': 'cp27mu',
-        'abi_tag_win': 'none',
+        'abi_tag': 'cp27mu',
         'requires': ['numpy<1.10'],
     },
     '3.4.7': {
         'python_tag': 'cp34',
-        'abi_tag_linux': 'cp34m',
-        'abi_tag_win': 'none',
+        'abi_tag': 'cp34m',
         'requires': ['numpy<1.10'],
     },
     '3.5.1': {
         'python_tag': 'cp35',
-        'abi_tag_linux': 'cp35m',
-        'abi_tag_win': 'none',
+        'abi_tag': 'cp35m',
         'requires': ['numpy<1.10'],
     },
     '3.6.0': {
         'python_tag': 'cp36',
-        'abi_tag_linux': 'cp36m',
-        'abi_tag_win': 'none',
+        'abi_tag': 'cp36m',
         # Use NumPy 1.11.3 for Python 3.6.
         'requires': ['numpy<1.12'],
     },
