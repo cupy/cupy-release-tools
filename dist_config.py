@@ -160,23 +160,22 @@ WHEEL_PYTHON_VERSIONS = {
     '2.7.6': {
         'python_tag': 'cp27',
         'abi_tag': 'cp27mu',
-        'requires': ['numpy<1.10'],
+        'requires': [],
     },
     '3.4.7': {
         'python_tag': 'cp34',
         'abi_tag': 'cp34m',
-        'requires': ['numpy<1.10'],
+        'requires': [],
     },
     '3.5.1': {
         'python_tag': 'cp35',
         'abi_tag': 'cp35m',
-        'requires': ['numpy<1.10'],
+        'requires': [],
     },
     '3.6.0': {
         'python_tag': 'cp36',
         'abi_tag': 'cp36m',
-        # Use NumPy 1.11.3 for Python 3.6.
-        'requires': ['numpy<1.12'],
+        'requires': [],
     },
 }
 
