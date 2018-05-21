@@ -339,7 +339,8 @@ class Controller(object):
             source, output):
         """Build a single wheel distribution for Windows.
 
-        Note that Windows build is not isolated."""
+        Note that Windows build is not isolated.
+        """
 
         self._check_windows_environment(cuda_version, python_version)
 
@@ -363,7 +364,7 @@ class Controller(object):
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
 
-        agent_args =[
+        agent_args = [
             '--action', action,
             '--source', 'cupy',
         ]
@@ -374,8 +375,8 @@ class Controller(object):
 
         # Add arguments to pass to setup.py.
         setup_args = [
-                '--cupy-package-name', package_name,
-                '--cupy-long-description', '../description.rst',
+            '--cupy-package-name', package_name,
+            '--cupy-long-description', '../description.rst',
         ]
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
             setup_args += ['--cupy-wheel-lib', find_file_in_path(lib)]
@@ -412,7 +413,6 @@ class Controller(object):
         finally:
             log('Removing working directory: {}'.format(workdir))
             shutil.rmtree(workdir)
-
 
     def verify_linux(
             self, target, nccl_assets, cuda_version, python_version,
