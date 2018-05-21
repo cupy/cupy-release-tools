@@ -416,7 +416,13 @@ class Controller(object):
 
         finally:
             log('Removing working directory: {}'.format(workdir))
-            shutil.rmtree(workdir)
+            try:
+                shutil.rmtree(workdir)
+            except PermissionError:
+                # On Windows, removal of `.git` directory may fail.
+                log('Failed to clean-up working directory.'
+                    'Please remove the working directory manually: {}'.format(
+                        workdir))
 
     def verify_linux(
             self, target, nccl_assets, cuda_version, python_version,
