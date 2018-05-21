@@ -1,7 +1,7 @@
 import unittest
 
 import cupy
-import cupy.cuda.cusolver as libcusolver
+import cupy.cuda.cusolver as libcusolver  # NOQA
 
 
 class TestCusolver(unittest.TestCase):

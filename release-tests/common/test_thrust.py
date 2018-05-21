@@ -1,7 +1,7 @@
 import unittest
 
 import cupy
-import cupy.cuda.thrust as libthrust
+import cupy.cuda.thrust as libthrust  # NOQA
 
 
 class TestThrust(unittest.TestCase):
