@@ -28,7 +28,7 @@ from dist_utils import (
     wheel_name,
     get_version_from_source_tree,
     get_system_cuda_version,
-    find_executable,
+    find_file_in_path,
 )  # NOQA
 
 
@@ -378,7 +378,7 @@ class Controller(object):
                 '--cupy-long-description', '../description.rst',
         ]
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
-            setup_args += ['--cupy-wheel-lib', find_executable(lib)]
+            setup_args += ['--cupy-wheel-lib', find_file_in_path(lib)]
         agent_args += setup_args
 
         # Create a working directory.
