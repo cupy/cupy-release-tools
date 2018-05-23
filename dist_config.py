@@ -118,6 +118,15 @@ WHEEL_LINUX_CONFIGS = {
 
 
 WHEEL_WINDOWS_CONFIGS = {
+    '8.0': {
+        'name': 'cupy-cuda80',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_80',
+        'check_version': lambda x: 8000 <= x < 9000,
+    },
     '9.0': {
         'name': 'cupy-cuda90',
         'libs': [
