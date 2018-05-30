@@ -58,11 +58,18 @@ You can also use `nvget <https://github.com/kmaehashi/nvget>`_ to download NCCL 
   wget "https://github.com/NVIDIA/nccl/releases/download/v1.2.3-1%2Bcuda7.5/libnccl1_1.2.3-1.cuda7.5_amd64.deb"
   wget "https://github.com/NVIDIA/nccl/releases/download/v1.2.3-1%2Bcuda7.5/libnccl-dev_1.2.3-1.cuda7.5_amd64.deb"
 
-  # NCCL 2.1.4 for CUDA 8.0
-  nvget --output "nccl_2.1.4-1+cuda8.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.1/prod/nccl_2.1.4-1cuda8.0_x86_64"
+  # NCCL 2.2.12 for CUDA 8.0
+  nvget --output "nccl_2.2.12-1+cuda8.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda8.0_x86_64"
 
-  # NCCL 2.1.4 for CUDA 9.0
-  nvget --output "nccl_2.1.4-1+cuda9.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.1/prod/nccl_2.1.4-1cuda9.0_x86_64"
+  # NCCL 2.2.12 for CUDA 9.0
+  nvget --output "nccl_2.2.12-1+cuda9.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda9.0_x86_64"
+
+  # NCCL 2.1.15 for CUDA 9.1
+  nvget --output "nccl_2.1.15-1+cuda9.1_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.1/prod/nccl_2.1.15-1cuda9.1_x86_64"
+
+  # NCCL 2.2.12 for CUDA 9.2
+  nvget --output "nccl_2.2.12-1+cuda9.2_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda9.2_x86_64"
+
 
 The directory containing the downloaded assets must be specified as ``--nccl-assets`` argument.
 
