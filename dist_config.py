@@ -114,6 +114,23 @@ WHEEL_LINUX_CONFIGS = {
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
     },
+    '9.2': {
+        'name': 'cupy-cuda92',
+        'image': 'nvidia/cuda:9.2-cudnn7-devel-centos6',
+        'libs': [
+            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
+            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'nccl': {
+            'type': 'v2-tar',
+            'files': [
+                'nccl_2.2.12-1+cuda9.2_x86_64.txz',
+            ],
+        },
+        'verify_image': 'nvidia/cuda:9.2-devel-{system}',
+        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
+        'verify_systems': ['ubuntu16.04'],
+    },
 }
 
 
