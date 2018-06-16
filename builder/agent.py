@@ -15,11 +15,11 @@ import sys
 import time
 
 
-class VerifierAgent(object):
+class BuilderAgent(object):
 
     def _log(self, msg):
         out = sys.stdout
-        out.write('[VerifierAgent] [{0}]: {1}\n'.format(time.asctime(), msg))
+        out.write('[BuilderAgent] [{0}]: {1}\n'.format(time.asctime(), msg))
         out.flush()
 
     def _run(self, *cmd):
@@ -29,8 +29,11 @@ class VerifierAgent(object):
     def parse_args(self):
         parser = argparse.ArgumentParser()
         parser.add_argument(
-            '--dist', type=str,
-            help='Path to the distribution (sdist or wheel)')
+            '--action', type=str, required=True,
+            help='setup.py action to invoke')
+        parser.add_argument(
+            '--source', type=str, required=True,
+            help='Path to the CuPy source directory')
         parser.add_argument(
             '--nccl', type=str,
             help='Path to the extracted NCCL binary distribution directory')
@@ -38,13 +41,16 @@ class VerifierAgent(object):
             '--python', type=str,
             help='Python version to use for setup')
         parser.add_argument(
+            '--requires', action='append', type=str, default=[],
+            help='Python requirements to install prior to setup')
+        parser.add_argument(
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
 
         return parser.parse_known_args()
 
     def main(self):
-        args, pytest_args = self.parse_args()
+        args, setup_args = self.parse_args()
 
         if args.nccl:
             self._log('Installing NCCL...')
@@ -55,17 +61,25 @@ class VerifierAgent(object):
         else:
             self._log('Skip NCCL installation')
 
+        pycommand = [sys.executable]
         if args.python:
             os.environ['PYENV_VERSION'] = args.python
             self._log('Using Python {0}'.format(args.python))
+            pycommand = ['pyenv', 'exec', 'python']
         else:
             self._log('Using Python from system')
 
-        self._log('Installing distribution...')
-        self._run('pyenv', 'exec', 'pip', 'install', '-vvv', args.dist)
+        if 0 < len(args.requires):
+            self._log('Installing python libraries...')
+            cmdline = pycommand + ['-m', 'pip', 'install'] + args.requires
+            self._run(*cmdline)
 
+        self._log('Changing directory to cupy source tree')
+        os.chdir(args.source)
         try:
-            self._run('pyenv', 'exec', 'python', '-m', 'pytest', *pytest_args)
+            self._log('Running CuPy setup...')
+            cmdline = pycommand + ['setup.py', args.action] + setup_args
+            self._run(*cmdline)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
@@ -73,4 +87,4 @@ class VerifierAgent(object):
 
 
 if __name__ == '__main__':
-    VerifierAgent().main()
+    BuilderAgent().main()

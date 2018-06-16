@@ -134,6 +134,37 @@ WHEEL_LINUX_CONFIGS = {
 }
 
 
+WHEEL_WINDOWS_CONFIGS = {
+    '8.0': {
+        'name': 'cupy-cuda80',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_80',
+        'check_version': lambda x: 8000 <= x < 9000,
+    },
+    '9.0': {
+        'name': 'cupy-cuda90',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_90',
+        'check_version': lambda x: 9000 <= x < 9010,
+    },
+    '9.1': {
+        'name': 'cupy-cuda91',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_91',
+        'check_version': lambda x: 9010 <= x < 9020,
+    },
+}
+
+
 # Long description of the wheel package in reST syntax.
 # `{cuda}` will be replaced by the CUDA version (e.g., `9.0`).
 WHEEL_LONG_DESCRIPTION = '''\
@@ -148,30 +179,29 @@ If you want to build CuPy from `source distribution <https://pypi.python.org/pyp
 # corresponding configurations.
 # Keys of the configuration are as follows:
 # - `python_tag`: a CPython implementation tag
-# - `linux_abi_tag`: a CPython ABI tag for Linux
+# - `abi_tag`: a CPython ABI tag
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
     '2.7.6': {
         'python_tag': 'cp27',
-        'linux_abi_tag': 'cp27mu',
-        'requires': ['numpy<1.10'],
+        'abi_tag': 'cp27mu',
+        'requires': [],
     },
     '3.4.7': {
         'python_tag': 'cp34',
-        'linux_abi_tag': 'cp34m',
-        'requires': ['numpy<1.10'],
+        'abi_tag': 'cp34m',
+        'requires': [],
     },
     '3.5.1': {
         'python_tag': 'cp35',
-        'linux_abi_tag': 'cp35m',
-        'requires': ['numpy<1.10'],
+        'abi_tag': 'cp35m',
+        'requires': [],
     },
     '3.6.0': {
         'python_tag': 'cp36',
-        'linux_abi_tag': 'cp36m',
-        # Use NumPy 1.11.3 for Python 3.6.
-        'requires': ['numpy<1.12'],
+        'abi_tag': 'cp36m',
+        'requires': [],
     },
 }
 
