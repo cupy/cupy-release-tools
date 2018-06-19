@@ -72,7 +72,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.1.4-1+cuda8.0_x86_64.txz',
+                'nccl_2.2.12-1+cuda8.0_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:8.0-devel-{system}',
@@ -90,7 +90,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.1.4-1+cuda9.0_x86_64.txz',
+                'nccl_2.2.12-1+cuda9.0_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
@@ -107,7 +107,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.1.4-1+cuda9.1_x86_64.txz',
+                'nccl_2.1.15-1+cuda9.1_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:9.1-devel-{system}',
