@@ -162,6 +162,15 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_91',
         'check_version': lambda x: 9010 <= x < 9020,
     },
+    '9.2': {
+        'name': 'cupy-cuda92',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_92',
+        'check_version': lambda x: 9020 <= x < 9030,
+    },
 }
 
 
