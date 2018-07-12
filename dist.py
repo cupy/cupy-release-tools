@@ -102,18 +102,20 @@ class Controller(object):
         # Build mode options:
         parser.add_argument(
             '--source', type=str,
-            help='path to the CuPy source tree; must be a clean checkout')
+            help='[build] path to the CuPy source tree; '
+                 'must be a clean checkout')
         parser.add_argument(
             '--output', type=str, default='.',
-            help='path to the directory to place the built distribution')
+            help='[build] path to the directory to place '
+                 'the built distribution')
 
         # Verify mode options:
         parser.add_argument(
             '--dist', type=str,
-            help='path to the CuPy distribution (sdist or wheel)')
+            help='[verify] path to the CuPy distribution (sdist or wheel)')
         parser.add_argument(
             '--test', type=str, action='append', default=[],
-            help='path to the directory containing CuPy unit tests '
+            help='[verify] path to the directory containing CuPy unit tests '
                  '(can be specified for multiple times)')
 
         args = parser.parse_args()
