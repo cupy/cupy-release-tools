@@ -3,7 +3,7 @@ FROM ${base_image}
 
 RUN yum -y update && \
     yum -y install gcc gcc-c++ make patch git && \
-    yum -y install bzip2-devel openssl-devel readline-devel && \
+    yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
     yum clean all
 
 # Install pyenv.
