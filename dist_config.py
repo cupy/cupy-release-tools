@@ -212,6 +212,11 @@ WHEEL_PYTHON_VERSIONS = {
         'abi_tag': 'cp36m',
         'requires': [],
     },
+    '3.7.0': {
+        'python_tag': 'cp37',
+        'abi_tag': 'cp37m',
+        'requires': [],
+    },
 }
 
 # Python versions available for verification.
