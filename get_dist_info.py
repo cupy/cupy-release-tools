@@ -5,6 +5,7 @@ import argparse
 
 from dist_config import (
     WHEEL_LINUX_CONFIGS,
+    WHEEL_WINDOWS_CONFIGS,
     PYTHON_VERSIONS,
 )  # NOQA
 
@@ -21,7 +22,8 @@ class DistInfoPrinter(object):
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
-            '--target', choices=['sdist', 'wheel-linux'], required=True,
+            '--target', required=True,
+            choices=['sdist', 'wheel-linux', 'wheel-win'],
             help='build target')
         parser.add_argument(
             '--source', type=str, required=True,
@@ -47,6 +49,14 @@ class DistInfoPrinter(object):
             ))
             print('DIST_PACKAGE_NAME="{}"'.format(
                 WHEEL_LINUX_CONFIGS[args.cuda]['name'],
+            ))
+        elif args.target == 'wheel-win':
+            print('DIST_FILE_NAME="{}"'.format(
+                wheel_name(
+                    args.cuda, version, args.python, 'win_amd64'),
+            ))
+            print('DIST_PACKAGE_NAME="{}"'.format(
+                WHEEL_WINDOWS_CONFIGS[args.cuda]['name'],
             ))
         elif args.target == 'sdist':
             print('DIST_FILE_NAME="{}"'.format(
