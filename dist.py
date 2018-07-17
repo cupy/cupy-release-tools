@@ -243,9 +243,6 @@ class Controller(object):
         else:
             raise RuntimeError('unknown target')
 
-        # Creates a Docker image to build distribution.
-        self._create_builder_linux(image_tag, base_image)
-
         # Arguments for the agent.
         agent_args = [
             '--action', action,
@@ -293,6 +290,9 @@ class Controller(object):
             if long_description is not None:
                 with open('{}/description.rst'.format(workdir), 'w') as f:
                     f.write(long_description)
+
+            # Creates a Docker image to build distribution.
+            self._create_builder_linux(image_tag, base_image)
 
             # Build.
             log('Starting build')
@@ -431,7 +431,6 @@ class Controller(object):
             dist, tests):
         """Verify a single distribution for Linux."""
 
-        # Creates a Docker image to verify specified distribution.
         if target == 'sdist':
             image_tag = 'cupy-verifier-sdist'
             base_image = SDIST_CONFIG['verify_image']
@@ -459,8 +458,6 @@ class Controller(object):
             self, image_tag, base_image, dist, tests, python_version,
             nccl_assets, nccl_config):
         dist_basename = os.path.basename(dist)
-
-        self._create_verifier_linux(image_tag, base_image)
 
         # Arguments for the agent.
         agent_args = [
@@ -498,6 +495,9 @@ class Controller(object):
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
                 log('NCCL is not installed for verification')
+
+            # Creates a Docker image to verify specified distribution.
+            self._create_verifier_linux(image_tag, base_image)
 
             # Verify.
             log('Starting verification')
