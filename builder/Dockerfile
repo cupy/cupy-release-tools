@@ -15,9 +15,9 @@ RUN curl -s -q -o "${OPENSSL_FILE}" "https://www.openssl.org/source/${OPENSSL_FI
     echo "${OPENSSL_HASH}  ${OPENSSL_FILE}" | sha256sum -cw --quiet - && \
     tar xf "${OPENSSL_FILE}" && \
     cd "${OPENSSL_ROOT}" && \
-    ./config no-ssl2 no-shared -fPIC --prefix=/usr/local/ssl | tee /tmp/openssl-config.log && \
-    make | tee /tmp/openssl-make.log && \
-    make install_sw | tee /tmp/openssl-make-install_sw.log && \
+    ./config no-ssl2 no-shared -fPIC --prefix=/usr/local/ssl &> /tmp/openssl-config.log && \
+    make &> /tmp/openssl-make.log && \
+    make install_sw &> /tmp/openssl-make-install_sw.log && \
     cd .. && \
     rm -rf "${OPENSSL_ROOT}" "${OPENSSL_ROOT}.tar.gz"
 ENV CFLAGS=-I/usr/local/ssl/include
