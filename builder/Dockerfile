@@ -20,6 +20,8 @@ RUN curl -s -q -o "${OPENSSL_FILE}" "https://www.openssl.org/source/${OPENSSL_FI
     make install_sw | tee /tmp/openssl-make-install_sw.log && \
     cd .. && \
     rm -rf "${OPENSSL_ROOT}" "${OPENSSL_ROOT}.tar.gz"
+ENV CFLAGS=-I/usr/local/ssl/include
+ENV LDFLAGS=-L/usr/local/ssl/lib
 
 # Install pyenv.
 RUN git clone https://github.com/pyenv/pyenv.git /opt/pyenv
