@@ -7,7 +7,7 @@ RUN yum -y update && \
     yum clean all
 
 # Install OpenSSL; Python 3.7 requires OpenSSL 1.0.2 or 1.1 compatible libssl
-# with X509_VERIFY_PARAM_set1_host, whereas CentOS 6 only provides 1.0.1.
+# with X509_VERIFY_PARAM_set1_host, whereas CentOS 6 provides 0.9.8 and 1.0.1.
 ENV OPENSSL_ROOT=openssl-1.0.2o
 ENV OPENSSL_FILE=${OPENSSL_ROOT}.tar.gz
 ENV OPENSSL_HASH=ec3f5c9714ba0fd45cb4e087301eb1336c317e0d20b575a125050470e8089e4d
