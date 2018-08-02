@@ -19,6 +19,11 @@ mkdir -p nccl
 
 HAVE_NCCL="yes"
 
+# Avoid downloading NCCL assets in parallel.
+NVGET_DELAY="$(( ${RANDOM} % 20 ))"
+echo "Waiting for ${NVGET_DELAY} seconds before start..."
+sleep "${NVGET_DELAY}"
+
 case ${CUDA} in
   sdist )
     $NVGET --output "nccl/nccl_2.1.4-1+cuda9.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.1/prod/nccl_2.1.4-1cuda9.0_x86_64"
