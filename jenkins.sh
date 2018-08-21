@@ -36,16 +36,16 @@ case ${CUDA} in
     wget -O "nccl/libnccl-dev_1.2.3-1.cuda7.5_amd64.deb" "https://github.com/NVIDIA/nccl/releases/download/v1.2.3-1%2Bcuda7.5/libnccl-dev_1.2.3-1.cuda7.5_amd64.deb"
     ;;
   8.0 )
-    $NVGET --output "nccl/nccl_2.2.12-1+cuda8.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda8.0_x86_64"
+    $NVGET --output "nccl/nccl_2.2.13-1+cuda8.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.13-1_cuda8.0_x86_64"
     ;;
   9.0 )
-    $NVGET --output "nccl/nccl_2.2.12-1+cuda9.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda9.0_x86_64"
+    $NVGET --output "nccl/nccl_2.2.13-1+cuda9.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.13-1_cuda9.0_x86_64"
     ;;
   9.1 )
     $NVGET --output "nccl/nccl_2.1.15-1+cuda9.1_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.1/prod/nccl_2.1.15-1cuda9.1_x86_64"
     ;;
   9.2 )
-    $NVGET --output "nccl/nccl_2.2.12-1+cuda9.2_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.12-1_cuda9.2_x86_64"
+    $NVGET --output "nccl/nccl_2.2.13-1+cuda9.2_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.13-1_cuda9.2_x86_64"
     ;;
   * )
     exit 1
