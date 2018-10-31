@@ -47,6 +47,9 @@ case ${CUDA} in
   9.2 )
     $NVGET --output "nccl/nccl_2.2.13-1+cuda9.2_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.2/prod/nccl_2.2.13-1_cuda9.2_x86_64"
     ;;
+  10.0 )
+    $NVGET --output "nccl/nccl_2.3.5-2+cuda10.0_x86_64.txz" "https://developer.nvidia.com/compute/machine-learning/nccl/secure/v2.3/prod2/CUDA10.0/txz/nccl_2.3.5-2-cuda10.0_x86_64"
+    ;;
   * )
     exit 1
     ;;
