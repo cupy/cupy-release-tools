@@ -46,7 +46,7 @@ class DistInfoPrinter(object):
             pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
             filename = wheel_name(pkg_name, version, args.python, 'manylinux1_x86_64')
         elif args.target == 'wheel-win':
-            pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
+            pkg_name = WHEEL_WINDOWS_CONFIGS[args.cuda]['name']
             filename = wheel_name(pkg_name, version, args.python, 'win_amd64')
         elif args.target == 'sdist':
             pkg_name = 'cupy'
