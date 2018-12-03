@@ -183,7 +183,7 @@ CuPy : NumPy-like API accelerated with CUDA
 
 `CuPy <https://cupy.chainer.org/>`_ is an implementation of NumPy-compatible multi-dimensional array on CUDA.
 
-'''
+'''  # NOQA
 
 
 # Long description of the sdist package in reST syntax.
@@ -197,7 +197,7 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda80 <https://pypi.org/project/cupy-cuda80/>`_ (for CUDA 8.0)
 
 Please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for the detailed instructions.
-'''
+'''  # NOQA
 
 
 # Long description of the wheel package in reST syntax.
