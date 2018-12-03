@@ -44,7 +44,8 @@ class DistInfoPrinter(object):
         version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
             pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
-            filename = wheel_name(pkg_name, version, args.python, 'manylinux1_x86_64')
+            filename = wheel_name(
+                pkg_name, version, args.python, 'manylinux1_x86_64')
         elif args.target == 'wheel-win':
             pkg_name = WHEEL_WINDOWS_CONFIGS[args.cuda]['name']
             filename = wheel_name(pkg_name, version, args.python, 'win_amd64')
