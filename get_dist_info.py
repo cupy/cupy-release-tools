@@ -43,26 +43,17 @@ class DistInfoPrinter(object):
         args = self.parse_args()
         version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
-            print('DIST_FILE_NAME="{}"'.format(
-                wheel_name(
-                    args.cuda, version, args.python, 'manylinux1_x86_64'),
-            ))
-            print('DIST_PACKAGE_NAME="{}"'.format(
-                WHEEL_LINUX_CONFIGS[args.cuda]['name'],
-            ))
+            pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
+            filename = wheel_name(
+                pkg_name, version, args.python, 'manylinux1_x86_64')
         elif args.target == 'wheel-win':
-            print('DIST_FILE_NAME="{}"'.format(
-                wheel_name(
-                    args.cuda, version, args.python, 'win_amd64'),
-            ))
-            print('DIST_PACKAGE_NAME="{}"'.format(
-                WHEEL_WINDOWS_CONFIGS[args.cuda]['name'],
-            ))
+            pkg_name = WHEEL_WINDOWS_CONFIGS[args.cuda]['name']
+            filename = wheel_name(pkg_name, version, args.python, 'win_amd64')
         elif args.target == 'sdist':
-            print('DIST_FILE_NAME="{}"'.format(
-                sdist_name('cupy', version)
-            ))
-            print('DIST_PACKAGE_NAME="cupy"')
+            pkg_name = 'cupy'
+            filename = sdist_name(pkg_name, version)
+        print('DIST_FILE_NAME="{}"'.format(filename))
+        print('DIST_PACKAGE_NAME="{}"'.format(pkg_name))
 
 
 if __name__ == '__main__':

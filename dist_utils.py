@@ -6,7 +6,6 @@ import imp
 import os
 
 from dist_config import (
-    WHEEL_LINUX_CONFIGS,
     WHEEL_PYTHON_VERSIONS,
 )  # NOQA
 
@@ -18,12 +17,12 @@ def sdist_name(package_name, version):
     )
 
 
-def wheel_name(cuda, version, python_version, platform_tag):
+def wheel_name(pkg_name, version, python_version, platform_tag):
     # https://www.python.org/dev/peps/pep-0491/#file-name-convention
     return (
         '{distribution}-{version}-{python_tag}-{abi_tag}-'
         '{platform_tag}.whl').format(
-            distribution=WHEEL_LINUX_CONFIGS[cuda]['name'].replace('-', '_'),
+            distribution=pkg_name.replace('-', '_'),
             version=version,
             python_tag=WHEEL_PYTHON_VERSIONS[python_version]['python_tag'],
             abi_tag=WHEEL_PYTHON_VERSIONS[python_version]['abi_tag'],

@@ -3,7 +3,7 @@ FROM ${base_image}
 
 RUN apt-get -y update && \
     apt-get -y install gcc g++ make patch git && \
-    apt-get -y install libbz2-dev libssl-dev libreadline-dev && \
+    apt-get -y install libbz2-dev libssl-dev libreadline-dev libffi-dev && \
     apt-get -y install python && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -33,7 +33,7 @@ RUN for VERSION in ${python_versions}; do \
       pyenv global ${VERSION} && \
       pip install -U pip setuptools && \
       pip install pytest mock; \
-      pip install 'numpy==1.13.3' 'scipy==0.19.1'; \
+      pip install 'numpy==1.14.5' 'scipy==1.1.0'; \
     done && \
     pyenv global system
 

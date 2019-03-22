@@ -222,27 +222,27 @@ class Controller(object):
                 '(version {}, for CUDA {} + Python {})'.format(
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
-            # Rename wheels to manylinux1.
-            asset_name = wheel_name(
-                cuda_version, version, python_version, 'linux_x86_64')
-            asset_dest_name = wheel_name(
-                cuda_version, version, python_version, 'manylinux1_x86_64')
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+            # Rename wheels to manylinux1.
+            asset_name = wheel_name(
+                package_name, version, python_version, 'linux_x86_64')
+            asset_dest_name = wheel_name(
+                package_name, version, python_version, 'manylinux1_x86_64')
         elif target == 'sdist':
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
             action = 'sdist'
-            asset_name = sdist_name('cupy', version)
-            asset_dest_name = asset_name
             image_tag = 'cupy-builder-sdist'
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
             nccl_config = SDIST_CONFIG['nccl']
             long_description = SDIST_LONG_DESCRIPTION
+            asset_name = sdist_name('cupy', version)
+            asset_dest_name = asset_name
             assert nccl_config is not None
         else:
             raise RuntimeError('unknown target')
@@ -364,11 +364,11 @@ class Controller(object):
                 source, version, cuda_version, python_version))
 
         action = 'bdist_wheel'
-        asset_name = wheel_name(
-            cuda_version, version, python_version, 'win_amd64')
-        asset_dest_name = asset_name
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+        asset_name = wheel_name(
+            package_name, version, python_version, 'win_amd64')
+        asset_dest_name = asset_name
 
         agent_args = [
             '--action', action,
