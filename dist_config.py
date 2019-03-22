@@ -199,10 +199,36 @@ WHEEL_WINDOWS_CONFIGS = {
 }
 
 
+_long_description_header = '''\
+.. image:: https://raw.githubusercontent.com/cupy/cupy/master/docs/image/cupy_logo_1000px.png
+   :width: 400
+
+CuPy : NumPy-like API accelerated with CUDA
+===========================================
+
+`CuPy <https://cupy.chainer.org/>`_ is an implementation of NumPy-compatible multi-dimensional array on CUDA.
+
+'''  # NOQA
+
+
+# Long description of the sdist package in reST syntax.
+SDIST_LONG_DESCRIPTION = _long_description_header + '''\
+This package (``cupy``) is a source distribution.
+For most users, use of pre-build wheel distributions are recommended:
+
+- `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
+- `cupy-cuda91 <https://pypi.org/project/cupy-cuda91/>`_ (for CUDA 9.1)
+- `cupy-cuda90 <https://pypi.org/project/cupy-cuda90/>`_ (for CUDA 9.0)
+- `cupy-cuda80 <https://pypi.org/project/cupy-cuda80/>`_ (for CUDA 8.0)
+
+Please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for the detailed instructions.
+'''  # NOQA
+
+
 # Long description of the wheel package in reST syntax.
 # `{cuda}` will be replaced by the CUDA version (e.g., `9.0`).
-WHEEL_LONG_DESCRIPTION = '''\
-This CuPy wheel (precompiled binary) package requires CUDA {cuda}.
+WHEEL_LONG_DESCRIPTION = _long_description_header + '''\
+This is a CuPy wheel (precompiled binary) package for CUDA {cuda}.
 You need to install `CUDA Toolkit {cuda} <https://developer.nvidia.com/cuda-toolkit-archive>`_ to use these packages.
 
 If you have another version of CUDA, please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for instructions.
