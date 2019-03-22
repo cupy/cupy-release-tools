@@ -90,7 +90,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.2.13-1+cuda9.0_x86_64.txz',
+                'nccl_2.3.7-1+cuda9.0_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
@@ -124,13 +124,29 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.2.13-1+cuda9.2_x86_64.txz',
+                'nccl_2.3.7-1+cuda9.2_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:9.2-devel-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
     },
+    '10.0': {
+        'name': 'cupy-cuda100',
+        'image': 'nvidia/cuda:10.0-cudnn7-devel-centos6',
+        'libs': [
+            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
+            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'nccl': {
+            'type': 'v2-tar',
+            'files': [
+                'nccl_2.3.7-1+cuda10.0_x86_64.txz',
+            ],
+        },
+        'verify_image': 'nvidia/cuda:10.0-devel-{system}',
+        'verify_systems': ['ubuntu16.04'],
+    }
 }
 
 
@@ -170,6 +186,15 @@ WHEEL_WINDOWS_CONFIGS = {
         ],
         'cudart_lib': 'cudart64_92',
         'check_version': lambda x: 9020 <= x < 9030,
+    },
+    '10.0': {
+        'name': 'cupy-cuda100',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_100',
+        'check_version': lambda x: 10000 <= x < 10010,
     },
 }
 
