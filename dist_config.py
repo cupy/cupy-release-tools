@@ -78,7 +78,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:8.0-devel-{system}',
         # 'verify_systems': ['ubuntu16.04', 'ubuntu14.04',
         #                    'centos7', 'centos6'],
-        'verify_systems': ['ubuntu14.04'],
+        'verify_systems': ['ubuntu16.04'],
     },
     '9.0': {
         'name': 'cupy-cuda90',
