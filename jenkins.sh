@@ -41,6 +41,9 @@ case ${CUDA} in
   10.0 )
     wget -O "nccl/nccl_2.4.2-1+cuda10.0_x86_64.txz" "https://s3-ap-northeast-1.amazonaws.com/pfn-internal-public/cupy/nccl_2.4.2-1%2Bcuda10.0_x86_64.txz"
     ;;
+  10.1 )
+    wget -O "nccl/nccl_2.4.2-1+cuda10.1_x86_64.txz" "https://s3-ap-northeast-1.amazonaws.com/pfn-internal-public/cupy/nccl_2.4.2-1%2Bcuda10.1_x86_64.txz"
+    ;;
   * )
     exit 1
     ;;
