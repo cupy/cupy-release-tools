@@ -50,5 +50,11 @@ RUN for VERSION in ${python_versions}; do \
 RUN yum -y install python-setuptools && yum clean all
 RUN easy_install argparse
 
+# Install NCCL
+COPY nccl /nccl
+RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
+    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
+    ldconfig
+
 COPY agent.py /
 ENTRYPOINT ["/agent.py"]

@@ -156,7 +156,7 @@ class Controller(object):
                     args.target, args.nccl_assets, args.cuda, args.python,
                     args.dist, args.test)
 
-    def _create_builder_linux(self, image_tag, base_image):
+    def _create_builder_linux(self, image_tag, base_image, docker_ctx):
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(PYTHON_VERSIONS)
@@ -167,10 +167,10 @@ class Controller(object):
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
-            'builder',
+            docker_ctx,
         )
 
-    def _create_verifier_linux(self, image_tag, base_image):
+    def _create_verifier_linux(self, image_tag, base_image, docker_ctx):
         """Create a docker image to verify distributions."""
 
         # Choose Dockerfile template
@@ -183,6 +183,9 @@ class Controller(object):
         else:
             raise RuntimeError(
                 'cannot detect OS from image name: '.format(base_image))
+        shutil.copy2(
+            '{}/Dockerfile.{}'.format(docker_ctx, template),
+            '{}/Dockerfile'.format(docker_ctx))
 
         python_versions = ' '.join(VERIFY_PYTHON_VERSIONS)
         log('Building Docker image: {}'.format(image_tag))
@@ -191,8 +194,7 @@ class Controller(object):
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
-            '--file', 'verifier/Dockerfile.{}'.format(template),
-            'verifier',
+            docker_ctx,
         )
 
     def _run_container(self, image_tag, workdir, agent_args):
@@ -254,8 +256,6 @@ class Controller(object):
             '--python', python_version,
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
-        if nccl_config:
-            agent_args += ['--nccl', 'nccl']
 
         # Add arguments to pass to setup.py.
         setup_args = [
@@ -280,25 +280,32 @@ class Controller(object):
         try:
             log('Using working directory: {}'.format(workdir))
 
-            # Copy source tree and NCCL to working directory.
+            # Copy source tree to working directory.
             log('Copying source tree from: {}'.format(source))
             shutil.copytree(source, '{}/cupy'.format(workdir))
-
-            # Extract NCCL.
-            if nccl_config:
-                nccl_workdir = '{}/nccl'.format(workdir)
-                os.mkdir(nccl_workdir)
-                extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
-            else:
-                log('NCCL is not used for this package')
 
             # Add long description file.
             if long_description is not None:
                 with open('{}/description.rst'.format(workdir), 'w') as f:
                     f.write(long_description)
 
+            # Copy builder directory to working directory.
+            docker_ctx = '{}/builder'.format(workdir)
+            log('Copying builder directory to: '.format(docker_ctx))
+            shutil.copytree('builder/', docker_ctx)
+
+            # Extract NCCL archive.
+            log('Creating nccl directory under builder directory')
+            nccl_workdir = '{}/nccl'.format(docker_ctx)
+            os.mkdir(nccl_workdir)
+            if nccl_config:
+                log('Extracting NCCL archive')
+                extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
+            else:
+                log('NCCL is not installed for this build')
+
             # Creates a Docker image to build distribution.
-            self._create_builder_linux(image_tag, base_image)
+            self._create_builder_linux(image_tag, base_image, docker_ctx)
 
             # Build.
             log('Starting build')
@@ -471,8 +478,6 @@ class Controller(object):
             '--dist', dist_basename,
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
-        if nccl_config:
-            agent_args += ['--nccl', 'nccl']
 
         # Add arguments for `python -m pytest`.
         agent_args += ['tests']
@@ -494,16 +499,23 @@ class Controller(object):
                     test,
                     '{}/{}'.format(tests_dir, os.path.basename(test)))
 
-            # Extract NCCL.
+            # Copy verifier directory to working directory.
+            docker_ctx = '{}/verifier'.format(workdir)
+            log('Copying verifier directory to: '.format(docker_ctx))
+            shutil.copytree('verifier/', docker_ctx)
+
+            # Extract NCCL archive.
+            log('Creating nccl directory under verifier directory')
+            nccl_workdir = '{}/nccl'.format(docker_ctx)
+            os.mkdir(nccl_workdir)
             if nccl_config:
-                nccl_workdir = '{}/nccl'.format(workdir)
-                os.mkdir(nccl_workdir)
+                log('Extracting NCCL archive')
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
-                log('NCCL is not installed for verification')
+                log('NCCL is not installed for this verification')
 
             # Creates a Docker image to verify specified distribution.
-            self._create_verifier_linux(image_tag, base_image)
+            self._create_verifier_linux(image_tag, base_image, docker_ctx)
 
             # Verify.
             log('Starting verification')

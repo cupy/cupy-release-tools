@@ -35,9 +35,6 @@ class BuilderAgent(object):
             '--source', type=str, required=True,
             help='Path to the CuPy source directory')
         parser.add_argument(
-            '--nccl', type=str,
-            help='Path to the extracted NCCL binary distribution directory')
-        parser.add_argument(
             '--python', type=str,
             help='Python version to use for setup')
         parser.add_argument(
@@ -51,15 +48,6 @@ class BuilderAgent(object):
 
     def main(self):
         args, setup_args = self.parse_args()
-
-        if args.nccl:
-            self._log('Installing NCCL...')
-            for f in glob.glob('{0}/lib/lib*'.format(args.nccl)):
-                shutil.copy(f, '/usr/local/cuda/lib64')
-            for f in glob.glob('{0}/include/*.h'.format(args.nccl)):
-                shutil.copy(f, '/usr/local/cuda/include')
-        else:
-            self._log('Skip NCCL installation')
 
         pycommand = [sys.executable]
         if args.python:
