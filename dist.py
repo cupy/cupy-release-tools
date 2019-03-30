@@ -191,8 +191,7 @@ class Controller(object):
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
-            '--file', 'verifier/Dockerfile.{}'.format(template),
-            'verifier',
+            'verifier/{}'.format(template),
         )
 
     def _run_container(self, image_tag, workdir, agent_args):
