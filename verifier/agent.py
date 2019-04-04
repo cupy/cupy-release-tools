@@ -7,9 +7,7 @@ Additional dependency can be specified in Dockerfile.
 """
 
 import argparse
-import glob
 import os
-import shutil
 import subprocess
 import sys
 import time
