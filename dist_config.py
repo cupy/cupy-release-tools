@@ -39,6 +39,9 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.4',  # cuDNN v4
         ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
         'nccl': None,
         'verify_image': 'nvidia/cuda:7.0-devel-{system}',
         # 'verify_systems': ['ubuntu14.04', 'centos7'],
@@ -50,6 +53,9 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.6',  # cuDNN v6
             '/usr/local/cuda/lib64/libnccl.so.1',  # NCCL v1
+        ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'nccl': {
             'type': 'v1-deb',
@@ -69,6 +75,9 @@ WHEEL_LINUX_CONFIGS = {
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
         'nccl': {
             'type': 'v2-tar',
             'files': [
@@ -87,6 +96,9 @@ WHEEL_LINUX_CONFIGS = {
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
         'nccl': {
             'type': 'v2-tar',
             'files': [
@@ -103,6 +115,9 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'nccl': {
             'type': 'v2-tar',
@@ -121,6 +136,9 @@ WHEEL_LINUX_CONFIGS = {
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
         'nccl': {
             'type': 'v2-tar',
             'files': [
@@ -137,6 +155,9 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'nccl': {
             'type': 'v2-tar',
