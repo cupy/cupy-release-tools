@@ -1,0 +1,15 @@
+configs {
+  key: "cupy-release-tools"
+  value {
+    requirement {
+      cpu: 2
+      gpu: 1
+      memory: 12
+      disk: 30
+    }
+    time_limit {
+      seconds: 3600
+    }
+    command: "sh .pfnci/test.sh"
+  }
+}
