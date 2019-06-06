@@ -272,6 +272,10 @@ class Controller(object):
             ]
             for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
                 setup_args += ['--cupy-wheel-lib', lib]
+            for include_path, include_relpath in (
+                    WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
+                spec = '{}:{}'.format(include_path, include_relpath)
+                setup_args += ['--cupy-wheel-include', spec]
             agent_args += setup_args
 
         # Create a working directory.
