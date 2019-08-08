@@ -276,7 +276,7 @@ class Controller(object):
                     WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
                 spec = '{}:{}'.format(include_path, include_relpath)
                 setup_args += ['--cupy-wheel-include', spec]
-            agent_args += setup_args
+        agent_args += setup_args
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
@@ -297,9 +297,8 @@ class Controller(object):
                 log('NCCL is not used for this package')
 
             # Add long description file.
-            if long_description is not None:
-                with open('{}/description.rst'.format(workdir), 'w') as f:
-                    f.write(long_description)
+            with open('{}/description.rst'.format(workdir), 'w') as f:
+                f.write(long_description)
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(image_tag, base_image)
@@ -407,9 +406,8 @@ class Controller(object):
             shutil.copytree(source, '{}/cupy'.format(workdir))
 
             # Add long description file.
-            if long_description is not None:
-                with open('{}/description.rst'.format(workdir), 'w') as f:
-                    f.write(long_description)
+            with open('{}/description.rst'.format(workdir), 'w') as f:
+                f.write(long_description)
 
             # Build.
             log('Starting build')
