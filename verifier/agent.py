@@ -7,9 +7,7 @@ Additional dependency can be specified in Dockerfile.
 """
 
 import argparse
-import glob
 import os
-import shutil
 import subprocess
 import sys
 import time
@@ -32,9 +30,6 @@ class VerifierAgent(object):
             '--dist', type=str,
             help='Path to the distribution (sdist or wheel)')
         parser.add_argument(
-            '--nccl', type=str,
-            help='Path to the extracted NCCL binary distribution directory')
-        parser.add_argument(
             '--python', type=str,
             help='Python version to use for setup')
         parser.add_argument(
@@ -46,15 +41,6 @@ class VerifierAgent(object):
     def main(self):
         args, pytest_args = self.parse_args()
 
-        if args.nccl:
-            self._log('Installing NCCL...')
-            for f in glob.glob('{0}/lib/lib*'.format(args.nccl)):
-                shutil.copy(f, '/usr/local/cuda/lib64')
-            for f in glob.glob('{0}/include/*.h'.format(args.nccl)):
-                shutil.copy(f, '/usr/local/cuda/include')
-        else:
-            self._log('Skip NCCL installation')
-
         pycommand = [sys.executable]
         if args.python:
             os.environ['PYENV_VERSION'] = args.python
@@ -64,7 +50,9 @@ class VerifierAgent(object):
             self._log('Using Python from system')
 
         self._log('Installing distribution...')
-        cmdline = pycommand + ['-m', 'pip', 'install', '-vvv', args.dist]
+        cmdline = pycommand + [
+            '-m', 'pip', 'install', '-vvv', '--user', args.dist,
+        ]
         self._run(*cmdline)
 
         try:

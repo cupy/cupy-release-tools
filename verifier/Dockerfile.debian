@@ -37,5 +37,14 @@ RUN for VERSION in ${python_versions}; do \
     done && \
     pyenv global system
 
+# Install NCCL
+COPY nccl /nccl
+RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
+    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
+    ldconfig
+
+# Use /tmp as a temporary home to install package.
+ENV HOME /tmp
+
 COPY agent.py /
 ENTRYPOINT ["/agent.py"]
