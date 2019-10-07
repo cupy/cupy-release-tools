@@ -13,3 +13,35 @@ configs {
     command: "sh .pfnci/test.sh"
   }
 }
+configs {
+  key: "cupy-release-tools.win"
+  value {
+    requirement {
+      cpu: 2
+      gpu: 1
+      memory: 8
+      disk: 30
+      image: "windows"
+    }
+    time_limit {
+      seconds: 3000
+    }
+    command: ".pfnci\\wheel-windows\\main.bat 3.7.0 10.1 origin/master"
+  }
+}
+configs {
+  key: "cupy-wheel-win"
+  value {
+    requirement {
+      cpu: 2
+      gpu: 1
+      memory: 8
+      disk: 30
+      image: "windows"
+    }
+    time_limit {
+      seconds: 3000
+    }
+    command: ".pfnci\\wheel-windows\\main.bat 3.7.0 10.1 origin/master"
+  }
+}
