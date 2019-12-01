@@ -8,11 +8,14 @@ $ErrorActionPreference = "Stop"
 # Set environment variables.
 $python_path = $null
 switch ($python) {
+    "3.6.0" {
+        $python_path = "C:\Development\Python\Python36"
+    }
     "3.7.0" {
         $python_path = "C:\Development\Python\Python37"
     }
-    "3.6.0" {
-        $python_path = "C:\Development\Python\Python36"
+    "3.8.0" {
+        $python_path = "C:\Development\Python\Python38"
     }
     default {
          throw "Unsupported Python version: $python"

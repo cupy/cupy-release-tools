@@ -8,4 +8,4 @@ ls -al nccl
 git clone https://github.com/cupy/cupy.git cupy
 
 # Build and Verify
-./build.sh 9.2 3.7.0
+./build.sh 9.2 3.8.0
