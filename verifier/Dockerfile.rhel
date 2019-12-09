@@ -22,7 +22,7 @@ RUN for VERSION in ${python_versions}; do \
 RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
-      pip install -U pip setuptools && \
+      pip install -U pip 'setuptools<42' && \
       pip install pytest mock; \
       pip install numpy scipy; \
     done && \
