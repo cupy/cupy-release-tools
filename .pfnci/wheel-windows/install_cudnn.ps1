@@ -23,7 +23,7 @@ switch ($cuda) {
     }
     "9.0" {
         $cuda_path = $Env:CUDA_PATH_V9_0
-        $cudnn_archive = "cudnn-9.0-windows10-x64-v7.6.4.38.zip"
+        $cudnn_archive = "cudnn-9.0-windows10-x64-v7.6.5.32.zip"
     }
     "9.1" {
         $cuda_path = $Env:CUDA_PATH_V9_1
@@ -31,15 +31,19 @@ switch ($cuda) {
     }
     "9.2" {
         $cuda_path = $Env:CUDA_PATH_V9_2
-        $cudnn_archive = "cudnn-9.2-windows10-x64-v7.6.4.38.zip"
+        $cudnn_archive = "cudnn-9.2-windows10-x64-v7.6.5.32.zip"
     }
     "10.0" {
         $cuda_path = $Env:CUDA_PATH_V10_0
-        $cudnn_archive = "cudnn-10.0-windows10-x64-v7.6.4.38.zip"
+        $cudnn_archive = "cudnn-10.0-windows10-x64-v7.6.5.32.zip"
     }
     "10.1" {
         $cuda_path = $Env:CUDA_PATH_V10_1
-        $cudnn_archive = "cudnn-10.1-windows10-x64-v7.6.4.38.zip"
+        $cudnn_archive = "cudnn-10.1-windows10-x64-v7.6.5.32.zip"
+    }
+    "10.2" {
+        $cuda_path = $Env:CUDA_PATH_V10_2
+        $cudnn_archive = "cudnn-10.2-windows10-x64-v7.6.5.32.zip"
     }
     default {
          throw "Unsupported CUDA version: $cuda"
