@@ -187,6 +187,25 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:10.1-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
     },
+    '10.2': {
+        'name': 'cupy-cuda102',
+        'image': 'nvidia/cuda:10.2-cudnn7-devel-centos6',
+        'libs': [
+            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
+            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
+        'nccl': {
+            'type': 'v2-tar',
+            'files': [
+                'nccl_2.4.2-1+cuda10.2_x86_64.txz',
+            ],
+        },
+        'verify_image': 'nvidia/cuda:10.1-devel-{system}',
+        'verify_systems': ['ubuntu16.04'],
+    },
 }
 
 
@@ -245,6 +264,15 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_101',
         'check_version': lambda x: 10010 <= x < 10020,
     },
+    '10.2': {
+        'name': 'cupy-cuda102',
+        'libs': [
+            'cudnn64_7.dll',  # cuDNN v7
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_102',
+        'check_version': lambda x: 10020 <= x < 10030,
+    },
 }
 
 
@@ -265,6 +293,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
 - `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
