@@ -5,7 +5,7 @@ CUDA="${1}"
 mkdir -p nccl/
 case ${CUDA} in
   sdist )
-    wget -O "nccl/nccl_2.1.4-1+cuda9.0_x86_64.txz" "https://s3-ap-northeast-1.amazonaws.com/pfn-internal-public/cupy/nccl_2.1.4-1%2Bcuda9.0_x86_64.txz"
+    wget -O "nccl/nccl_2.5.6-1+cuda9.0_x86_64.txz" "https://s3-ap-northeast-1.amazonaws.com/pfn-internal-public/cupy/nccl_2.5.6-1%2Bcuda9.0_x86_64.txz"
     ;;
   7.0 )
     echo "NCCL is not supported in CUDA 7.0"
