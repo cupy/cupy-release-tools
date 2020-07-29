@@ -323,16 +323,6 @@ If you want to build CuPy from `source distribution <https://pypi.python.org/pyp
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '2.7.6': {
-        'python_tag': 'cp27',
-        'abi_tag': 'cp27mu',
-        'requires': [],
-    },
-    '3.4.7': {
-        'python_tag': 'cp34',
-        'abi_tag': 'cp34m',
-        'requires': [],
-    },
     '3.5.1': {
         'python_tag': 'cp35',
         'abi_tag': 'cp35m',

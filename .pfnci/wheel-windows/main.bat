@@ -8,7 +8,7 @@ set BRANCH=%3
 PowerShell .pfnci\wheel-windows\install_cudnn.ps1 -cuda %CUDA%
 
 :: Clone CuPy
-git clone https://github.com/cupy/cupy.git cupy
+git clone --recursive https://github.com/cupy/cupy.git cupy
 git -C cupy checkout %BRANCH%
 
 :: Build

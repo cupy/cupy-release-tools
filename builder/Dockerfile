@@ -56,5 +56,12 @@ RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
     ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
     ldconfig
 
+# Install g++-7 for CuPy v8 build
+RUN yum install -y centos-release-scl && \
+    yum install -y devtoolset-7-gcc-c++ && \
+    yum clean all
+
+COPY build-wrapper /
 COPY agent.py /
+
 ENTRYPOINT ["/agent.py"]
