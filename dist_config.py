@@ -7,7 +7,7 @@ CYTHON_VERSION = '0.29.21'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 # Note that cuDNN and NCCL must be available for sdist.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:9.0-cudnn7-devel-centos7',
+    'image': 'nvidia/cuda:9.0-cudnn7-devel-centos6',
     'nccl': {
         'type': 'v2-tar',
         'files': [
