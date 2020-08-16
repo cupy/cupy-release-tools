@@ -19,39 +19,49 @@ function install_cudnn([String]$cudnn_zip, [String]$cuda_root) {
 switch ($cuda) {
     "8.0" {
         $cuda_path = $Env:CUDA_PATH_V8_0
+        $cudnn_version = "7.1.3"
         $cudnn_archive = "cudnn-8.0-windows10-x64-v7.1-ga.zip"
     }
     "9.0" {
         $cuda_path = $Env:CUDA_PATH_V9_0
+        $cudnn_version = "7.6.5"
         $cudnn_archive = "cudnn-9.0-windows10-x64-v7.6.5.32.zip"
     }
     "9.1" {
         $cuda_path = $Env:CUDA_PATH_V9_1
+        $cudnn_version = "7.1.3"
         $cudnn_archive = "cudnn-9.1-windows10-x64-v7.1.zip"
     }
     "9.2" {
         $cuda_path = $Env:CUDA_PATH_V9_2
+        $cudnn_version = "7.6.5"
         $cudnn_archive = "cudnn-9.2-windows10-x64-v7.6.5.32.zip"
     }
     "10.0" {
         $cuda_path = $Env:CUDA_PATH_V10_0
+        $cudnn_version = "7.6.5"
         $cudnn_archive = "cudnn-10.0-windows10-x64-v7.6.5.32.zip"
     }
     "10.1" {
         $cuda_path = $Env:CUDA_PATH_V10_1
+        $cudnn_version = "7.6.5"
         $cudnn_archive = "cudnn-10.1-windows10-x64-v7.6.5.32.zip"
     }
     "10.2" {
         $cuda_path = $Env:CUDA_PATH_V10_2
+        $cudnn_version = "7.6.5"
         $cudnn_archive = "cudnn-10.2-windows10-x64-v7.6.5.32.zip"
+    }
+    "11.0" {
+        $cuda_path = $Env:CUDA_PATH_V11_0
+        $cudnn_version = "8.0.2"
+        $cudnn_archive = "cudnn-11.0-windows-x64-v8.0.2.39.zip"
     }
     default {
          throw "Unsupported CUDA version: $cuda"
     }
 }
 
-
-# https://console.cloud.google.com/storage/browser/tmp-asia-pfn-public-ci/cupy-release-tools/cudnn/
-gsutil -q -m cp -r gs://tmp-asia-pfn-public-ci/cupy-release-tools/cudnn/$cudnn_archive .
+curl -LO "https://developer.download.nvidia.com/compute/redist/cudnn/v${cudnn_version}/${cudnn_archive}"
 
 install_cudnn $cudnn_archive $cuda_path

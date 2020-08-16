@@ -45,6 +45,9 @@ switch ($cuda) {
     "10.2" {
         $cuda_path = $Env:CUDA_PATH_V10_2
     }
+    "11.0" {
+        $cuda_path = $Env:CUDA_PATH_V11_0
+    }
     default {
          throw "Unsupported CUDA version: $cuda"
     }
