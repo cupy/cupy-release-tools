@@ -11,7 +11,7 @@ SDIST_CONFIG = {
     'nccl': {
         'type': 'v2-tar',
         'files': [
-            'nccl_2.5.6-1+cuda9.0_x86_64.txz',
+            'nccl_2.4.8-1+cuda9.2_x86_64.txz',
         ],
     },
     'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
@@ -162,7 +162,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-1+cuda10.0_x86_64.txz',
+                'nccl_2.6.4-1+cuda10.0_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
@@ -181,7 +181,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-1+cuda10.1_x86_64.txz',
+                'nccl_2.7.8-1+cuda10.1_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.1-devel-{system}',
@@ -200,7 +200,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-2+cuda10.2_x86_64.txz',
+                'nccl_2.7.8-2+cuda10.2_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.2-devel-{system}',
