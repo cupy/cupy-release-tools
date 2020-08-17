@@ -206,6 +206,27 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:10.2-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
     },
+    '11.0': {
+        # Starting in CUDA 11.0, cuDNN is no longer bundled.
+        'name': 'cupy-cuda110',
+        # TODO(kmaehashi): Use the official image when released.
+        'image': 'kmaehashi/cuda11-centos7:11.0-cudnn8-devel-centos7',
+        'libs': [
+            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
+        ],
+        'includes': [],
+        'nccl': {
+            'type': 'v2-tar',
+            'files': [
+                'nccl_2.7.8-1+cuda11.0_x86_64.txz',
+            ],
+        },
+
+        # Note: Using image with cuDNN 8 preinstalled.
+        'verify_image': 'nvidia/cuda:11.0-cudnn8-runtime-{system}',
+        'verify_systems': ['ubuntu18.04'],
+    },
+
 }
 
 
@@ -273,6 +294,14 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_102',
         'check_version': lambda x: 10020 <= x < 10030,
     },
+    '11.0': {
+        'name': 'cupy-cuda110',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'cudart_lib': 'cudart64_110',
+        'check_version': lambda x: 11000 <= x < 11010,
+    },
 }
 
 
@@ -293,6 +322,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda110 <https://pypi.org/project/cupy-cuda110/>`_ (for CUDA 11.0)
 - `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
@@ -323,7 +353,7 @@ If you want to build CuPy from `source distribution <https://pypi.python.org/pyp
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '3.5.1': {
+    '3.5.3': {
         'python_tag': 'cp35',
         'abi_tag': 'cp35m',
         'requires': [],
