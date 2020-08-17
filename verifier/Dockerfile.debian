@@ -1,7 +1,8 @@
 ARG base_image
 FROM ${base_image}
 
-RUN apt-get -y update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y update && \
     apt-get -y install gcc g++ make patch git && \
     apt-get -y install libbz2-dev libssl-dev libreadline-dev libffi-dev && \
     apt-get -y install python && \
@@ -9,7 +10,8 @@ RUN apt-get -y update && \
 
 # Install pyenv requirements.
 # https://github.com/pyenv/pyenv/wiki/Common-build-problems#requirements
-RUN apt-get -y update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y update && \
     apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
     libncursesw5-dev xz-utils tk-dev && \

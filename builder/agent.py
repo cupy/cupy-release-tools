@@ -65,6 +65,8 @@ class BuilderAgent(object):
         try:
             self._log('Running CuPy setup...')
             cmdline = pycommand + ['setup.py', args.action] + setup_args
+            if sys.platform.startswith('linux'):
+                cmdline = ['/build-wrapper'] + cmdline
             self._run(*cmdline)
         finally:
             if args.chown:

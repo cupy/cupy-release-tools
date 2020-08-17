@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 # Cython version to cythonize the code.
-CYTHON_VERSION = '0.28.3'
+CYTHON_VERSION = '0.29.21'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 # Note that cuDNN and NCCL must be available for sdist.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:9.0-cudnn7-devel-centos7',
+    'image': 'nvidia/cuda:9.2-cudnn7-devel-centos6',
     'nccl': {
         'type': 'v2-tar',
         'files': [
-            'nccl_2.5.6-1+cuda9.0_x86_64.txz',
+            'nccl_2.4.8-1+cuda9.2_x86_64.txz',
         ],
     },
-    'verify_image': 'nvidia/cuda:9.0-cudnn7-devel-{system}',
-    'verify_systems': ['ubuntu16.04'],
+    'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
+    'verify_systems': ['ubuntu18.04'],
 }
 
 
@@ -162,7 +162,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-1+cuda10.0_x86_64.txz',
+                'nccl_2.6.4-1+cuda10.0_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
@@ -181,7 +181,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-1+cuda10.1_x86_64.txz',
+                'nccl_2.7.8-1+cuda10.1_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.1-devel-{system}',
@@ -200,7 +200,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.5.6-2+cuda10.2_x86_64.txz',
+                'nccl_2.7.8-2+cuda10.2_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.2-devel-{system}',
@@ -323,16 +323,6 @@ If you want to build CuPy from `source distribution <https://pypi.python.org/pyp
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '2.7.6': {
-        'python_tag': 'cp27',
-        'abi_tag': 'cp27mu',
-        'requires': [],
-    },
-    '3.4.7': {
-        'python_tag': 'cp34',
-        'abi_tag': 'cp34m',
-        'requires': [],
-    },
     '3.5.1': {
         'python_tag': 'cp35',
         'abi_tag': 'cp35m',

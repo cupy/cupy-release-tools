@@ -56,5 +56,15 @@ RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
     ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
     ldconfig
 
+# Install g++-6 for CuPy v8 build
+RUN yum install -y centos-release-scl && \
+    yum clean all
+RUN perl -pi -e 's|^#baseurl=http://mirror.centos.org/centos/6/sclo/\$basearch/rh/|baseurl=http://ftp.iij.ad.jp/pub/linux/centos-vault/6.8/sclo/\$basearch/rh/|' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo && \
+    perl -pi -e 's|^mirrorlist=|#mirrorlist=|' /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo && \
+    yum install -y devtoolset-6-gcc-c++ && \
+    yum clean all
+
+COPY build-wrapper /
 COPY agent.py /
+
 ENTRYPOINT ["/agent.py"]
