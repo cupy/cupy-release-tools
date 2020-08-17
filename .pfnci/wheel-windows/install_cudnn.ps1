@@ -25,7 +25,7 @@ switch ($cuda) {
     "8.0" {
         $cuda_path = $Env:CUDA_PATH_V8_0
         $cudnn_version = "7.1.3"
-        $cudnn_archive = "cudnn-8.0-windows10-x64-v7.1-ga.zip"
+        $cudnn_archive = "cudnn-8.0-windows10-x64-v7.1.zip"
     }
     "9.0" {
         $cuda_path = $Env:CUDA_PATH_V9_0
@@ -67,6 +67,8 @@ switch ($cuda) {
     }
 }
 
-curl.exe -LO "https://developer.download.nvidia.com/compute/redist/cudnn/v${cudnn_version}/${cudnn_archive}"
+$url = "https://developer.download.nvidia.com/compute/redist/cudnn/v${cudnn_version}/${cudnn_archive}"
+echo "Downloading ${url}..."
+curl.exe -LO "${url}"
 
 install_cudnn $cudnn_archive $cuda_path
