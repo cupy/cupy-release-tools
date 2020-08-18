@@ -200,7 +200,7 @@ WHEEL_LINUX_CONFIGS = {
         'nccl': {
             'type': 'v2-tar',
             'files': [
-                'nccl_2.7.8-2+cuda10.2_x86_64.txz',
+                'nccl_2.7.8-1+cuda10.2_x86_64.txz',
             ],
         },
         'verify_image': 'nvidia/cuda:10.2-devel-{system}',
