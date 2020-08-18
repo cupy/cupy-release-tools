@@ -13,6 +13,7 @@ for CUDA in 8.0 9.0 9.1 9.2 10.0 10.1 10.2 11.0; do
     imosci --project=cupy-wheel-win run ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
   done
 done
+exit
 
 BRANCH="master"
 for CUDA in 9.0 9.2 10.0 10.1 10.2 11.0; do
