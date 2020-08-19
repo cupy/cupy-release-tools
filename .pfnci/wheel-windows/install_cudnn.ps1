@@ -5,6 +5,11 @@ Param(
 $ErrorActionPreference = "Stop"
 
 function install_cudnn([String]$cudnn_zip, [String]$cuda_root) {
+  echo "Uninstalling existing cuDNN installation from ${cuda_root}"
+  Remove-Item -Force -Verbose ${cuda_root}\bin\cudnn*.dll
+  Remove-Item -Force -Verbose ${cuda_root}\include\cudnn*.h
+  Remove-Item -Force -Verbose ${cuda_root}\lib\x64\cudnn*.lib
+
   echo "Installing ${cudnn_zip} to ${cuda_root}..."
   Remove-Item -Recurse -Force -ErrorAction:SilentlyContinue tmp_cudnn
   Expand-Archive -Path ${cudnn_zip} -DestinationPath tmp_cudnn
@@ -13,14 +18,14 @@ function install_cudnn([String]$cudnn_zip, [String]$cuda_root) {
   Move-Item -Force cuda\include\* ${cuda_root}\include
   Move-Item -Force cuda\lib\x64\* ${cuda_root}\lib\x64
   Pop-Location
-  Remove-Item -Recurse -Force -ErrorAction:SilentlyContinue tmp_cudnn
+  Remove-Item -Recurse -Force tmp_cudnn
 }
 
 switch ($cuda) {
     "8.0" {
         $cuda_path = $Env:CUDA_PATH_V8_0
         $cudnn_version = "7.1.3"
-        $cudnn_archive = "cudnn-8.0-windows10-x64-v7.1-ga.zip"
+        $cudnn_archive = "cudnn-8.0-windows10-x64-v7.1.zip"
     }
     "9.0" {
         $cuda_path = $Env:CUDA_PATH_V9_0
@@ -62,6 +67,8 @@ switch ($cuda) {
     }
 }
 
-curl -LO "https://developer.download.nvidia.com/compute/redist/cudnn/v${cudnn_version}/${cudnn_archive}"
+$url = "https://developer.download.nvidia.com/compute/redist/cudnn/v${cudnn_version}/${cudnn_archive}"
+echo "Downloading ${url}..."
+curl.exe -LO "${url}"
 
 install_cudnn $cudnn_archive $cuda_path
