@@ -276,6 +276,11 @@ class Controller(object):
                     WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
                 spec = '{}:{}'.format(include_path, include_relpath)
                 setup_args += ['--cupy-wheel-include', spec]
+        elif target == 'sdist':
+            setup_args += [
+                '--cupy-no-cuda',
+            ]
+
         agent_args += setup_args
 
         # Create a working directory.
