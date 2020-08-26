@@ -261,6 +261,7 @@ class Controller(object):
             raise RuntimeError('NCCL assets must be specified for Linux')
 
         if target == 'wheel-linux':
+            assert cuda_version is not None
             log(
                 'Starting wheel-linux build from {} '
                 '(version {}, for CUDA {} + Python {})'.format(
@@ -277,6 +278,7 @@ class Controller(object):
             asset_dest_name = wheel_name(
                 package_name, version, python_version, 'manylinux1_x86_64')
         elif target == 'sdist':
+            assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
             action = 'sdist'
@@ -534,12 +536,13 @@ class Controller(object):
         """Verify a single distribution for Linux."""
 
         if target == 'sdist':
+            assert cuda_version is None
             image_tag = 'cupy-verifier-sdist'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
             nccl_config = SDIST_CONFIG['nccl']
-            assert cuda_version is None
         elif target == 'wheel-linux':
+            assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
