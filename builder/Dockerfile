@@ -1,8 +1,7 @@
 ARG base_image
 FROM ${base_image}
 
-RUN yum -y update && \
-    yum -y install gcc gcc-c++ make patch git curl && \
+RUN yum -y install gcc gcc-c++ make patch git curl && \
     yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
     yum clean all
 
