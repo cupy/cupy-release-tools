@@ -228,7 +228,7 @@ _long_description_header = '''\
 CuPy : NumPy-like API accelerated with CUDA
 ===========================================
 
-`CuPy <https://cupy.chainer.org/>`_ is an implementation of NumPy-compatible multi-dimensional array on CUDA.
+`CuPy <https://cupy.dev/>`_ is an implementation of NumPy-compatible multi-dimensional array on CUDA.
 
 '''  # NOQA
 
@@ -243,11 +243,9 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
 - `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
-- `cupy-cuda91 <https://pypi.org/project/cupy-cuda91/>`_ (for CUDA 9.1)
 - `cupy-cuda90 <https://pypi.org/project/cupy-cuda90/>`_ (for CUDA 9.0)
-- `cupy-cuda80 <https://pypi.org/project/cupy-cuda80/>`_ (for CUDA 8.0)
 
-Please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for the detailed instructions.
+Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
 '''  # NOQA
 
 
@@ -257,8 +255,7 @@ WHEEL_LONG_DESCRIPTION = _long_description_header + '''\
 This is a CuPy wheel (precompiled binary) package for CUDA {cuda}.
 You need to install `CUDA Toolkit {cuda} <https://developer.nvidia.com/cuda-toolkit-archive>`_ to use these packages.
 
-If you have another version of CUDA, please see `Installation Guide <https://docs-cupy.chainer.org/en/latest/install.html>`_ for instructions.
-If you want to build CuPy from `source distribution <https://pypi.python.org/pypi/cupy>`_, use ``pip install cupy`` instead.
+If you have another version of CUDA, or want to build from source, refer to the `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for instructions.
 '''  # NOQA
 
 # Key-value of python version (used in pyenv) to use for build and its
