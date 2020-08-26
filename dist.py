@@ -384,16 +384,17 @@ class Controller(object):
                 log('cuDNN is not installed for this build')
 
             # Create a wheel metadata file for preload.
-            log('Writing wheel metadata')
-            wheel_metadata = {
-                'cuda': cuda_version,
-                'cudnn': {
-                    'version': cudnn_version,
-                    'filename': cudnn_assets['filename'],
+            if target == 'wheel-linux':
+                log('Writing wheel metadata')
+                wheel_metadata = {
+                    'cuda': cuda_version,
+                    'cudnn': {
+                        'version': cudnn_version,
+                        'filename': cudnn_assets['filename'],
+                    }
                 }
-            }
-            with open('{}/_wheel.json'.format(workdir), 'w') as f:
-                json.dump(wheel_metadata, f)
+                with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                    json.dump(wheel_metadata, f)
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(image_tag, base_image, docker_ctx)
