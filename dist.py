@@ -378,7 +378,8 @@ class Controller(object):
                 log('Creating cudnn directory under builder directory')
                 cudnn_workdir = '{}/cudnn'.format(docker_ctx)
                 os.mkdir(cudnn_workdir)
-                download_extract_cudnn_archive(cudnn_assets['url'], cudnn_workdir)
+                download_extract_cudnn_archive(
+                    cudnn_assets['url'], cudnn_workdir)
             else:
                 log('cuDNN is not installed for this build')
 
@@ -505,7 +506,8 @@ class Controller(object):
                 f.write(long_description)
 
             # Get cuDNN version.
-            cudnn_version, cudnn_assets = get_cudnn_record(cuda_version, 'Windows')
+            cudnn_version, cudnn_assets = get_cudnn_record(
+                cuda_version, 'Windows')
             log('cuDNN version: {}'.format(cudnn_version))
             log('cuDNN assets: {}'.format(cudnn_assets))
 
