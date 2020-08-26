@@ -99,7 +99,7 @@ def get_cudnn_record(cuda_version, platform):
         '--cuda', cuda_version,
         '--action', 'dump',
     ]
-    cudnn_records = json.loads(run_command_output(*command))
+    cudnn_records = json.loads(run_command_output(*command).decode('utf-8'))
     for record in cudnn_records:
         if record['cuda'] == cuda_version:
             return record['cudnn'], record['assets'][platform]
