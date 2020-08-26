@@ -559,12 +559,15 @@ class Controller(object):
             image_tag = 'cupy-verifier-sdist'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
+            preloads = SDIST_CONFIG.get('verify_preloads', None)
             nccl_config = SDIST_CONFIG['nccl']
+            assert preloads is None
         elif target == 'wheel-linux':
             assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
             nccl_config = None
         else:
             raise RuntimeError('unknown target')
@@ -576,11 +579,12 @@ class Controller(object):
                 dist, image, python_version))
             self._verify_linux(
                 image_tag_system, image, dist, tests,
-                python_version, nccl_assets, nccl_config)
+                python_version, nccl_assets, nccl_config,
+                cuda_version, preloads)
 
     def _verify_linux(
             self, image_tag, base_image, dist, tests, python_version,
-            nccl_assets, nccl_config):
+            nccl_assets, nccl_config, cuda_version, preloads):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -589,6 +593,10 @@ class Controller(object):
             '--dist', dist_basename,
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
+        if 0 < len(preloads):
+            agent_args += ['--cuda', cuda_version]
+            for p in preloads:
+                agent_args += ['--preload', p]
 
         # Add arguments for `python -m pytest`.
         agent_args += ['tests']

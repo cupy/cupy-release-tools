@@ -44,9 +44,10 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.5.6-1+cuda9.0_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:9.0-devel-{system}',
+        'verify_image': 'nvidia/cuda:9.0-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
+        'verify_preloads': [],
     },
     '9.2': {
         'name': 'cupy-cuda92',
@@ -64,9 +65,10 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.4.8-1+cuda9.2_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:9.2-devel-{system}',
+        'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
+        'verify_preloads': [],
     },
     '10.0': {
         'name': 'cupy-cuda100',
@@ -86,6 +88,7 @@ WHEEL_LINUX_CONFIGS = {
         },
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'verify_preloads': [],
     },
     '10.1': {
         'name': 'cupy-cuda101',
@@ -102,8 +105,11 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.7.8-1+cuda10.1_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:10.1-devel-{system}',
+
+        # Note: cuDNN 8 image is unavailable for CUDA 10.1.
+        'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'verify_preloads': ['cudnn'],
     },
     '10.2': {
         'name': 'cupy-cuda102',
@@ -120,8 +126,11 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.7.8-1+cuda10.2_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:10.2-devel-{system}',
+
+        # Note: cuDNN 8 image is unavailable for CUDA 10.2.
+        'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'verify_preloads': ['cudnn'],
     },
     '11.0': {
         'name': 'cupy-cuda110',
@@ -143,6 +152,7 @@ WHEEL_LINUX_CONFIGS = {
         # Note: Using image with cuDNN 8 preinstalled.
         'verify_image': 'nvidia/cuda:11.0-cudnn8-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'verify_preloads': [],
     },
 
 }
