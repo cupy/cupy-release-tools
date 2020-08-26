@@ -11,7 +11,6 @@ import subprocess
 import sys
 import tempfile
 import time
-import urllib.request
 
 
 from dist_config import (
@@ -111,10 +110,8 @@ def get_cudnn_record(cuda_version, platform):
 def download_extract_cudnn_archive(url, dest_dir):
     with tempfile.TemporaryDirectory() as tmpdir:
         filepath = os.path.join(tmpdir, os.path.basename(url))
-        with open(filepath, 'wb') as f:
-            log('Downloading {} to {}...'.format(url, f.name))
-            with urllib.request.urlopen(url) as response:
-                f.write(response.read())
+        log('Downloading {} to {}...'.format(url, filepath))
+        run_command('curl', '-L', '-o', filepath, url)
         log('Extracting...')
         shutil.unpack_archive(filepath, tmpdir)
         log('Moving to the destination directory...')
