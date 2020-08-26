@@ -88,7 +88,7 @@ Get-ChildItem
 
 # Verify
 echo ">> Starting verification..."
-python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn
+python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
 python -c "import cupy; cupy.show_config()"
