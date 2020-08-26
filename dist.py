@@ -270,8 +270,15 @@ class Controller(object):
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
-            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+
+            # NCCL
+            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
+
+            # cuDNN
+            cudnn_version, cudnn_assets = get_cudnn_record(
+                cuda_version, 'Linux')
+
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
                 package_name, version, python_version, 'linux_x86_64')
@@ -285,11 +292,18 @@ class Controller(object):
             image_tag = 'cupy-builder-sdist'
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
-            nccl_config = SDIST_CONFIG['nccl']
             long_description = SDIST_LONG_DESCRIPTION
+
+            # NCCL
+            nccl_config = None
+
+            # cuDNN (use pre-installed version)
+            cudnn_version = None
+            cudnn_assets = None
+
+            # Rename not needed for sdist.
             asset_name = sdist_name('cupy', version)
             asset_dest_name = asset_name
-            assert nccl_config is not None
         else:
             raise RuntimeError('unknown target')
 
@@ -351,20 +365,22 @@ class Controller(object):
             log('Creating nccl directory under builder directory')
             nccl_workdir = '{}/nccl'.format(docker_ctx)
             os.mkdir(nccl_workdir)
-            if nccl_config:
+            if nccl_config is not None:
                 log('Extracting NCCL archive')
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
                 log('NCCL is not installed for this build')
 
             # Extract cuDNN archive.
-            log('Creating cudnn directory under builder directory')
-            cudnn_workdir = '{}/cudnn'.format(docker_ctx)
-            os.mkdir(cudnn_workdir)
-            cudnn_version, cudnn_assets = get_cudnn_record(cuda_version, 'Linux')
-            log('cuDNN version: {}'.format(cudnn_version))
-            log('cuDNN assets: {}'.format(cudnn_assets))
-            download_extract_cudnn_archive(cudnn_assets['url'], cudnn_workdir)
+            if cudnn_version is not None:
+                log('cuDNN version: {}'.format(cudnn_version))
+                log('cuDNN assets: {}'.format(cudnn_assets))
+                log('Creating cudnn directory under builder directory')
+                cudnn_workdir = '{}/cudnn'.format(docker_ctx)
+                os.mkdir(cudnn_workdir)
+                download_extract_cudnn_archive(cudnn_assets['url'], cudnn_workdir)
+            else:
+                log('cuDNN is not installed for this build')
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')
