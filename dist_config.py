@@ -91,7 +91,6 @@ WHEEL_LINUX_CONFIGS = {
         'name': 'cupy-cuda101',
         'image': 'nvidia/cuda:10.1-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
@@ -110,7 +109,6 @@ WHEEL_LINUX_CONFIGS = {
         'name': 'cupy-cuda102',
         'image': 'nvidia/cuda:10.2-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
@@ -126,14 +124,15 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu16.04'],
     },
     '11.0': {
-        # Starting in CUDA 11.0, cuDNN is no longer bundled.
         'name': 'cupy-cuda110',
         # TODO(kmaehashi): Use the official image when released.
         'image': 'kmaehashi/cuda11-centos7:11.0-devel-centos7',
         'libs': [
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
-        'includes': [],
+        'includes': [
+            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
+        ],
         'nccl': {
             'type': 'v2-tar',
             'files': [
@@ -198,7 +197,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '10.1': {
         'name': 'cupy-cuda101',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_101',
@@ -207,7 +205,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '10.2': {
         'name': 'cupy-cuda102',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_102',
