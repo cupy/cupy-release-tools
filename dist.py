@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import json
 import os
 import random
 import shutil
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.request
 
 
 from dist_config import (
@@ -44,6 +46,11 @@ def run_command(*cmd, **kwargs):
     subprocess.check_call(cmd, **kwargs)
 
 
+def run_command_output(*cmd, **kwargs):
+    log('Running command: {}'.format(str(cmd)))
+    return subprocess.check_output(cmd, **kwargs)
+
+
 def make_random_name(length=10):
     return ''.join(
         random.choice(string.ascii_lowercase + string.digits)
@@ -51,6 +58,8 @@ def make_random_name(length=10):
 
 
 def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
+    # This method uses platform-dependent command because
+    # NCCL is only supported on Linux.
     log('Extracting NCCL assets from {} to {}'.format(nccl_assets, dest_dir))
     asset_type = nccl_config['type']
     if asset_type == 'v1-deb':
@@ -78,6 +87,38 @@ def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
             )
     else:
         raise RuntimeError('unknown NCCL asset type: {}'.format(asset_type))
+
+
+def get_cudnn_record(cuda_version, platform):
+    log('Retrieving cuDNN records for CUDA {} ({})'.format(
+        cuda_version, platform))
+    command = [
+        'cupy/cupyx/tools/install_library.py',
+        '--library', 'cudnn',
+        '--cuda', cuda_version,
+        '--action', 'dump',
+    ]
+    cudnn_records = json.loads(run_command_output(*command))
+    for record in cudnn_records:
+        if record['cuda'] == cuda_version:
+            return record['cudnn'], record['assets'][platform]
+    raise RuntimeError(
+        'CUDA {} not supported by install_library tool'.format(
+            cuda_version))
+
+
+def download_extract_cudnn_archive(url, dest_dir):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        filepath = os.path.join(tmpdir, os.path.basename(url))
+        with open(filepath, 'wb') as f:
+            log('Downloading {} to {}...'.format(url, f.name))
+            with urllib.request.urlopen(url) as response:
+                f.write(response.read())
+        log('Extracting...')
+        shutil.unpack_archive(filepath, tmpdir)
+        log('Moving to the destination directory...')
+        shutil.move(os.path.join(tmpdir, 'cuda'), dest_dir)
+        log('Cleaning up...')
 
 
 class Controller(object):
@@ -269,6 +310,7 @@ class Controller(object):
 
             setup_args += [
                 '--cupy-no-rpath',
+                '--cupy-wheel-metadata', '../_wheel.json',
             ]
             for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
                 setup_args += ['--cupy-wheel-lib', lib]
@@ -311,6 +353,27 @@ class Controller(object):
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
                 log('NCCL is not installed for this build')
+
+            # Extract cuDNN archive.
+            log('Creating cudnn directory under builder directory')
+            cudnn_workdir = '{}/cudnn'.format(docker_ctx)
+            os.mkdir(cudnn_workdir)
+            cudnn_version, cudnn_assets = get_cudnn_record(cuda_version, 'Linux')
+            log('cuDNN version: {}'.format(cudnn_version))
+            log('cuDNN assets: {}'.format(cudnn_assets))
+            download_extract_cudnn_archive(cudnn_assets['url'], cudnn_workdir)
+
+            # Create a wheel metadata file for preload.
+            log('Writing wheel metadata')
+            wheel_metadata = {
+                'cuda': cuda_version,
+                'cudnn': {
+                    'version': cudnn_version,
+                    'filename': cudnn_assets['filename'],
+                }
+            }
+            with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                json.dump(wheel_metadata, f)
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(image_tag, base_image, docker_ctx)
@@ -399,6 +462,7 @@ class Controller(object):
             '--cupy-package-name', package_name,
             '--cupy-long-description', '../description.rst',
         ]
+        setup_args += ['--cupy-wheel-metadata', '../_wheel.json']
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
             libpath = find_file_in_path(lib)
             if libpath is None:
@@ -420,6 +484,23 @@ class Controller(object):
             # Add long description file.
             with open('{}/description.rst'.format(workdir), 'w') as f:
                 f.write(long_description)
+
+            # Get cuDNN version.
+            cudnn_version, cudnn_assets = get_cudnn_record(cuda_version, 'Windows')
+            log('cuDNN version: {}'.format(cudnn_version))
+            log('cuDNN assets: {}'.format(cudnn_assets))
+
+            # Create a wheel metadata file for preload.
+            log('Writing wheel metadata')
+            wheel_metadata = {
+                'cuda': cuda_version,
+                'cudnn': {
+                    'version': cudnn_version,
+                    'filename': cudnn_assets['filename'],
+                }
+            }
+            with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                json.dump(wheel_metadata, f)
 
             # Build.
             log('Starting build')
