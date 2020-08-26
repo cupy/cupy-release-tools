@@ -93,6 +93,7 @@ def get_cudnn_record(cuda_version, platform):
     log('Retrieving cuDNN records for CUDA {} ({})'.format(
         cuda_version, platform))
     command = [
+        sys.executable,
         'cupy/cupyx/tools/install_library.py',
         '--library', 'cudnn',
         '--cuda', cuda_version,
