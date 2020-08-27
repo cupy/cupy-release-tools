@@ -556,9 +556,9 @@ class Controller(object):
             image_tag = 'cupy-verifier-sdist'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
-            preloads = SDIST_CONFIG.get('verify_preloads', None)
+            preloads = SDIST_CONFIG['verify_preloads']
             nccl_config = SDIST_CONFIG['nccl']
-            assert preloads is None
+            assert len(preloads) == 0
         elif target == 'wheel-linux':
             assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
