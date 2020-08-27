@@ -28,8 +28,8 @@ RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
 
 # Install cuDNN.
 COPY cudnn /cudnn
-RUN mv /cudnn/cuda/lib64/*   /usr/local/cuda/lib64 && \
-    mv /cudnn/cuda/include/* /usr/local/cuda/include && \
+RUN ( [ ! -d /cudnn/cuda/lib64   || mv /cudnn/cuda/lib64/*   /usr/local/cuda/lib64 ) && \
+    ( [ ! -d /cudnn/cuda/include || mv /cudnn/cuda/include/* /usr/local/cuda/include ) && \
     ldconfig
 
 # Install requirements for agents.
