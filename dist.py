@@ -369,12 +369,12 @@ class Controller(object):
                 log('NCCL is not installed for this build')
 
             # Extract cuDNN archive.
+            cudnn_workdir = '{}/cudnn'.format(docker_ctx)
+            os.mkdir(cudnn_workdir)
             if cudnn_version is not None:
                 log('cuDNN version: {}'.format(cudnn_version))
                 log('cuDNN assets: {}'.format(cudnn_assets))
                 log('Creating cudnn directory under builder directory')
-                cudnn_workdir = '{}/cudnn'.format(docker_ctx)
-                os.mkdir(cudnn_workdir)
                 download_extract_cudnn_archive(
                     cudnn_assets['url'], cudnn_workdir)
             else:
