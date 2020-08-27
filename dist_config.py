@@ -44,7 +44,8 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.5.6-1+cuda9.0_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:9.0-runtime-{system}',
+        # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
+        'verify_image': 'nvidia/cuda:9.0-devel-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': [],
