@@ -107,8 +107,6 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.7.8-1+cuda10.1_x86_64.txz',
             ],
         },
-
-        # Note: cuDNN 8 image is unavailable for CUDA 10.1.
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': ['cudnn'],
@@ -128,8 +126,6 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.7.8-1+cuda10.2_x86_64.txz',
             ],
         },
-
-        # Note: cuDNN 8 image is unavailable for CUDA 10.2.
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': ['cudnn'],
@@ -150,11 +146,9 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.7.8-1+cuda11.0_x86_64.txz',
             ],
         },
-
-        # Note: Using image with cuDNN 8 preinstalled.
-        'verify_image': 'nvidia/cuda:11.0-cudnn8-runtime-{system}',
+        'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': [],
+        'verify_preloads': ['cudnn'],
     },
 
 }
