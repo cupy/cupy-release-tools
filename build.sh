@@ -17,10 +17,16 @@ case ${CUDA} in
 esac
 
 VERIFY_ARGS="--test release-tests/common --test release-tests/cudnn"
+
+if [ "${CUDA}" = "sdist" ]; then
+  VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/pkg_sdist"
+else
+  VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/pkg_wheel"
+fi
+
 if [ "${HAVE_NCCL}" = "yes" ]; then
   VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/nccl"
 fi
 
 ./dist.py --action build  ${DIST_OPTIONS} --source cupy --output .
 ./dist.py --action verify ${DIST_OPTIONS} --dist ${DIST_FILE_NAME} ${VERIFY_ARGS}
-

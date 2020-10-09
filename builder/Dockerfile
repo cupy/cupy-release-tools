@@ -1,8 +1,7 @@
 ARG base_image
 FROM ${base_image}
 
-RUN yum -y update && \
-    yum -y install gcc gcc-c++ make patch git curl && \
+RUN yum -y install gcc gcc-c++ make patch git curl && \
     yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
     yum clean all
 
@@ -25,6 +24,12 @@ RUN /setup_devtoolset.sh
 COPY nccl /nccl
 RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
     ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
+    ldconfig
+
+# Install cuDNN.
+COPY cudnn /cudnn
+RUN ( [ ! -d /cudnn/cuda/lib64 ]   || mv /cudnn/cuda/lib64/*   /usr/local/cuda/lib64 ) && \
+    ( [ ! -d /cudnn/cuda/include ] || mv /cudnn/cuda/include/* /usr/local/cuda/include ) && \
     ldconfig
 
 # Install requirements for agents.

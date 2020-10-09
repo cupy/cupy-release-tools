@@ -1,6 +1,7 @@
 import unittest
 
 import cupy
+import cupyx
 
 
 class TestBasic(unittest.TestCase):
@@ -41,4 +42,4 @@ class TestCuSparse(unittest.TestCase):
         m = cupy.array([[0, 1, 0, 2],
                         [0, 0, 0, 0],
                         [0, 0, 3, 0]], dtype=cupy.float32)
-        cupy.sparse.csr_matrix(m)
+        cupyx.scipy.sparse.csr_matrix(m)

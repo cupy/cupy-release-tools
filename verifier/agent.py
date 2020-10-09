@@ -33,6 +33,12 @@ class VerifierAgent(object):
             '--python', type=str,
             help='Python version to use for setup')
         parser.add_argument(
+            '--cuda', type=str,
+            help='CUDA version')
+        parser.add_argument(
+            '--preload', action='append', type=str, default=[],
+            help='Install the library and preload')
+        parser.add_argument(
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
 
@@ -54,6 +60,14 @@ class VerifierAgent(object):
             '-m', 'pip', 'install', '-vvv', '--user', args.dist,
         ]
         self._run(*cmdline)
+
+        for p in args.preload:
+            self._log('Installing preload libraries ({})...'.format(p))
+            cmdline = pycommand + [
+                '-m', 'cupyx.tools.install_library',
+                '--library', p, '--cuda', args.cuda,
+            ]
+            self._run(*cmdline)
 
         try:
             cmdline = pycommand + ['-m', 'pytest'] + pytest_args

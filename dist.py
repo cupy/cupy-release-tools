@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import argparse
+import json
 import os
 import random
 import shutil
@@ -44,6 +45,11 @@ def run_command(*cmd, **kwargs):
     subprocess.check_call(cmd, **kwargs)
 
 
+def run_command_output(*cmd, **kwargs):
+    log('Running command: {}'.format(str(cmd)))
+    return subprocess.check_output(cmd, **kwargs)
+
+
 def make_random_name(length=10):
     return ''.join(
         random.choice(string.ascii_lowercase + string.digits)
@@ -51,6 +57,8 @@ def make_random_name(length=10):
 
 
 def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
+    # This method uses platform-dependent command because
+    # NCCL is only supported on Linux.
     log('Extracting NCCL assets from {} to {}'.format(nccl_assets, dest_dir))
     asset_type = nccl_config['type']
     if asset_type == 'v1-deb':
@@ -78,6 +86,37 @@ def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
             )
     else:
         raise RuntimeError('unknown NCCL asset type: {}'.format(asset_type))
+
+
+def get_cudnn_record(cuda_version, platform):
+    log('Retrieving cuDNN records for CUDA {} ({})'.format(
+        cuda_version, platform))
+    command = [
+        sys.executable,
+        'cupy/cupyx/tools/install_library.py',
+        '--library', 'cudnn',
+        '--cuda', cuda_version,
+        '--action', 'dump',
+    ]
+    cudnn_records = json.loads(run_command_output(*command).decode('utf-8'))
+    for record in cudnn_records:
+        if record['cuda'] == cuda_version:
+            return record['cudnn'], record['assets'][platform]
+    raise RuntimeError(
+        'CUDA {} not supported by install_library tool'.format(
+            cuda_version))
+
+
+def download_extract_cudnn_archive(url, dest_dir):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        filepath = os.path.join(tmpdir, os.path.basename(url))
+        log('Downloading {} to {}...'.format(url, filepath))
+        run_command('curl', '-L', '-o', filepath, url)
+        log('Extracting...')
+        shutil.unpack_archive(filepath, tmpdir)
+        log('Moving to the destination directory...')
+        shutil.move(os.path.join(tmpdir, 'cuda'), dest_dir)
+        log('Cleaning up...')
 
 
 class Controller(object):
@@ -219,6 +258,7 @@ class Controller(object):
             raise RuntimeError('NCCL assets must be specified for Linux')
 
         if target == 'wheel-linux':
+            assert cuda_version is not None
             log(
                 'Starting wheel-linux build from {} '
                 '(version {}, for CUDA {} + Python {})'.format(
@@ -227,25 +267,40 @@ class Controller(object):
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
-            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+
+            # NCCL
+            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
+
+            # cuDNN
+            cudnn_version, cudnn_assets = get_cudnn_record(
+                cuda_version, 'Linux')
+
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
                 package_name, version, python_version, 'linux_x86_64')
             asset_dest_name = wheel_name(
                 package_name, version, python_version, 'manylinux1_x86_64')
         elif target == 'sdist':
+            assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
-            nccl_config = SDIST_CONFIG['nccl']
             long_description = SDIST_LONG_DESCRIPTION
+
+            # NCCL
+            nccl_config = None
+
+            # cuDNN (use pre-installed version)
+            cudnn_version = None
+            cudnn_assets = None
+
+            # Rename not needed for sdist.
             asset_name = sdist_name('cupy', version)
             asset_dest_name = asset_name
-            assert nccl_config is not None
         else:
             raise RuntimeError('unknown target')
 
@@ -269,6 +324,7 @@ class Controller(object):
 
             setup_args += [
                 '--cupy-no-rpath',
+                '--cupy-wheel-metadata', '../_wheel.json',
             ]
             for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
                 setup_args += ['--cupy-wheel-lib', lib]
@@ -276,6 +332,11 @@ class Controller(object):
                     WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
                 spec = '{}:{}'.format(include_path, include_relpath)
                 setup_args += ['--cupy-wheel-include', spec]
+        elif target == 'sdist':
+            setup_args += [
+                '--cupy-no-cuda',
+            ]
+
         agent_args += setup_args
 
         # Create a working directory.
@@ -301,11 +362,36 @@ class Controller(object):
             log('Creating nccl directory under builder directory')
             nccl_workdir = '{}/nccl'.format(docker_ctx)
             os.mkdir(nccl_workdir)
-            if nccl_config:
+            if nccl_config is not None:
                 log('Extracting NCCL archive')
                 extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
             else:
                 log('NCCL is not installed for this build')
+
+            # Extract cuDNN archive.
+            cudnn_workdir = '{}/cudnn'.format(docker_ctx)
+            os.mkdir(cudnn_workdir)
+            if cudnn_version is not None:
+                log('cuDNN version: {}'.format(cudnn_version))
+                log('cuDNN assets: {}'.format(cudnn_assets))
+                log('Creating cudnn directory under builder directory')
+                download_extract_cudnn_archive(
+                    cudnn_assets['url'], cudnn_workdir)
+            else:
+                log('cuDNN is not installed for this build')
+
+            # Create a wheel metadata file for preload.
+            if target == 'wheel-linux':
+                log('Writing wheel metadata')
+                wheel_metadata = {
+                    'cuda': cuda_version,
+                    'cudnn': {
+                        'version': cudnn_version,
+                        'filename': cudnn_assets['filename'],
+                    }
+                }
+                with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                    json.dump(wheel_metadata, f)
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(image_tag, base_image, docker_ctx)
@@ -394,6 +480,7 @@ class Controller(object):
             '--cupy-package-name', package_name,
             '--cupy-long-description', '../description.rst',
         ]
+        setup_args += ['--cupy-wheel-metadata', '../_wheel.json']
         for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
             libpath = find_file_in_path(lib)
             if libpath is None:
@@ -415,6 +502,24 @@ class Controller(object):
             # Add long description file.
             with open('{}/description.rst'.format(workdir), 'w') as f:
                 f.write(long_description)
+
+            # Get cuDNN version.
+            cudnn_version, cudnn_assets = get_cudnn_record(
+                cuda_version, 'Windows')
+            log('cuDNN version: {}'.format(cudnn_version))
+            log('cuDNN assets: {}'.format(cudnn_assets))
+
+            # Create a wheel metadata file for preload.
+            log('Writing wheel metadata')
+            wheel_metadata = {
+                'cuda': cuda_version,
+                'cudnn': {
+                    'version': cudnn_version,
+                    'filename': cudnn_assets['filename'],
+                }
+            }
+            with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                json.dump(wheel_metadata, f)
 
             # Build.
             log('Starting build')
@@ -447,15 +552,19 @@ class Controller(object):
         """Verify a single distribution for Linux."""
 
         if target == 'sdist':
+            assert cuda_version is None
             image_tag = 'cupy-verifier-sdist'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
+            preloads = SDIST_CONFIG['verify_preloads']
             nccl_config = SDIST_CONFIG['nccl']
-            assert cuda_version is None
+            assert len(preloads) == 0
         elif target == 'wheel-linux':
+            assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
             nccl_config = None
         else:
             raise RuntimeError('unknown target')
@@ -467,11 +576,12 @@ class Controller(object):
                 dist, image, python_version))
             self._verify_linux(
                 image_tag_system, image, dist, tests,
-                python_version, nccl_assets, nccl_config)
+                python_version, nccl_assets, nccl_config,
+                cuda_version, preloads)
 
     def _verify_linux(
             self, image_tag, base_image, dist, tests, python_version,
-            nccl_assets, nccl_config):
+            nccl_assets, nccl_config, cuda_version, preloads):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -480,6 +590,10 @@ class Controller(object):
             '--dist', dist_basename,
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
+        if 0 < len(preloads):
+            agent_args += ['--cuda', cuda_version]
+            for p in preloads:
+                agent_args += ['--preload', p]
 
         # Add arguments for `python -m pytest`.
         agent_args += ['tests']
