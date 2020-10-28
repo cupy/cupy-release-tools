@@ -33,6 +33,9 @@ case ${CUDA} in
   11.0 )
     curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda11.0_x86_64.txz"
     ;;
+  11.1 )
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda11.1_x86_64.txz"
+    ;;
   * )
     echo "Unsupported CUDA version: ${1}"
     exit 1
