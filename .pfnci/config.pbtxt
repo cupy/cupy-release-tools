@@ -2,13 +2,13 @@ configs {
   key: "cupy-release-tools"
   value {
     requirement {
-      cpu: 2
+      cpu: 8
       gpu: 1
       memory: 12
       disk: 30
     }
     time_limit {
-      seconds: 3600
+      seconds: 7200
     }
     command: "sh .pfnci/test.sh"
   }
@@ -17,14 +17,14 @@ configs {
   key: "cupy-release-tools.win"
   value {
     requirement {
-      cpu: 2
+      cpu: 8
       gpu: 1
-      memory: 8
+      memory: 12
       disk: 30
       image: "windows"
     }
     time_limit {
-      seconds: 3000
+      seconds: 7200
     }
     command: ".pfnci\\wheel-windows\\main.bat 3.8.0 11.1 master"
   }
@@ -33,14 +33,14 @@ configs {
   key: "cupy-wheel-win"
   value {
     requirement {
-      cpu: 2
+      cpu: 8
       gpu: 1
-      memory: 8
+      memory: 12
       disk: 30
       image: "windows"
     }
     time_limit {
-      seconds: 3000
+      seconds: 7200
     }
     command: ".pfnci\\wheel-windows\\main.bat 3.8.0 10.2 master"
   }
