@@ -4,6 +4,7 @@ Param(
 )
 
 $ErrorActionPreference = "Stop"
+. "$PSScriptRoot\_error_handler.ps1"
 
 # Set environment variables.
 $python_path = $null
@@ -66,17 +67,17 @@ echo "     PYTHON_PATH: $Env:PYTHON_PATH"
 echo "     CUDA_PATH:   $Env:CUDA_PATH"
 echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
-python -V
+RunOrDie python -V
 
 # Install dependencies
 echo ">> Installing dependences for wheel build..."
-python -m pip install -U wheel Cython pytest
+RunOrDie python -m pip install -U wheel Cython pytest
 echo ">> Packages installed:"
-python -m pip list
+RunOrDie python -m pip list
 
 # Build
 echo ">> Starting build..."
-python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
+RunOrDie python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
 
 # Get wheel name
 $dist_config = @(
@@ -91,8 +92,8 @@ Get-ChildItem
 
 # Verify
 echo ">> Starting verification..."
-python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
+RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
-python -c "import cupy; cupy.show_config()"
+RunOrDie python -c "import cupy; cupy.show_config()"
 echo ">> Build completed."
