@@ -13,7 +13,7 @@ for BRANCH in v8 master; do
       echo "Skipping CUDA 9.0 build for master branch"
     else
       for PYTHON in 3.6.0 3.7.0 3.8.0; do
-        echo imosci --project=cupy-wheel-win run ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
+        imosci --project=cupy-wheel-win run ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
       done
     fi
   done
