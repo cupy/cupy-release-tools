@@ -189,7 +189,6 @@ WHEEL_LINUX_CONFIGS = {
         'verify_preloads': ['cudnn'],
     },
 }
-}
 
 
 WHEEL_WINDOWS_CONFIGS = {
