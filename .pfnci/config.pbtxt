@@ -26,7 +26,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.8.0 11.1 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 11.1 master"
   }
 }
 configs {
@@ -42,6 +42,6 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.8.0 10.2 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 10.2 master"
   }
 }
