@@ -169,13 +169,13 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
     },
-    'rocm-3.9': {
-        'name': 'cupy-rocm',
-        'image': 'rocm/dev-centos-7:3.9',
+    'rocm-4.0': {
+        'name': 'cupy-rocm-4-0',
+        'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
         'nccl': None,
-        'verify_image': 'rocm/rocm-terminal:3.9',
+        'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': [''],
     }
 }
