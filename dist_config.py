@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Cython version to cythonize the code.
-CYTHON_VERSION = '0.29.21'
+CYTHON_VERSION = '0.29.22'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
