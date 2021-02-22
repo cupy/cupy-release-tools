@@ -18,8 +18,6 @@ if [ -d /opt/rocm ]; then
   export LDFLAGS="-L${ROCM_HOME}/lib ${LDFLAGS}"
 
   export CUPY_INSTALL_USE_HIP=1
-  export HCC_AMDGPU_TARGET=gfx803
-  export __HIP_PLATFORM_HCC__
 fi
 
 "$@"
