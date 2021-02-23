@@ -388,16 +388,14 @@ class Controller(object):
             # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
                 log('Writing wheel metadata')
+                wheel_metadata = {
+                    'cuda': cuda_version,
+                }
                 if cudnn_version is not None:
-                    wheel_metadata = {
-                        'cuda': cuda_version,
-                        'cudnn': {
-                            'version': cudnn_version,
-                            'filename': cudnn_assets['filename'],
-                        }
+                    wheel_metadata['cudnn'] = {
+                        'version': cudnn_version,
+                        'filename': cudnn_assets['filename'],
                     }
-                else:
-                    wheel_metadata = {}
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
 
