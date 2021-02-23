@@ -1,7 +1,7 @@
 #!/bin/bash -uex
 
 CUDA="9.2"
-PYTHON="3.8.0"
+PYTHON="3.9.0"
 
 # Download NCCL
 ./download_nccl.sh "${CUDA}"
