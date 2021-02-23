@@ -184,7 +184,7 @@ WHEEL_LINUX_CONFIGS = {
                 'nccl_2.8.4-1+cuda11.2_x86_64.txz',
             ],
         },
-        'verify_image': 'nvidia/cuda:11.2-runtime-{system}',
+        'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
     },
