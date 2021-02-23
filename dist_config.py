@@ -184,7 +184,8 @@ WHEEL_LINUX_CONFIGS = {
         'includes': [],
         'nccl': None,
         'verify_image': 'rocm/rocm-terminal:4.0',
-        'verify_systems': [''],
+        'verify_systems': ['default'],
+        'verify_preloads': [],
     }
 }
 
