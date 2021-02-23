@@ -216,7 +216,7 @@ class Controller(object):
         if 'rhel' in base_image or 'centos' in base_image:
             log('Using RHEL Dockerfile template')
             template = 'rhel'
-        elif 'ubuntu' in base_image:
+        elif 'ubuntu' in base_image or 'rocm' in base_image:
             log('Using Debian Dockerfile template')
             template = 'debian'
         else:
