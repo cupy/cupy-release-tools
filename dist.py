@@ -247,6 +247,7 @@ class Controller(object):
                 '--device=/dev/kfd', '--device=/dev/dri',
                 '--security-opt', 'seccomp=unconfined',
                 '--group-add', 'video',
+                '--env', 'HCC_AMDGPU_TARGET',
             ]
         else:
             assert False
