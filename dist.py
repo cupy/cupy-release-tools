@@ -236,16 +236,27 @@ class Controller(object):
             docker_ctx,
         )
 
-    def _run_container(self, image_tag, workdir, agent_args):
-        log('Running docker container with image: {}'.format(image_tag))
-        run_command(
-            'nvidia-docker', 'run',
+    def _run_container(self, image_tag, kind, workdir, agent_args):
+        log('Running docker container with image: {} ({})'.format(
+            image_tag, kind))
+        if kind == 'cuda':
+            docker_run = ['nvidia-docker', 'run']
+        elif kind == 'rocm':
+            docker_run = [
+                'docker', 'run',
+                '--device=/dev/kfd', '--device=/dev/dri',
+                '--security-opt', 'seccomp=unconfined',
+                '--group-add', 'video',
+            ]
+        else:
+            assert False
+        command = docker_run + [
             '--rm',
             '--volume', '{}:/work'.format(workdir),
             '--workdir', '/work',
             image_tag,
-            *agent_args
-        )
+        ] + agent_args
+        run_command(*command)
 
     def build_linux(
             self, target, nccl_assets, cuda_version, python_version,
@@ -292,6 +303,7 @@ class Controller(object):
                 source, version))
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
+            kind = 'cuda'
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
             long_description = SDIST_LONG_DESCRIPTION
@@ -404,7 +416,7 @@ class Controller(object):
 
             # Build.
             log('Starting build')
-            self._run_container(image_tag, workdir, agent_args)
+            self._run_container(image_tag, kind, workdir, agent_args)
             log('Finished build')
 
             # Copy assets.
@@ -560,6 +572,7 @@ class Controller(object):
         if target == 'sdist':
             assert cuda_version is None
             image_tag = 'cupy-verifier-sdist'
+            kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
             preloads = SDIST_CONFIG['verify_preloads']
@@ -568,6 +581,7 @@ class Controller(object):
         elif target == 'wheel-linux':
             assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
+            kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
@@ -581,12 +595,12 @@ class Controller(object):
             log('Starting verification for {} on {} with Python {}'.format(
                 dist, image, python_version))
             self._verify_linux(
-                image_tag_system, image, dist, tests,
+                image_tag_system, image, kind, dist, tests,
                 python_version, nccl_assets, nccl_config,
                 cuda_version, preloads)
 
     def _verify_linux(
-            self, image_tag, base_image, dist, tests, python_version,
+            self, image_tag, base_image, kind, dist, tests, python_version,
             nccl_assets, nccl_config, cuda_version, preloads):
         dist_basename = os.path.basename(dist)
 
@@ -641,7 +655,7 @@ class Controller(object):
 
             # Verify.
             log('Starting verification')
-            self._run_container(image_tag, workdir, agent_args)
+            self._run_container(image_tag, kind, workdir, agent_args)
             log('Finished verification')
 
         finally:
