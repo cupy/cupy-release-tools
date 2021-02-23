@@ -12,11 +12,6 @@ fi
 # ROCm
 if [ -d /opt/rocm ]; then
   export ROCM_HOME="/opt/rocm"
-  export PATH="${ROCM_HOME}/bin:${PATH}"
-  export LD_LIBRARY_PATH="${ROCM_HOME}/lib:${LD_LIBRARY_PATH}"
-  export CPATH="${ROCM_HOME}/include:${CPATH}"
-  export LDFLAGS="-L${ROCM_HOME}/lib ${LDFLAGS}"
-
   export CUPY_INSTALL_USE_HIP=1
 fi
 
