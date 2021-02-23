@@ -265,18 +265,24 @@ class Controller(object):
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
+            kind = WHEEL_LINUX_CONFIGS[cuda_version][kind]
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
 
-            # NCCL
-            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
+            if kind == 'cuda':
+                # NCCL
+                nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
 
-            # cuDNN
-            #cudnn_version, cudnn_assets = get_cudnn_record(
-            #    cuda_version, 'Linux')
-            cudnn_version = None
-            cudnn_assets = None
+                # cuDNN
+                cudnn_version, cudnn_assets = get_cudnn_record(
+                    cuda_version, 'Linux')
+            elif kind == 'rocm':
+                nccl_config = None
+                cudnn_version = None
+                cudnn_assets = None
+            else:
+                assert False
 
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
