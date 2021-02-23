@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Cython version to cythonize the code.
-CYTHON_VERSION = '0.29.21'
+CYTHON_VERSION = '0.29.22'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
@@ -345,6 +345,11 @@ WHEEL_PYTHON_VERSIONS = {
     '3.8.0': {
         'python_tag': 'cp38',
         'abi_tag': 'cp38',
+        'requires': [],
+    },
+    '3.9.0': {
+        'python_tag': 'cp39',
+        'abi_tag': 'cp39',
         'requires': [],
     },
 }

@@ -18,6 +18,9 @@ switch ($python) {
     "3.8.0" {
         $python_path = "C:\Development\Python\Python38"
     }
+    "3.9.0" {
+        $python_path = "C:\Development\Python\Python39"
+    }
     default {
          throw "Unsupported Python version: $python"
     }
