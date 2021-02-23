@@ -254,9 +254,6 @@ class Controller(object):
 
         version = get_version_from_source_tree(source)
 
-        if nccl_assets is None:
-            raise RuntimeError('NCCL assets must be specified for Linux')
-
         if target == 'wheel-linux':
             assert cuda_version is not None
             log(
@@ -265,7 +262,7 @@ class Controller(object):
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
-            kind = WHEEL_LINUX_CONFIGS[cuda_version][kind]
+            kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
