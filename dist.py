@@ -637,7 +637,7 @@ class Controller(object):
 
             # Copy verifier directory to working directory.
             docker_ctx = '{}/verifier'.format(workdir)
-            log('Copying verifier directory to: '.format(docker_ctx))
+            log('Copying verifier directory to: {}'.format(docker_ctx))
             shutil.copytree('verifier/', docker_ctx)
 
             # Extract NCCL archive.
