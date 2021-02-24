@@ -216,7 +216,7 @@ class Controller(object):
         if 'rhel' in base_image or 'centos' in base_image:
             log('Using RHEL Dockerfile template')
             template = 'rhel'
-        elif 'ubuntu' in base_image:
+        elif 'ubuntu' in base_image or 'rocm' in base_image:
             log('Using Debian Dockerfile template')
             template = 'debian'
         else:
@@ -236,16 +236,28 @@ class Controller(object):
             docker_ctx,
         )
 
-    def _run_container(self, image_tag, workdir, agent_args):
-        log('Running docker container with image: {}'.format(image_tag))
-        run_command(
-            'nvidia-docker', 'run',
+    def _run_container(self, image_tag, kind, workdir, agent_args):
+        log('Running docker container with image: {} ({})'.format(
+            image_tag, kind))
+        if kind == 'cuda':
+            docker_run = ['nvidia-docker', 'run']
+        elif kind == 'rocm':
+            docker_run = [
+                'docker', 'run',
+                '--device=/dev/kfd', '--device=/dev/dri',
+                '--security-opt', 'seccomp=unconfined',
+                '--group-add', 'video',
+                '--env', 'HCC_AMDGPU_TARGET',
+            ]
+        else:
+            assert False
+        command = docker_run + [
             '--rm',
             '--volume', '{}:/work'.format(workdir),
             '--workdir', '/work',
             image_tag,
-            *agent_args
-        )
+        ] + agent_args
+        run_command(*command)
 
     def build_linux(
             self, target, nccl_assets, cuda_version, python_version,
@@ -253,9 +265,6 @@ class Controller(object):
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
-
-        if nccl_assets is None:
-            raise RuntimeError('NCCL assets must be specified for Linux')
 
         if target == 'wheel-linux':
             assert cuda_version is not None
@@ -265,16 +274,24 @@ class Controller(object):
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
+            kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
 
-            # NCCL
-            nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
+            if kind == 'cuda':
+                # NCCL
+                nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
 
-            # cuDNN
-            cudnn_version, cudnn_assets = get_cudnn_record(
-                cuda_version, 'Linux')
+                # cuDNN
+                cudnn_version, cudnn_assets = get_cudnn_record(
+                    cuda_version, 'Linux')
+            elif kind == 'rocm':
+                nccl_config = None
+                cudnn_version = None
+                cudnn_assets = None
+            else:
+                assert False
 
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
@@ -287,6 +304,7 @@ class Controller(object):
                 source, version))
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
+            kind = 'cuda'
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
             long_description = SDIST_LONG_DESCRIPTION
@@ -385,11 +403,12 @@ class Controller(object):
                 log('Writing wheel metadata')
                 wheel_metadata = {
                     'cuda': cuda_version,
-                    'cudnn': {
+                }
+                if cudnn_version is not None:
+                    wheel_metadata['cudnn'] = {
                         'version': cudnn_version,
                         'filename': cudnn_assets['filename'],
                     }
-                }
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
 
@@ -398,7 +417,7 @@ class Controller(object):
 
             # Build.
             log('Starting build')
-            self._run_container(image_tag, workdir, agent_args)
+            self._run_container(image_tag, kind, workdir, agent_args)
             log('Finished build')
 
             # Copy assets.
@@ -554,6 +573,7 @@ class Controller(object):
         if target == 'sdist':
             assert cuda_version is None
             image_tag = 'cupy-verifier-sdist'
+            kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
             preloads = SDIST_CONFIG['verify_preloads']
@@ -562,6 +582,7 @@ class Controller(object):
         elif target == 'wheel-linux':
             assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
+            kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
@@ -575,12 +596,12 @@ class Controller(object):
             log('Starting verification for {} on {} with Python {}'.format(
                 dist, image, python_version))
             self._verify_linux(
-                image_tag_system, image, dist, tests,
+                image_tag_system, image, kind, dist, tests,
                 python_version, nccl_assets, nccl_config,
                 cuda_version, preloads)
 
     def _verify_linux(
-            self, image_tag, base_image, dist, tests, python_version,
+            self, image_tag, base_image, kind, dist, tests, python_version,
             nccl_assets, nccl_config, cuda_version, preloads):
         dist_basename = os.path.basename(dist)
 
@@ -617,7 +638,7 @@ class Controller(object):
 
             # Copy verifier directory to working directory.
             docker_ctx = '{}/verifier'.format(workdir)
-            log('Copying verifier directory to: '.format(docker_ctx))
+            log('Copying verifier directory to: {}'.format(docker_ctx))
             shutil.copytree('verifier/', docker_ctx)
 
             # Extract NCCL archive.
@@ -635,7 +656,7 @@ class Controller(object):
 
             # Verify.
             log('Starting verification')
-            self._run_container(image_tag, workdir, agent_args)
+            self._run_container(image_tag, kind, workdir, agent_args)
             log('Finished verification')
 
         finally:

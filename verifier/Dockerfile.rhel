@@ -1,6 +1,7 @@
 ARG base_image
 FROM ${base_image}
 
+USER root
 RUN sed -ie 's|#baseurl=http://mirror.centos.org/centos/|baseurl=http://ftp.iij.ad.jp/pub/linux/centos-vault/centos/|g' /etc/yum.repos.d/CentOS-Base.repo
 RUN yum -y update && \
     yum -y install gcc gcc-c++ make patch git && \
@@ -28,6 +29,12 @@ RUN for VERSION in ${python_versions}; do \
       pip install numpy scipy; \
     done && \
     pyenv global system
+
+# Install additional dependencies for ROCm.
+RUN [ ! -d /opt/rocm ] || ( \
+        yum -y install hipcub4.0.1 hipblas4.0.1 rocrand4.0.1 rocfft4.0.1 rocsolver4.0.1 rccl4.0.1 && \
+        yum clean all \
+    )
 
 # Install requirements for agents.
 RUN yum -y install python-setuptools && yum clean all

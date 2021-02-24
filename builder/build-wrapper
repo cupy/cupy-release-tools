@@ -1,11 +1,18 @@
 #!/bin/bash
 
+# devtoolset
 if [ -f /opt/rh/devtoolset-6/enable ]; then
     # CentOS 6
     source /opt/rh/devtoolset-6/enable
 else
     # CentOS 7 (CUDA 11.0+)
     source /opt/rh/devtoolset-7/enable
+fi
+
+# ROCm
+if [ -d /opt/rocm ]; then
+  export ROCM_HOME="/opt/rocm"
+  export CUPY_INSTALL_USE_HIP=1
 fi
 
 "$@"

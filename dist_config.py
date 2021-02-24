@@ -31,6 +31,7 @@ SDIST_CONFIG = {
 WHEEL_LINUX_CONFIGS = {
     '9.0': {
         'name': 'cupy-cuda90',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:9.0-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
@@ -53,6 +54,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '9.2': {
         'name': 'cupy-cuda92',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:9.2-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
@@ -74,6 +76,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '10.0': {
         'name': 'cupy-cuda100',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:10.0-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
@@ -94,6 +97,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '10.1': {
         'name': 'cupy-cuda101',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:10.1-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -113,6 +117,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '10.2': {
         'name': 'cupy-cuda102',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:10.2-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -132,6 +137,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '11.0': {
         'name': 'cupy-cuda110',
+        'kind': 'cuda',
         # TODO(kmaehashi): Use the official image when released.
         'image': 'kmaehashi/cuda11-centos7:11.0-devel-centos7',
         'libs': [
@@ -152,6 +158,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '11.1': {
         'name': 'cupy-cuda111',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:11.1-devel-centos7',
         'libs': [
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -169,6 +176,17 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
     },
+    'rocm-4.0': {
+        'name': 'cupy-rocm-4-0',
+        'kind': 'rocm',
+        'image': 'rocm/dev-centos-7:4.0.1',
+        'libs': [],
+        'includes': [],
+        'nccl': None,
+        'verify_image': 'rocm/rocm-terminal:4.0',
+        'verify_systems': ['default'],
+        'verify_preloads': [],
+    }
 }
 
 
