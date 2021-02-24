@@ -177,7 +177,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_preloads': ['cudnn'],
     },
     'rocm-4.0': {
-        'name': 'cupy-rocm',  # cupy-rocm-4-0
+        'name': 'cupy-rocm-4-0',
         'kind': 'rocm',
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
