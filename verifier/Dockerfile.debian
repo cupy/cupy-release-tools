@@ -51,7 +51,7 @@ RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
 RUN [ -d /opt/rocm ] && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y update && \
-    apt-get -y install hipcub hipblas rocrand rocfft rocsolver && \
+    apt-get -y install hipcub hipblas rocrand rocfft rocsolver rccl && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Use /tmp as a temporary home to install package.
