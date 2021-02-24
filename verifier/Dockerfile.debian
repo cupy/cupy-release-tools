@@ -1,6 +1,7 @@
 ARG base_image
 FROM ${base_image}
 
+USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y update && \
     apt-get -y install gcc g++ make patch git && \
@@ -45,6 +46,14 @@ COPY nccl /nccl
 RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
     ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
     ldconfig
+
+# Install additional dependencies for ROCm.
+RUN [ ! -d /opt/rocm ] || ( \
+        export DEBIAN_FRONTEND=noninteractive && \
+        apt-get -y update && \
+        apt-get -y install hipcub hipblas rocrand rocfft rocsolver rccl && \
+        rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
+    )
 
 # Use /tmp as a temporary home to install package.
 ENV HOME /tmp
