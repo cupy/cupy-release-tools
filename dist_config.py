@@ -22,6 +22,7 @@ SDIST_CONFIG = {
 # Key-value of CUDA version and its corresponding build settings for Linux.
 # Keys of the build settings are as follows:
 # - `name`: a package name
+# - `kind`: type of the package (`cuda` or `rocm`)
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
