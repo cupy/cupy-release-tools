@@ -35,11 +35,3 @@ class TestCuRand(unittest.TestCase):
     def test_randn(self):
         rs = cupy.random.get_random_state()
         rs.randn(10)
-
-
-class TestCuSparse(unittest.TestCase):
-    def test_csr(self):
-        m = cupy.array([[0, 1, 0, 2],
-                        [0, 0, 0, 0],
-                        [0, 0, 3, 0]], dtype=cupy.float32)
-        cupyx.scipy.sparse.csr_matrix(m)
