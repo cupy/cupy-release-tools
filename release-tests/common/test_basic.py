@@ -1,7 +1,6 @@
 import unittest
 
 import cupy
-import cupyx
 
 
 class TestBasic(unittest.TestCase):
