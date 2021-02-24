@@ -178,6 +178,7 @@ WHEEL_LINUX_CONFIGS = {
     },
     '11.2': {
         'name': 'cupy-cuda112',
+        'kind': 'cuda',
         'image': 'nvidia/cuda:11.2.1-devel-centos7',
         'libs': [
             '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
@@ -205,7 +206,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
         'verify_preloads': [],
-    }
+    },
 }
 
 
