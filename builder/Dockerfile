@@ -35,7 +35,7 @@ RUN ( [ ! -d /cudnn/cuda/lib64 ]   || mv /cudnn/cuda/lib64/*   /usr/local/cuda/l
 
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \
-        yum -y install hipcub4.0.1 hipblas4.0.1 rocrand4.0.1 rocfft4.0.1 rocsolver4.0.1 rccl4.0.1 && \
+        yum -y install hipblas4.0.1 hipsparse4.0.1 rocsparse4.0.1 rocrand4.0.1 rocthrust4.0.1 rocsolver4.0.1 rocfft4.0.1 hipcub4.0.1 rocprim4.0.1 rccl4.0.1 && \
         yum clean all \
     )
 
