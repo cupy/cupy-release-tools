@@ -25,16 +25,19 @@ case ${CUDA} in
     curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.6/nccl_2.6.4-1+cuda10.0_x86_64.txz"
     ;;
   10.1 )
-    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda10.1_x86_64.txz"
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.8/nccl_2.8.3-1+cuda10.1_x86_64.txz"
     ;;
   10.2 )
-    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda10.2_x86_64.txz"
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.8/nccl_2.8.4-1+cuda10.2_x86_64.txz"
     ;;
   11.0 )
-    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda11.0_x86_64.txz"
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.8/nccl_2.8.4-1+cuda11.0_x86_64.txz"
     ;;
   11.1 )
-    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.7/nccl_2.7.8-1+cuda11.1_x86_64.txz"
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.8/nccl_2.8.4-1+cuda11.1_x86_64.txz"
+    ;;
+  11.2 )
+    curl -LO "https://developer.download.nvidia.com/compute/redist/nccl/v2.8/nccl_2.8.4-1+cuda11.2_x86_64.txz"
     ;;
   * )
     echo "Unsupported CUDA version: ${1}"

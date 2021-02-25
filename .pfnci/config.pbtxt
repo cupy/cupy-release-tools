@@ -4,13 +4,13 @@ configs {
     requirement {
       cpu: 8
       gpu: 1
-      memory: 12
+      memory: 36
       disk: 30
     }
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/test.sh"
+    command: "sh .pfnci/test.sh 3.8.0 11.2 master"
   }
 }
 configs {
@@ -26,7 +26,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 11.1 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 11.2 master"
   }
 }
 configs {

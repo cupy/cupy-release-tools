@@ -8,7 +8,7 @@ echo "JOB_GROUP = ${JOB_GROUP}"
 
 for BRANCH in v8 master; do
   echo "URL = https://console.cloud.google.com/storage/browser/tmp-asia-pfn-public-ci/cupy-release-tools/build-windows/${JOB_GROUP}_${BRANCH}/"
-  for CUDA in 9.0 9.2 10.0 10.1 10.2 11.0 11.1; do
+  for CUDA in 9.0 9.2 10.0 10.1 10.2 11.0 11.1 11.2; do
     if [ ${BRANCH} = master -a ${CUDA} = 9.0 ]; then
       echo "Skipping CUDA 9.0 build for master branch"
     else

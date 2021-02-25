@@ -67,6 +67,11 @@ switch ($cuda) {
         $cudnn_version = "8.1.0"
         $cudnn_archive = "cudnn-11.2-windows-x64-v8.1.0.77.zip"
     }
+    "11.2" {
+        $cuda_path = $Env:CUDA_PATH_V11_2
+        $cudnn_version = "8.1.0"
+        $cudnn_archive = "cudnn-11.2-windows-x64-v8.1.0.77.zip"
+    }
     default {
          throw "Unsupported CUDA version: $cuda"
     }
