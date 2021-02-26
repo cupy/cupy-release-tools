@@ -34,3 +34,13 @@ class TestCuRand(unittest.TestCase):
     def test_randn(self):
         rs = cupy.random.get_random_state()
         rs.randn(10)
+
+
+class TestCuSolver(unittest.TestCase):
+    def test_qr(self):
+        cupy.linalg.qr(cupy.random.randn(9, 6))
+
+
+class TestThrust(unittest.TestCase):
+    def test_sort(self):
+        cupy.sort(cupy.arange(10))
