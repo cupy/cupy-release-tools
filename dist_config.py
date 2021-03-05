@@ -19,15 +19,18 @@ SDIST_CONFIG = {
 }
 
 
-# Key-value of CUDA version and its corresponding build settings.
+# Key-value of CUDA version and its corresponding build settings for Linux.
 # Keys of the build settings are as follows:
 # - `name`: a package name
+# - `kind`: type of the package (`cuda` or `rocm`)
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
+# - `includes`: a list of header files to be bundled in wheel
 # - `nccl`: an assets of NCCL library distribution
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
+# - `verify_preloads`: CUDA libraries to install before starting a verification
 WHEEL_LINUX_CONFIGS = {
     '9.0': {
         'name': 'cupy-cuda90',
@@ -209,7 +212,12 @@ WHEEL_LINUX_CONFIGS = {
     },
 }
 
-
+# Key-value of CUDA version and its corresponding build settings for Windows.
+# Keys of the build settings are as follows:
+# - `name`: a package name
+# - `libs`: a list of DLLs to be bundled in wheel
+# - `cudart_lib`: name of CUDA Runtime DLL
+# - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
     '8.0': {
         'name': 'cupy-cuda80',
