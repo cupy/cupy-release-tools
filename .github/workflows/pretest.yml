@@ -1,0 +1,31 @@
+on: [push, pull_request]
+
+jobs:
+  pretest:
+    runs-on: ubuntu-18.04
+    env:
+      CUPY_CI: GitHub
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+
+    - name: install
+      run: |
+        pip install -U pip wheel
+        pip install 'hacking==1.0.0' autopep8
+
+    - name: flake8
+      run: |
+        flake8
+
+    - name: autopep8
+      run: |
+        autopep8 -r . --global-config .pep8 --diff | tee check_autopep8
+        test ! -s check_autopep8
