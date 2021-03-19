@@ -50,12 +50,6 @@ def run_command_output(*cmd, **kwargs):
     return subprocess.check_output(cmd, **kwargs)
 
 
-def make_random_name(length=10):
-    return ''.join(
-        random.choice(string.ascii_lowercase + string.digits)
-        for i in range(length))
-
-
 def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
     # This method uses platform-dependent command because
     # NCCL is only supported on Linux.
