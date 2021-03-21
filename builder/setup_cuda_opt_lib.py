@@ -52,7 +52,9 @@ def _install_library(name, src_dir, dst_dir, install_map):
         if child.is_dir():
             merge_directory(child, dst_dir / dest_name)
         else:
-            shutil.copy2(child, dst_dir / dest_name)
+            destfile = dst_dir / dst_name
+            print('Copying: {} <- {}'.format(destfile, child))
+            shutil.copy2(child, destfile)
 
 
 def main():
