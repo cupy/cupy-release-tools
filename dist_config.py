@@ -186,6 +186,7 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11010 <= x < 11020,
     },
