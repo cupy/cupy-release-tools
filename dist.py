@@ -126,11 +126,7 @@ def install_cudnn_windows(cudnn_workdir, cuda_path):
         for f in files:
             srcfile = srcpath / f
             destfile = destpath / f
-            if destfile.exists():
-                raise RuntimeError(
-                    'Failed to install cuDNN (already exists): '
-                    '{}'.format(destfile))
-            log('copy: {} <- {}'.format(destfile, srcfile))
+            log('Copying: {} <- {}'.format(destfile, srcfile))
             shutil.copy2(srcfile, destfile)
 
 
