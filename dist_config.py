@@ -25,20 +25,6 @@ SDIST_CONFIG = {
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
 WHEEL_LINUX_CONFIGS = {
-    '9.0': {
-        'name': 'cupy-cuda90',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:9.0-devel-centos6',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': [],
-        # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
-        'verify_image': 'nvidia/cuda:9.0-devel-{system}',
-        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
-        'verify_systems': ['ubuntu16.04'],
-    },
     '9.2': {
         'name': 'cupy-cuda92',
         'kind': 'cuda',
@@ -144,36 +130,6 @@ WHEEL_LINUX_CONFIGS = {
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
-    '8.0': {
-        'name': 'cupy-cuda80',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': [],
-        'cudart_lib': 'cudart64_80',
-        'check_version': lambda x: 8000 <= x < 9000,
-    },
-    '9.0': {
-        'name': 'cupy-cuda90',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': [],
-        'cudart_lib': 'cudart64_90',
-        'check_version': lambda x: 9000 <= x < 9010,
-    },
-    '9.1': {
-        'name': 'cupy-cuda91',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': [],
-        'cudart_lib': 'cudart64_91',
-        'check_version': lambda x: 9010 <= x < 9020,
-    },
     '9.2': {
         'name': 'cupy-cuda92',
         'kind': 'cuda',
