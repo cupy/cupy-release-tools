@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-The agent code must be runnable on Python 2.6 (CentOS 6).
-Additional dependency can be specified in Dockerfile.
-"""
-
 import argparse
 import os
 import subprocess

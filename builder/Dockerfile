@@ -39,11 +39,6 @@ RUN [ ! -d /opt/rocm ] || ( \
         yum clean all \
     )
 
-# Install requirements for agents.
-RUN yum -y install python-setuptools && \
-    yum clean all
-RUN easy_install argparse
-
 # Add build agent.
 COPY build-wrapper /
 COPY agent.py /

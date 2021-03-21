@@ -32,14 +32,14 @@ RUN for VERSION in ${python_versions}; do \
     wait
 
 # Install Python libraries.
+# The last version installed will be used to run the verifier agent.
 RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
       pip install -U pip 'setuptools<42' && \
       pip install pytest mock; \
       pip install numpy scipy; \
-    done && \
-    pyenv global system
+    done
 
 # Install NCCL
 COPY nccl /nccl
