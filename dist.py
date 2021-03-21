@@ -63,7 +63,7 @@ def prepare_cuda_opt_library(library, cuda_version, prefix):
         '--prefix', prefix,
     ]
     records = json.loads(
-            run_command_output(*command, '--action', 'dump').decode('utf-8'))
+        run_command_output(*command, '--action', 'dump').decode('utf-8'))
     for record in records:
         if record['cuda'] == cuda_version:
             metadata = {
