@@ -117,7 +117,7 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
     },
