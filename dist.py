@@ -464,6 +464,15 @@ class Controller(object):
             with open('{}/_wheel.json'.format(workdir), 'w') as f:
                 json.dump(wheel_metadata, f)
 
+            # Install optional CUDA libraries.
+            log('Installing CUDA optional libraries')
+            run_command(
+                sys.executable,
+                '{}/builder/setup_cuda_opt_lib.py'.format(os.getcwd()),
+                '--src', optlib_workdir,
+                '--dst', os.environ['CUDA_PATH'],
+                cwd=workdir)
+
             # Build.
             log('Starting build')
             run_command(
