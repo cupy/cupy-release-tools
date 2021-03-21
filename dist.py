@@ -548,7 +548,7 @@ class Controller(object):
             cudnn_workdir = '{}/cudnn'.format(workdir)
             download_extract_cudnn_archive(
                 cudnn_assets['url'], cudnn_workdir)
-            cuda_path = os.envion['CUDA_PATH']
+            cuda_path = os.environ['CUDA_PATH']
             log('Installing cuDNN to {}'.format(cuda_path))
             install_cudnn_windows(cudnn_workdir, cuda_path)
 
