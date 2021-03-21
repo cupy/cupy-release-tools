@@ -508,7 +508,7 @@ class Controller(object):
             kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
-            preloads = SDIST_CONFIG['verify_preloads']
+            preloads = SDIST_CONFIG['preloads']
             assert len(preloads) == 0
         elif target == 'wheel-linux':
             assert cuda_version is not None
@@ -516,7 +516,7 @@ class Controller(object):
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
-            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
         else:
             raise RuntimeError('unknown target')
 

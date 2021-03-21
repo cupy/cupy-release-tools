@@ -9,7 +9,7 @@ SDIST_CONFIG = {
     'image': 'nvidia/cuda:9.2-devel-centos6',
     'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
-    'verify_preloads': [],
+    'preloads': [],
 }
 
 
@@ -20,10 +20,10 @@ SDIST_CONFIG = {
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
+# - `preloads`: optional CUDA libraries to be used
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
-# - `verify_preloads`: CUDA libraries to install before starting a verification
 WHEEL_LINUX_CONFIGS = {
     '9.0': {
         'name': 'cupy-cuda90',
@@ -33,11 +33,11 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': [],
         # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
     },
     '9.2': {
         'name': 'cupy-cuda92',
@@ -47,10 +47,10 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.0': {
         'name': 'cupy-cuda100',
@@ -60,9 +60,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.1': {
         'name': 'cupy-cuda101',
@@ -72,9 +72,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.2': {
         'name': 'cupy-cuda102',
@@ -84,9 +84,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.0': {
         'name': 'cupy-cuda110',
@@ -97,9 +97,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.1': {
         'name': 'cupy-cuda111',
@@ -109,9 +109,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.2': {
         'name': 'cupy-cuda112',
@@ -121,9 +121,9 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'includes': [
         ],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
@@ -131,9 +131,9 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
-        'verify_preloads': [],
     },
 }
 
