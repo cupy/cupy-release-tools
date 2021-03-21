@@ -19,7 +19,8 @@ from dist_config import (
     WHEEL_LINUX_CONFIGS,
     WHEEL_WINDOWS_CONFIGS,
     WHEEL_PYTHON_VERSIONS,
-    WHEEL_LONG_DESCRIPTION,
+    WHEEL_LONG_DESCRIPTION_CUDA,
+    WHEEL_LONG_DESCRIPTION_ROCM,
     VERIFY_PYTHON_VERSIONS,
     PYTHON_VERSIONS,
 )  # NOQA
@@ -234,9 +235,19 @@ class Controller(object):
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
+            platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
+                'platform_version', cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
-            long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+
+            if kind == 'cuda':
+                long_description_tmpl = WHEEL_LONG_DESCRIPTION_CUDA
+            elif kind == 'rocm':
+                long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
+            else:
+                assert False
+            long_description = long_description_tmpl.format(
+                version=platform_version)
 
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
@@ -399,8 +410,11 @@ class Controller(object):
 
         action = 'bdist_wheel'
         preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
+        platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
+            'platform_version', cuda_version)
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
-        long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
+        long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
+            version=platform_version)
         asset_name = wheel_name(
             package_name, version, python_version, 'win_amd64')
         asset_dest_name = asset_name
