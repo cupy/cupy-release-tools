@@ -39,13 +39,20 @@ def _install_library(name, src_dir, dst_dir, install_map):
     src_dir = pathlib.Path(src_dir)
     dst_dir = pathlib.Path(dst_dir)
 
-    # $src_dir/$CUDA_VERSION/$name/$LIB_VERSION/$libdir_src
+    # $src_dir/$CUDA_VERSION/$name/$LIB_VERSION
     src_dir = _child(src_dir)  # $CUDA_VERSION
     src_dir = src_dir.joinpath(name)  # $name
+    if not src_dir.exists():
+        print('Skip installing {} (unavailable)'.format(name))
+        return
     src_dir = _child(src_dir)  # $LIB_VERSION
 
-    for (s, d) in install_map.items():
-        merge_directory(src_dir / s, dst_dir / d)
+    for child in src_dir.iterdir():
+        dest_name = install_map.get(child.name, child.name)
+        if child.is_dir():
+            merge_directory(child, dst_dir / dest_name)
+        else:
+            shutil.copy2(child, dst_dir / dest_name)
 
 
 def main():
@@ -82,7 +89,7 @@ def main():
         _install_library(
             'cudnn', src_dir, dst_dir, {
                 'bin': 'bin',
-                'lib': 'lib',
+                'lib': 'lib',  # static libs
                 'include': 'include',
             })
     else:
