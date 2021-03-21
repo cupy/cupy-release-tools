@@ -45,3 +45,18 @@ configs {
     command: ".pfnci\\wheel-windows\\main.bat 3.9.0 10.2 master"
   }
 }
+configs {
+  key: "cupy-wheel-linux"
+  value {
+    requirement {
+      cpu: 8
+      gpu: 1
+      memory: 12
+      disk: 30
+    }
+    time_limit {
+      seconds: 7200
+    }
+    command: ".pfnci/wheel-linux/main.sh 3.9.0 11.2 master"
+  }
+}
