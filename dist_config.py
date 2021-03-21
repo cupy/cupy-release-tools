@@ -54,7 +54,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.0': {
         'name': 'cupy-cuda100',
@@ -68,7 +68,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.1': {
         'name': 'cupy-cuda101',
@@ -81,7 +81,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cudnn'],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '10.2': {
         'name': 'cupy-cuda102',
@@ -94,7 +94,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cudnn'],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.0': {
         'name': 'cupy-cuda110',
@@ -108,7 +108,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.1': {
         'name': 'cupy-cuda111',
@@ -121,7 +121,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     '11.2': {
         'name': 'cupy-cuda112',
@@ -134,7 +134,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
+        'verify_preloads': ['cutensor', 'nccl', 'cudnn'],
     },
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
