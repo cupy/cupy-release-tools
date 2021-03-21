@@ -30,10 +30,8 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:9.0-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
@@ -46,10 +44,8 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:9.2-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
@@ -61,10 +57,8 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.0-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
@@ -77,7 +71,6 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
@@ -90,7 +83,6 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
@@ -104,7 +96,6 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
@@ -117,7 +108,6 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
@@ -130,7 +120,6 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
@@ -158,7 +147,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '8.0': {
         'name': 'cupy-cuda80',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_80',
@@ -167,7 +155,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '9.0': {
         'name': 'cupy-cuda90',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_90',
@@ -176,7 +163,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '9.1': {
         'name': 'cupy-cuda91',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_91',
@@ -185,7 +171,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '9.2': {
         'name': 'cupy-cuda92',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_92',
@@ -194,7 +179,6 @@ WHEEL_WINDOWS_CONFIGS = {
     '10.0': {
         'name': 'cupy-cuda100',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
         'cudart_lib': 'cudart64_100',
