@@ -1,1 +1,1 @@
-PowerShell .pfnci\windows\build.ps1 %*
+PowerShell .pfnci\wheel-windows\build.ps1 %*
