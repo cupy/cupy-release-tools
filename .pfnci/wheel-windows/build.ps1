@@ -10,6 +10,7 @@ $ErrorActionPreference = "Stop"
 
 . "$PSScriptRoot\_flexci.ps1"
 
+PrioritizeFlexCIDaemon
 
 # Configure environment
 ActivatePython ($python.Split(".")[0..1] -join ".")
