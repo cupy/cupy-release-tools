@@ -35,7 +35,7 @@ def _child(path):
     return children[0]
 
 
-def _install_library(name, src_dir, dst_dir, *, install_map):
+def _install_library(name, src_dir, dst_dir, install_map):
     src_dir = pathlib.Path(src_dir)
     dst_dir = pathlib.Path(dst_dir)
 
