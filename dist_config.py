@@ -7,12 +7,6 @@ CYTHON_VERSION = '0.29.22'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:9.2-devel-centos6',
-    'nccl': {
-        'type': 'v2-tar',
-        'files': [
-            'nccl_2.4.8-1+cuda9.2_x86_64.txz',
-        ],
-    },
     'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
     'verify_preloads': [],
@@ -26,7 +20,6 @@ SDIST_CONFIG = {
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
-# - `nccl`: an assets of NCCL library distribution
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
@@ -38,17 +31,10 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'nvidia/cuda:9.0-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.5.6-1+cuda9.0_x86_64.txz',
-            ],
-        },
         # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
         'verify_image': 'nvidia/cuda:9.0-devel-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
@@ -61,17 +47,10 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'nvidia/cuda:9.2-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.4.8-1+cuda9.2_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
@@ -83,17 +62,10 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'nvidia/cuda:10.0-devel-centos6',
         'libs': [
             '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.6.4-1+cuda10.0_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': [],
@@ -103,17 +75,10 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.1-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.3-1+cuda10.1_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': ['cudnn'],
@@ -123,17 +88,10 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.2-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda10.2_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
         'verify_preloads': ['cudnn'],
@@ -144,17 +102,10 @@ WHEEL_LINUX_CONFIGS = {
         # TODO(kmaehashi): Use the official image when released.
         'image': 'kmaehashi/cuda11-centos7:11.0-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.0_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
@@ -164,17 +115,10 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:11.1-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.1_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
@@ -184,17 +128,10 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'image': 'nvidia/cuda:11.2.1-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
             ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.2_x86_64.txz',
-            ],
-        },
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'verify_preloads': ['cudnn'],
@@ -205,7 +142,6 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
-        'nccl': None,
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
         'verify_preloads': [],
