@@ -4,6 +4,7 @@
 import argparse
 import json
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -48,10 +49,12 @@ def run_command_output(*cmd, **kwargs):
     return subprocess.check_output(cmd, **kwargs)
 
 
-def prepare_cuda_opt_library(library, cuda_version, platform, prefix):
+def prepare_cuda_opt_library(library, cuda_version, prefix):
     """Extracts the library to the prefix, and returns preloading metadata."""
+
+    target_system = platform.system()
     log('Retrieving preloading metadata for {} / CUDA {} / {}'.format(
-        library, cuda_version, platform))
+        library, cuda_version, target_system))
     command = [
         sys.executable,
         'cupy/cupyx/tools/install_library.py',
@@ -65,7 +68,7 @@ def prepare_cuda_opt_library(library, cuda_version, platform, prefix):
         if record['cuda'] == cuda_version:
             metadata = {
                 'version': record[library],
-                'filename': record['assets'][platform]['filename'],
+                'filename': record['assets'][target_system]['filename'],
             }
             break
     else:
@@ -230,6 +233,7 @@ class Controller(object):
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
@@ -246,6 +250,7 @@ class Controller(object):
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
             kind = 'cuda'
+            preloads = []
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
             long_description = SDIST_LONG_DESCRIPTION
@@ -322,15 +327,9 @@ class Controller(object):
                 log('Creating CUDA optional lib directory under '
                     'builder directory: {}'.format(optlib_workdir))
                 os.mkdir(optlib_workdir)
-                if kind == 'cuda':
-                    wheel_metadata['cutensor'] = prepare_cuda_opt_library(
-                        'cutensor', cuda_version, 'Linux', optlib_workdir)
-                    wheel_metadata['nccl'] = prepare_cuda_opt_library(
-                        'nccl', cuda_version, 'Linux', optlib_workdir)
-                    wheel_metadata['cudnn'] = prepare_cuda_opt_library(
-                        'cudnn', cuda_version, 'Linux', optlib_workdir)
-                else:
-                    log('CUDA optional libs only available for CUDA build')
+                for p in preloads:
+                    wheel_metadata[p] = prepare_cuda_opt_library(
+                        p, cuda_version, optlib_workdir)
                 log('Writing wheel metadata')
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
@@ -399,6 +398,7 @@ class Controller(object):
                 source, version, cuda_version, python_version))
 
         action = 'bdist_wheel'
+        preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
         asset_name = wheel_name(
@@ -453,10 +453,9 @@ class Controller(object):
             log('Creating CUDA optional lib directory under '
                 'working directory: {}'.format(optlib_workdir))
             os.mkdir(optlib_workdir)
-            wheel_metadata['cudnn'] = prepare_cuda_opt_library(
-                'cudnn', cuda_version, 'Windows', optlib_workdir)
-            wheel_metadata['cutensor'] = prepare_cuda_opt_library(
-                'cutensor', cuda_version, 'Windows', optlib_workdir)
+            for p in preloads:
+                wheel_metadata[p] = prepare_cuda_opt_library(
+                    p, cuda_version, optlib_workdir)
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')
