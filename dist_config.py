@@ -354,11 +354,6 @@ If you have another version of CUDA, or want to build from source, refer to the 
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '3.5.3': {
-        'python_tag': 'cp35',
-        'abi_tag': 'cp35m',
-        'requires': [],
-    },
     '3.6.0': {
         'python_tag': 'cp36',
         'abi_tag': 'cp36m',
