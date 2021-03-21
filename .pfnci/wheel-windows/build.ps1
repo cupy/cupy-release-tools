@@ -31,8 +31,7 @@ Remove-Item -Force -Verbose ${cuda_path}\include\cudnn*.h
 Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cudnn*.lib
 
 # Clone CuPy and checkout the target branch
-RunOrDie git clone --recursive https://github.com/cupy/cupy.git cupy
-RunOrDie git -C cupy checkout origin/$branch
+RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
 
 # Install dependencies
 echo ">> Installing dependences for wheel build..."
