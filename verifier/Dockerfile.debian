@@ -41,12 +41,6 @@ RUN for VERSION in ${python_versions}; do \
       pip install numpy scipy; \
     done
 
-# Install NCCL
-COPY nccl /nccl
-RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
-    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
-    ldconfig
-
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \
         export DEBIAN_FRONTEND=noninteractive && \
