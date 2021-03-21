@@ -17,15 +17,15 @@ def merge_directory(src_dir, dst_dir):
     """Merge two directory trees."""
     for srcpath, _, files in os.walk(src_dir):
         srcpath = pathlib.Path(srcpath)
-        destpath = dst_dir / srcpath.relative_to(src_dir)
-        if not destpath.exists():
-            print('Creating directory: {}'.format(destpath))
-            destpath.mkdir()
+        dstpath = dst_dir / srcpath.relative_to(src_dir)
+        if not dstpath.exists():
+            print('Creating directory: {}'.format(dstpath))
+            dstpath.mkdir()
         for f in files:
             srcfile = srcpath / f
-            destfile = destpath / f
-            print('Copying: {} <- {}'.format(destfile, srcfile))
-            shutil.copy2(srcfile, destfile)
+            dstfile = dstpath / f
+            print('Copying: {} <- {}'.format(dstfile, srcfile))
+            shutil.copy2(srcfile, dstfile)
 
 
 def _child(path):
@@ -48,13 +48,13 @@ def _install_library(name, src_dir, dst_dir, install_map):
     src_dir = _child(src_dir)  # $LIB_VERSION
 
     for child in src_dir.iterdir():
-        dest_name = install_map.get(child.name, child.name)
+        dst_name = install_map.get(child.name, child.name)
         if child.is_dir():
-            merge_directory(child, dst_dir / dest_name)
+            merge_directory(child, dst_dir / dst_name)
         else:
-            destfile = dst_dir / dst_name
-            print('Copying: {} <- {}'.format(destfile, child))
-            shutil.copy2(child, destfile)
+            dstfile = dst_dir / dst_name
+            print('Copying: {} <- {}'.format(dstfile, child))
+            shutil.copy2(child, dstfile)
 
 
 def main():
