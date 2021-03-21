@@ -146,70 +146,87 @@ WHEEL_LINUX_CONFIGS = {
 WHEEL_WINDOWS_CONFIGS = {
     '8.0': {
         'name': 'cupy-cuda80',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': [],
         'cudart_lib': 'cudart64_80',
         'check_version': lambda x: 8000 <= x < 9000,
     },
     '9.0': {
         'name': 'cupy-cuda90',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': [],
         'cudart_lib': 'cudart64_90',
         'check_version': lambda x: 9000 <= x < 9010,
     },
     '9.1': {
         'name': 'cupy-cuda91',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': [],
         'cudart_lib': 'cudart64_91',
         'check_version': lambda x: 9010 <= x < 9020,
     },
     '9.2': {
         'name': 'cupy-cuda92',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cudnn'],
         'cudart_lib': 'cudart64_92',
         'check_version': lambda x: 9020 <= x < 9030,
     },
     '10.0': {
         'name': 'cupy-cuda100',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cudnn'],
         'cudart_lib': 'cudart64_100',
         'check_version': lambda x: 10000 <= x < 10010,
     },
     '10.1': {
         'name': 'cupy-cuda101',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_101',
         'check_version': lambda x: 10010 <= x < 10020,
     },
     '10.2': {
         'name': 'cupy-cuda102',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_102',
         'check_version': lambda x: 10020 <= x < 10030,
     },
     '11.0': {
         'name': 'cupy-cuda110',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',
         'check_version': lambda x: 11000 <= x < 11010,
     },
     '11.1': {
         'name': 'cupy-cuda111',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
@@ -218,9 +235,11 @@ WHEEL_WINDOWS_CONFIGS = {
     },
     '11.2': {
         'name': 'cupy-cuda112',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11020 <= x < 11030,
     },
