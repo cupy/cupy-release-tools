@@ -4,6 +4,7 @@
 import argparse
 import json
 import os
+import pathlib
 import random
 import shutil
 import string
@@ -111,6 +112,28 @@ def download_extract_cudnn_archive(url, dest_dir):
         log('Moving to the destination directory...')
         shutil.move(os.path.join(tmpdir, 'cuda'), dest_dir)
         log('Cleaning up...')
+
+
+def install_cudnn_windows(cudnn_workdir, cuda_path):
+    """Install the extracted cuDNN to $CUDA_PATH."""
+    cudnn_workdir = pathlib.Path(cudnn_workdir)
+    cuda_path = pathlib.Path(cuda_path)
+
+    log('Installing cuDNN from {} to {}'.format(cudnn_workdir, cuda_path))
+    for srcpath, _, files in os.walk(cudnn_workdir):
+        srcpath = pathlib.Path(srcpath)
+        destpath = cuda_path / srcpath.relative_to(cudnn_workdir)
+        if not destpath.exists():
+            destpath.mkdir()
+        for f in files:
+            srcfile = srcpath / f
+            destfile = destpath / f
+            if destfile.exists():
+                raise RuntimeError(
+                    'Failed to install cuDNN (already exists): '
+                    '{}'.format(destfile))
+            log('copy: {} <- {}'.format(destfile, srcfile))
+            shutil.copy2(srcfile, destfile)
 
 
 class Controller(object):
@@ -521,6 +544,15 @@ class Controller(object):
                 cuda_version, 'Windows')
             log('cuDNN version: {}'.format(cudnn_version))
             log('cuDNN assets: {}'.format(cudnn_assets))
+
+            # Extract cuDNN archive.
+            log('Creating cudnn directory under work directory')
+            cudnn_workdir = '{}/cudnn'.format(workdir)
+            download_extract_cudnn_archive(
+                cudnn_assets['url'], cudnn_workdir)
+            cuda_path = os.envion['CUDA_PATH']
+            log('Installing cuDNN to {}'.format(cuda_path))
+            install_cudnn_windows(cudnn_workdir, cuda_path)
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')
