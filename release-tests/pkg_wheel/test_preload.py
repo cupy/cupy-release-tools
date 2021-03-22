@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 import cupy
@@ -22,6 +23,9 @@ class TestPreload(unittest.TestCase):
         assert libcudnn.getVersion() == expected_version
 
     def test_nccl(self):
+        if sys.platform == 'win32':
+            # NCCL is not available on Windows.
+            return
         preload_version = self._get_config()['nccl']['version']
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
         expected_version = major * 1000 + minor * 100 + patchlevel
