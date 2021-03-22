@@ -21,30 +21,20 @@ RUN for VERSION in ${python_versions}; do \
     done;
 
 # Install Python libraries.
+# The last version installed will be used to run the verifier agent.
 RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
       pip install -U pip 'setuptools<42' && \
       pip install pytest mock; \
       pip install numpy scipy; \
-    done && \
-    pyenv global system
+    done
 
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \
         yum -y install hipblas4.0.1 hipsparse4.0.1 rocsparse4.0.1 rocrand4.0.1 rocthrust4.0.1 rocsolver4.0.1 rocfft4.0.1 hipcub4.0.1 rocprim4.0.1 rccl4.0.1 && \
         yum clean all \
     )
-
-# Install requirements for agents.
-RUN yum -y install python-setuptools && yum clean all
-RUN easy_install argparse
-
-# Install NCCL
-COPY nccl /nccl
-RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
-    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
-    ldconfig
 
 # Use /tmp as a temporary home to install package.
 ENV HOME /tmp

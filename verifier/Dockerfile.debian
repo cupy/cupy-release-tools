@@ -5,7 +5,7 @@ USER root
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y update && \
     apt-get -y install gcc g++ make patch git && \
-    apt-get -y install libbz2-dev libssl-dev libreadline-dev libffi-dev && \
+    apt-get -y install libbz2-dev liblzma-dev libssl-dev libreadline-dev libffi-dev && \
     apt-get -y install python && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
@@ -32,20 +32,14 @@ RUN for VERSION in ${python_versions}; do \
     wait
 
 # Install Python libraries.
+# The last version installed will be used to run the verifier agent.
 RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
       pip install -U pip 'setuptools<42' && \
       pip install pytest mock; \
       pip install numpy scipy; \
-    done && \
-    pyenv global system
-
-# Install NCCL
-COPY nccl /nccl
-RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
-    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
-    ldconfig
+    done
 
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \

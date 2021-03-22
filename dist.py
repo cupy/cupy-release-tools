@@ -4,7 +4,7 @@
 import argparse
 import json
 import os
-import pathlib
+import platform
 import shutil
 import subprocess
 import sys
@@ -49,85 +49,35 @@ def run_command_output(*cmd, **kwargs):
     return subprocess.check_output(cmd, **kwargs)
 
 
-def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
-    # This method uses platform-dependent command because
-    # NCCL is only supported on Linux.
-    log('Extracting NCCL assets from {} to {}'.format(nccl_assets, dest_dir))
-    asset_type = nccl_config['type']
-    if asset_type == 'v1-deb':
-        for nccl_deb in nccl_config['files']:
-            run_command(
-                'dpkg', '-x',
-                '{}/{}'.format(nccl_assets, nccl_deb),
-                dest_dir,
-            )
-        # Adjust paths to align with tarball.
-        shutil.move(
-            '{}/usr/lib/x86_64-linux-gnu'.format(dest_dir),
-            '{}/lib'.format(dest_dir)
-        )
-        shutil.move(
-            '{}/usr/include'.format(dest_dir),
-            '{}/include'.format(dest_dir)
-        )
-    elif asset_type == 'v2-tar':
-        for nccl_tar in nccl_config['files']:
-            run_command(
-                'tar', '-x',
-                '-f', '{}/{}'.format(nccl_assets, nccl_tar),
-                '-C', dest_dir, '--strip', '1',
-            )
-    else:
-        raise RuntimeError('unknown NCCL asset type: {}'.format(asset_type))
+def prepare_cuda_opt_library(library, cuda_version, prefix):
+    """Extracts the library to the prefix, and returns preloading metadata."""
 
-
-def get_cudnn_record(cuda_version, platform):
-    log('Retrieving cuDNN records for CUDA {} ({})'.format(
-        cuda_version, platform))
+    target_system = platform.system()
+    log('Retrieving preloading metadata for {} / CUDA {} / {}'.format(
+        library, cuda_version, target_system))
     command = [
         sys.executable,
         'cupy/cupyx/tools/install_library.py',
-        '--library', 'cudnn',
+        '--library', library,
         '--cuda', cuda_version,
-        '--action', 'dump',
+        '--prefix', prefix,
     ]
-    cudnn_records = json.loads(run_command_output(*command).decode('utf-8'))
-    for record in cudnn_records:
+    records = json.loads(
+        run_command_output(*command, '--action', 'dump').decode('utf-8'))
+    for record in records:
         if record['cuda'] == cuda_version:
-            return record['cudnn'], record['assets'][platform]
-    raise RuntimeError(
-        'CUDA {} not supported by install_library tool'.format(
-            cuda_version))
+            metadata = {
+                'version': record[library],
+                'filename': record['assets'][target_system]['filename'],
+            }
+            break
+    else:
+        raise RuntimeError('Combination not supported by install_library tool')
 
+    log('Extracting the library to {}'.format(prefix))
+    run_command(*command, '--action', 'install')
 
-def download_extract_cudnn_archive(url, dest_dir):
-    with tempfile.TemporaryDirectory() as tmpdir:
-        filepath = os.path.join(tmpdir, os.path.basename(url))
-        log('Downloading {} to {}...'.format(url, filepath))
-        run_command('curl', '-L', '-o', filepath, url)
-        log('Extracting...')
-        shutil.unpack_archive(filepath, tmpdir)
-        log('Moving to the destination directory...')
-        shutil.move(os.path.join(tmpdir, 'cuda'), dest_dir)
-        log('Cleaning up...')
-
-
-def install_cudnn_windows(cudnn_workdir, cuda_path):
-    """Install the extracted cuDNN to $CUDA_PATH."""
-    cudnn_workdir = pathlib.Path(cudnn_workdir)
-    cuda_path = pathlib.Path(cuda_path)
-
-    log('Installing cuDNN from {} to {}'.format(cudnn_workdir, cuda_path))
-    for srcpath, _, files in os.walk(cudnn_workdir):
-        srcpath = pathlib.Path(srcpath)
-        destpath = cuda_path / srcpath.relative_to(cudnn_workdir)
-        if not destpath.exists():
-            destpath.mkdir()
-        for f in files:
-            srcfile = srcpath / f
-            destfile = destpath / f
-            log('Copying: {} <- {}'.format(destfile, srcfile))
-            shutil.copy2(srcfile, destfile)
+    return metadata
 
 
 class Controller(object):
@@ -144,9 +94,6 @@ class Controller(object):
             '--target', choices=['sdist', 'wheel-linux', 'wheel-win'],
             required=True,
             help='build target')
-        parser.add_argument(
-            '--nccl-assets', type=str,
-            help='path to the directory containing NCCL distributions')
         parser.add_argument(
             '--cuda', type=str,
             help='CUDA version for the wheel distribution')
@@ -190,20 +137,20 @@ class Controller(object):
         if args.action == 'build':
             if args.target == 'wheel-win':
                 self.build_windows(
-                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.target, args.cuda, args.python,
                     args.source, args.output)
             else:
                 self.build_linux(
-                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.target, args.cuda, args.python,
                     args.source, args.output)
         elif args.action == 'verify':
             if args.target == 'wheel-win':
                 self.verify_windows(
-                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.target, args.cuda, args.python,
                     args.dist, args.test)
             else:
                 self.verify_linux(
-                    args.target, args.nccl_assets, args.cuda, args.python,
+                    args.target, args.cuda, args.python,
                     args.dist, args.test)
 
     def _create_builder_linux(self, image_tag, base_image, docker_ctx):
@@ -271,7 +218,7 @@ class Controller(object):
         run_command(*command)
 
     def build_linux(
-            self, target, nccl_assets, cuda_version, python_version,
+            self, target, cuda_version, python_version,
             source, output):
         """Build a single wheel distribution for Linux."""
 
@@ -286,23 +233,10 @@ class Controller(object):
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
-
-            if kind == 'cuda':
-                # NCCL
-                nccl_config = WHEEL_LINUX_CONFIGS[cuda_version]['nccl']
-
-                # cuDNN
-                cudnn_version, cudnn_assets = get_cudnn_record(
-                    cuda_version, 'Linux')
-            elif kind == 'rocm':
-                nccl_config = None
-                cudnn_version = None
-                cudnn_assets = None
-            else:
-                assert False
 
             # Rename wheels to manylinux1.
             asset_name = wheel_name(
@@ -316,16 +250,10 @@ class Controller(object):
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
             kind = 'cuda'
+            preloads = []
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
             long_description = SDIST_LONG_DESCRIPTION
-
-            # NCCL
-            nccl_config = None
-
-            # cuDNN (use pre-installed version)
-            cudnn_version = None
-            cudnn_assets = None
 
             # Rename not needed for sdist.
             asset_name = sdist_name('cupy', version)
@@ -387,39 +315,22 @@ class Controller(object):
             log('Copying builder directory to: {}'.format(docker_ctx))
             shutil.copytree('builder/', docker_ctx)
 
-            # Extract NCCL archive.
-            log('Creating nccl directory under builder directory')
-            nccl_workdir = '{}/nccl'.format(docker_ctx)
-            os.mkdir(nccl_workdir)
-            if nccl_config is not None:
-                log('Extracting NCCL archive')
-                extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
-            else:
-                log('NCCL is not installed for this build')
-
-            # Extract cuDNN archive.
-            cudnn_workdir = '{}/cudnn'.format(docker_ctx)
-            os.mkdir(cudnn_workdir)
-            if cudnn_version is not None:
-                log('cuDNN version: {}'.format(cudnn_version))
-                log('cuDNN assets: {}'.format(cudnn_assets))
-                log('Creating cudnn directory under builder directory')
-                download_extract_cudnn_archive(
-                    cudnn_assets['url'], cudnn_workdir)
-            else:
-                log('cuDNN is not installed for this build')
-
-            # Create a wheel metadata file for preload.
+            # Install CUDA optional libraries and generate a wheel metadata.
             if target == 'wheel-linux':
-                log('Writing wheel metadata')
                 wheel_metadata = {
                     'cuda': cuda_version,
+                    'packaging': 'pip',
                 }
-                if cudnn_version is not None:
-                    wheel_metadata['cudnn'] = {
-                        'version': cudnn_version,
-                        'filename': cudnn_assets['filename'],
-                    }
+
+                # Extract optional CUDA libraries.
+                optlib_workdir = '{}/cuda_lib'.format(docker_ctx)
+                log('Creating CUDA optional lib directory under '
+                    'builder directory: {}'.format(optlib_workdir))
+                os.mkdir(optlib_workdir)
+                for p in preloads:
+                    wheel_metadata[p] = prepare_cuda_opt_library(
+                        p, cuda_version, optlib_workdir)
+                log('Writing wheel metadata')
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
 
@@ -466,7 +377,7 @@ class Controller(object):
                     cuda_version, current_cuda_version))
 
     def build_windows(
-            self, target, nccl_assets, cuda_version, python_version,
+            self, target, cuda_version, python_version,
             source, output):
         """Build a single wheel distribution for Windows.
 
@@ -479,9 +390,6 @@ class Controller(object):
         if target != 'wheel-win':
             raise ValueError('unknown target')
 
-        if nccl_assets is not None:
-            raise RuntimeError('NCCL not supported on Windows')
-
         version = get_version_from_source_tree(source)
 
         log(
@@ -490,6 +398,7 @@ class Controller(object):
                 source, version, cuda_version, python_version))
 
         action = 'bdist_wheel'
+        preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION.format(cuda=cuda_version)
         asset_name = wheel_name(
@@ -533,32 +442,34 @@ class Controller(object):
             with open('{}/description.rst'.format(workdir), 'w') as f:
                 f.write(long_description)
 
-            # Get cuDNN version.
-            cudnn_version, cudnn_assets = get_cudnn_record(
-                cuda_version, 'Windows')
-            log('cuDNN version: {}'.format(cudnn_version))
-            log('cuDNN assets: {}'.format(cudnn_assets))
+            # Create a wheel metadata file for preload.
+            wheel_metadata = {
+                'cuda': cuda_version,
+                'packaging': 'pip',
+            }
 
-            # Extract cuDNN archive.
-            log('Creating cudnn directory under work directory')
-            cudnn_workdir = '{}/cudnn'.format(workdir)
-            download_extract_cudnn_archive(
-                cudnn_assets['url'], cudnn_workdir)
-            cuda_path = os.environ['CUDA_PATH']
-            log('Installing cuDNN to {}'.format(cuda_path))
-            install_cudnn_windows(cudnn_workdir, cuda_path)
+            # Extract optional CUDA libraries.
+            optlib_workdir = '{}/cuda_lib'.format(workdir)
+            log('Creating CUDA optional lib directory under '
+                'working directory: {}'.format(optlib_workdir))
+            os.mkdir(optlib_workdir)
+            for p in preloads:
+                wheel_metadata[p] = prepare_cuda_opt_library(
+                    p, cuda_version, optlib_workdir)
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')
-            wheel_metadata = {
-                'cuda': cuda_version,
-                'cudnn': {
-                    'version': cudnn_version,
-                    'filename': cudnn_assets['filename'],
-                }
-            }
             with open('{}/_wheel.json'.format(workdir), 'w') as f:
                 json.dump(wheel_metadata, f)
+
+            # Install optional CUDA libraries.
+            log('Installing CUDA optional libraries')
+            run_command(
+                sys.executable,
+                '{}/builder/setup_cuda_opt_lib.py'.format(os.getcwd()),
+                '--src', optlib_workdir,
+                '--dst', os.environ['CUDA_PATH'],
+                cwd=workdir)
 
             # Build.
             log('Starting build')
@@ -586,7 +497,7 @@ class Controller(object):
                         e, workdir))
 
     def verify_linux(
-            self, target, nccl_assets, cuda_version, python_version,
+            self, target, cuda_version, python_version,
             dist, tests):
         """Verify a single distribution for Linux."""
 
@@ -596,8 +507,7 @@ class Controller(object):
             kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
-            preloads = SDIST_CONFIG['verify_preloads']
-            nccl_config = SDIST_CONFIG['nccl']
+            preloads = SDIST_CONFIG['preloads']
             assert len(preloads) == 0
         elif target == 'wheel-linux':
             assert cuda_version is not None
@@ -605,8 +515,7 @@ class Controller(object):
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
-            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['verify_preloads']
-            nccl_config = None
+            preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
         else:
             raise RuntimeError('unknown target')
 
@@ -617,12 +526,12 @@ class Controller(object):
                 dist, image, python_version))
             self._verify_linux(
                 image_tag_system, image, kind, dist, tests,
-                python_version, nccl_assets, nccl_config,
+                python_version,
                 cuda_version, preloads)
 
     def _verify_linux(
             self, image_tag, base_image, kind, dist, tests, python_version,
-            nccl_assets, nccl_config, cuda_version, preloads):
+            cuda_version, preloads):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -661,16 +570,6 @@ class Controller(object):
             log('Copying verifier directory to: {}'.format(docker_ctx))
             shutil.copytree('verifier/', docker_ctx)
 
-            # Extract NCCL archive.
-            log('Creating nccl directory under verifier directory')
-            nccl_workdir = '{}/nccl'.format(docker_ctx)
-            os.mkdir(nccl_workdir)
-            if nccl_config:
-                log('Extracting NCCL archive')
-                extract_nccl_archive(nccl_config, nccl_assets, nccl_workdir)
-            else:
-                log('NCCL is not installed for this verification')
-
             # Creates a Docker image to verify specified distribution.
             self._create_verifier_linux(image_tag, base_image, docker_ctx)
 
@@ -684,7 +583,7 @@ class Controller(object):
             shutil.rmtree(workdir)
 
     def verify_windows(
-            self, target, nccl_assets, cuda_version, python_version,
+            self, target, cuda_version, python_version,
             dist, tests):
         """Verify a single distribution for Windows."""
 
@@ -693,9 +592,6 @@ class Controller(object):
 
         if target != 'wheel-win':
             raise ValueError('unknown target')
-
-        if nccl_assets is not None:
-            raise RuntimeError('NCCL not supported on Windows')
 
         log('Starting verification for {} with Python {}'.format(
             dist, python_version))

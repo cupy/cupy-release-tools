@@ -37,4 +37,6 @@ for VERSION in ${PYTHON_VERSIONS}; do \
     pip install -U pip setuptools
     pip install "Cython==${CYTHON_VERSION}" wheel auditwheel
 done
-pyenv global system
+
+# The last version installed will be used to run the builder agent.
+# pyenv global system

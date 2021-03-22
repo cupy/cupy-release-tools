@@ -7,17 +7,7 @@
 # This script also expects that `cupy` source tree exists in the same directory.
 
 ###
-### Prepare NCCL assets
-###
-
-HAVE_NCCL="no"
-if [ "${CUDA}" != "7.0" ]; then
-  HAVE_NCCL="yes"
-  ./download_nccl.sh "${CUDA}"
-fi
-
-###
 ### Build & Verify Distribution
 ###
 
-./build.sh "${CUDA}" "${PYTHON}" "${HAVE_NCCL}"
+./build.sh "${CUDA}" "${PYTHON}"

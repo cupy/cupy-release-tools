@@ -7,15 +7,9 @@ CYTHON_VERSION = '0.29.22'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:9.2-devel-centos6',
-    'nccl': {
-        'type': 'v2-tar',
-        'files': [
-            'nccl_2.4.8-1+cuda9.2_x86_64.txz',
-        ],
-    },
     'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
-    'verify_preloads': [],
+    'preloads': [],
 }
 
 
@@ -26,117 +20,59 @@ SDIST_CONFIG = {
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
-# - `nccl`: an assets of NCCL library distribution
+# - `preloads`: optional CUDA libraries to be used
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
-# - `verify_preloads`: CUDA libraries to install before starting a verification
 WHEEL_LINUX_CONFIGS = {
-    '9.0': {
-        'name': 'cupy-cuda90',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:9.0-devel-centos6',
-        'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
-        ],
-        'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
-        ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.5.6-1+cuda9.0_x86_64.txz',
-            ],
-        },
-        # Note: using devel as NVRTC not working in CUDA 9.0 runtime image
-        'verify_image': 'nvidia/cuda:9.0-devel-{system}',
-        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
-        'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
-    },
     '9.2': {
         'name': 'cupy-cuda92',
         'kind': 'cuda',
         'image': 'nvidia/cuda:9.2-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.4.8-1+cuda9.2_x86_64.txz',
-            ],
-        },
+        'preloads': ['nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
     },
     '10.0': {
         'name': 'cupy-cuda100',
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.0-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libcudnn.so.7',  # cuDNN v7
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.6.4-1+cuda10.0_x86_64.txz',
-            ],
-        },
+        'preloads': ['nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': [],
     },
     '10.1': {
         'name': 'cupy-cuda101',
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.1-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.3-1+cuda10.1_x86_64.txz',
-            ],
-        },
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cudnn'],
     },
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
         'image': 'nvidia/cuda:10.2-devel-centos6',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda10.2_x86_64.txz',
-            ],
-        },
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
-        'verify_preloads': ['cudnn'],
     },
     '11.0': {
         'name': 'cupy-cuda110',
@@ -144,60 +80,36 @@ WHEEL_LINUX_CONFIGS = {
         # TODO(kmaehashi): Use the official image when released.
         'image': 'kmaehashi/cuda11-centos7:11.0-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.0_x86_64.txz',
-            ],
-        },
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
     },
     '11.1': {
         'name': 'cupy-cuda111',
         'kind': 'cuda',
         'image': 'nvidia/cuda:11.1-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.1_x86_64.txz',
-            ],
-        },
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
     },
     '11.2': {
         'name': 'cupy-cuda112',
         'kind': 'cuda',
         'image': 'nvidia/cuda:11.2.1-devel-centos7',
         'libs': [
-            '/usr/local/cuda/lib64/libnccl.so.2',  # NCCL v2
         ],
         'includes': [
-            ('/usr/local/cuda/include/cudnn.h', 'cudnn.h')
         ],
-        'nccl': {
-            'type': 'v2-tar',
-            'files': [
-                'nccl_2.8.4-1+cuda11.2_x86_64.txz',
-            ],
-        },
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
-        'verify_preloads': ['cudnn'],
     },
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
@@ -205,10 +117,9 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
-        'nccl': None,
+        'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
-        'verify_preloads': [],
     },
 }
 
@@ -219,88 +130,73 @@ WHEEL_LINUX_CONFIGS = {
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
-    '8.0': {
-        'name': 'cupy-cuda80',
-        'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'cudart_lib': 'cudart64_80',
-        'check_version': lambda x: 8000 <= x < 9000,
-    },
-    '9.0': {
-        'name': 'cupy-cuda90',
-        'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'cudart_lib': 'cudart64_90',
-        'check_version': lambda x: 9000 <= x < 9010,
-    },
-    '9.1': {
-        'name': 'cupy-cuda91',
-        'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'cudart_lib': 'cudart64_91',
-        'check_version': lambda x: 9010 <= x < 9020,
-    },
     '9.2': {
         'name': 'cupy-cuda92',
+        'kind': 'cuda',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cudnn'],
         'cudart_lib': 'cudart64_92',
         'check_version': lambda x: 9020 <= x < 9030,
     },
     '10.0': {
         'name': 'cupy-cuda100',
+        'kind': 'cuda',
         'libs': [
-            'cudnn64_7.dll',  # cuDNN v7
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cudnn'],
         'cudart_lib': 'cudart64_100',
         'check_version': lambda x: 10000 <= x < 10010,
     },
     '10.1': {
         'name': 'cupy-cuda101',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_101',
         'check_version': lambda x: 10010 <= x < 10020,
     },
     '10.2': {
         'name': 'cupy-cuda102',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_102',
         'check_version': lambda x: 10020 <= x < 10030,
     },
     '11.0': {
         'name': 'cupy-cuda110',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',
         'check_version': lambda x: 11000 <= x < 11010,
     },
     '11.1': {
         'name': 'cupy-cuda111',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11010 <= x < 11020,
     },
     '11.2': {
         'name': 'cupy-cuda112',
+        'kind': 'cuda',
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
+        'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11020 <= x < 11030,
     },

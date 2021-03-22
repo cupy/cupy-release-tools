@@ -21,28 +21,16 @@ RUN /setup_python.sh "${python_versions}" "${cython_version}"
 COPY setup_devtoolset.sh /
 RUN /setup_devtoolset.sh
 
-# Install NCCL.
-COPY nccl /nccl
-RUN ( [ ! -d /nccl/lib ]     || mv /nccl/lib/*     /usr/local/cuda/lib64 ) && \
-    ( [ ! -d /nccl/include ] || mv /nccl/include/* /usr/local/cuda/include ) && \
-    ldconfig
-
-# Install cuDNN.
-COPY cudnn /cudnn
-RUN ( [ ! -d /cudnn/cuda/lib64 ]   || mv /cudnn/cuda/lib64/*   /usr/local/cuda/lib64 ) && \
-    ( [ ! -d /cudnn/cuda/include ] || mv /cudnn/cuda/include/* /usr/local/cuda/include ) && \
-    ldconfig
+# Install additional libraries for CUDA.
+COPY cuda_lib/ /cuda_lib
+COPY setup_cuda_opt_lib.py /
+RUN /setup_cuda_opt_lib.py --src /cuda_lib --dst /usr/local/cuda
 
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \
         yum -y install hipblas4.0.1 hipsparse4.0.1 rocsparse4.0.1 rocrand4.0.1 rocthrust4.0.1 rocsolver4.0.1 rocfft4.0.1 hipcub4.0.1 rocprim4.0.1 rccl4.0.1 && \
         yum clean all \
     )
-
-# Install requirements for agents.
-RUN yum -y install python-setuptools && \
-    yum clean all
-RUN easy_install argparse
 
 # Add build agent.
 COPY build-wrapper /
