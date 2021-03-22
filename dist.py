@@ -4,9 +4,8 @@
 import argparse
 import json
 import os
-import random
+import pathlib
 import shutil
-import string
 import subprocess
 import sys
 import tempfile
@@ -48,12 +47,6 @@ def run_command(*cmd, **kwargs):
 def run_command_output(*cmd, **kwargs):
     log('Running command: {}'.format(str(cmd)))
     return subprocess.check_output(cmd, **kwargs)
-
-
-def make_random_name(length=10):
-    return ''.join(
-        random.choice(string.ascii_lowercase + string.digits)
-        for i in range(length))
 
 
 def extract_nccl_archive(nccl_config, nccl_assets, dest_dir):
@@ -117,6 +110,24 @@ def download_extract_cudnn_archive(url, dest_dir):
         log('Moving to the destination directory...')
         shutil.move(os.path.join(tmpdir, 'cuda'), dest_dir)
         log('Cleaning up...')
+
+
+def install_cudnn_windows(cudnn_workdir, cuda_path):
+    """Install the extracted cuDNN to $CUDA_PATH."""
+    cudnn_workdir = pathlib.Path(cudnn_workdir)
+    cuda_path = pathlib.Path(cuda_path)
+
+    log('Installing cuDNN from {} to {}'.format(cudnn_workdir, cuda_path))
+    for srcpath, _, files in os.walk(cudnn_workdir):
+        srcpath = pathlib.Path(srcpath)
+        destpath = cuda_path / srcpath.relative_to(cudnn_workdir)
+        if not destpath.exists():
+            destpath.mkdir()
+        for f in files:
+            srcfile = srcpath / f
+            destfile = destpath / f
+            log('Copying: {} <- {}'.format(destfile, srcfile))
+            shutil.copy2(srcfile, destfile)
 
 
 class Controller(object):
@@ -221,7 +232,7 @@ class Controller(object):
             template = 'debian'
         else:
             raise RuntimeError(
-                'cannot detect OS from image name: '.format(base_image))
+                'cannot detect OS from image name: {}'.format(base_image))
         shutil.copy2(
             '{}/Dockerfile.{}'.format(docker_ctx, template),
             '{}/Dockerfile'.format(docker_ctx))
@@ -373,7 +384,7 @@ class Controller(object):
 
             # Copy builder directory to working directory.
             docker_ctx = '{}/builder'.format(workdir)
-            log('Copying builder directory to: '.format(docker_ctx))
+            log('Copying builder directory to: {}'.format(docker_ctx))
             shutil.copytree('builder/', docker_ctx)
 
             # Extract NCCL archive.
@@ -527,6 +538,15 @@ class Controller(object):
                 cuda_version, 'Windows')
             log('cuDNN version: {}'.format(cudnn_version))
             log('cuDNN assets: {}'.format(cudnn_assets))
+
+            # Extract cuDNN archive.
+            log('Creating cudnn directory under work directory')
+            cudnn_workdir = '{}/cudnn'.format(workdir)
+            download_extract_cudnn_archive(
+                cudnn_assets['url'], cudnn_workdir)
+            cuda_path = os.environ['CUDA_PATH']
+            log('Installing cuDNN to {}'.format(cuda_path))
+            install_cudnn_windows(cudnn_workdir, cuda_path)
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')

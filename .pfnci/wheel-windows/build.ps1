@@ -1,79 +1,38 @@
 Param(
 	[String]$python,
-	[String]$cuda
+	[String]$cuda,
+	[String]$branch,
+	[String]$job_group
 )
 
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\_error_handler.ps1"
 
-# Set environment variables.
-$python_path = $null
-switch ($python) {
-    "3.6.0" {
-        $python_path = "C:\Development\Python\Python36"
-    }
-    "3.7.0" {
-        $python_path = "C:\Development\Python\Python37"
-    }
-    "3.8.0" {
-        $python_path = "C:\Development\Python\Python38"
-    }
-    "3.9.0" {
-        $python_path = "C:\Development\Python\Python39"
-    }
-    default {
-         throw "Unsupported Python version: $python"
-    }
-}
+. "$PSScriptRoot\_flexci.ps1"
 
-$cuda_path = $null
-switch ($cuda) {
-    "8.0" {
-        $cuda_path = $Env:CUDA_PATH_V8_0
-    }
-    "9.0" {
-        $cuda_path = $Env:CUDA_PATH_V9_0
-    }
-    "9.1" {
-        $cuda_path = $Env:CUDA_PATH_V9_1
-    }
-    "9.2" {
-        $cuda_path = $Env:CUDA_PATH_V9_2
-    }
-    "10.0" {
-        $cuda_path = $Env:CUDA_PATH_V10_0
-    }
-    "10.1" {
-        $cuda_path = $Env:CUDA_PATH_V10_1
-    }
-    "10.2" {
-        $cuda_path = $Env:CUDA_PATH_V10_2
-    }
-    "11.0" {
-        $cuda_path = $Env:CUDA_PATH_V11_0
-    }
-    "11.1" {
-        $cuda_path = $Env:CUDA_PATH_V11_1
-    }
-    "11.2" {
-        $cuda_path = $Env:CUDA_PATH_V11_2
-    }
-    default {
-         throw "Unsupported CUDA version: $cuda"
-    }
-}
+PrioritizeFlexCIDaemon
 
-$Env:PYTHON_PATH = ${python_path}
-$Env:CUDA_PATH = ${cuda_path}
-$Env:PATH = "${python_path};${python_path}\Scripts;${cuda_path}\bin;$Env:ProgramFiles\NVIDIA Corporation\NvToolsExt\bin\x64;$Env:PATH"
+# Configure environment
+ActivatePython ($python.Split(".")[0..1] -join ".")
+ActivateCUDA $cuda
+
+$cuda_path = $Env:CUDA_PATH
 
 # Show build configuration
 echo ">> Environment Variables"
-echo "     PYTHON_PATH: $Env:PYTHON_PATH"
-echo "     CUDA_PATH:   $Env:CUDA_PATH"
+echo "     CUDA_PATH:   $cuda_path"
 echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
 RunOrDie python -V
+
+# Remove existing cuDNN installation
+echo "Uninstalling existing cuDNN installation from ${cuda_path}"
+Remove-Item -Force -Verbose ${cuda_path}\bin\cudnn*.dll
+Remove-Item -Force -Verbose ${cuda_path}\include\cudnn*.h
+Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cudnn*.lib
+
+# Clone CuPy and checkout the target branch
+RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
 
 # Install dependencies
 echo ">> Installing dependences for wheel build..."
@@ -101,5 +60,11 @@ echo ">> Starting verification..."
 RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
+echo ">> Build configuration"
 RunOrDie python -c "import cupy; cupy.show_config()"
-echo ">> Build completed."
+
+# Upload to GCS
+echo ">> Uploading an artifact..."
+RunOrDie gsutil -m cp $wheel_file gs://tmp-asia-pfn-public-ci/cupy-release-tools/build-windows/${job_group}_${branch}/${Env:FLEXCI_JOB_ID}_py${python}_cuda${cuda}/
+
+echo ">> Done!"
