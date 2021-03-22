@@ -39,6 +39,6 @@ class TestPreload(unittest.TestCase):
             return
         preload_version = self._get_config()['cutensor']['version']
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
-        expected_version = major * 1000 + minor * 100 + patchlevel
+        expected_version = major * 10000 + minor * 100 + patchlevel
         assert libcutensor.available
         assert libcutensor.get_version() == expected_version
