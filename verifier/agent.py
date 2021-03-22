@@ -61,6 +61,14 @@ class VerifierAgent(object):
         ]
         self._run(*cmdline)
 
+        # Importing CuPy should not be emit warnings,
+        # Raise on warning to to catch bugs of preload warnings, e.g.:
+        # https://github.com/cupy/cupy/pull/4933
+        cmdline = pycommand + [
+            '-c', 'import cupy; cupy.show_config()'
+        ]
+        self._run(*cmdline)
+
         for p in args.preload:
             self._log('Installing preload libraries ({})...'.format(p))
             cmdline = pycommand + [
