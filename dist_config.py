@@ -17,6 +17,8 @@ SDIST_CONFIG = {
 # Keys of the build settings are as follows:
 # - `name`: a package name
 # - `kind`: type of the package (`cuda` or `rocm`)
+# - `platform_version`: alternate name of the `kind` platform version used
+#                       for long description
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
@@ -114,6 +116,7 @@ WHEEL_LINUX_CONFIGS = {
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
         'kind': 'rocm',
+        'platform_version': '4.0',
         'image': 'rocm/dev-centos-7:4.0.1',
         'libs': [],
         'includes': [],
@@ -229,18 +232,31 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
 - `cupy-cuda90 <https://pypi.org/project/cupy-cuda90/>`_ (for CUDA 9.0)
 
+- `cupy-rocm-4-0 <https://pypi.org/project/cupy-rocm-4-0/>`_ (for ROCm 4.0)
+
 Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
 '''  # NOQA
 
 
-# Long description of the wheel package in reST syntax.
-# `{cuda}` will be replaced by the CUDA version (e.g., `9.0`).
-WHEEL_LONG_DESCRIPTION = _long_description_header + '''\
-This is a CuPy wheel (precompiled binary) package for CUDA {cuda}.
-You need to install `CUDA Toolkit {cuda} <https://developer.nvidia.com/cuda-toolkit-archive>`_ to use these packages.
+# Long description of the CUDA wheel package in reST syntax.
+# `{version}` will be replaced by the CUDA version (e.g., `9.0`).
+WHEEL_LONG_DESCRIPTION_CUDA = _long_description_header + '''\
+This is a CuPy wheel (precompiled binary) package for CUDA {version}.
+You need to install `CUDA Toolkit {version} <https://developer.nvidia.com/cuda-toolkit-archive>`_ to use these packages.
 
 If you have another version of CUDA, or want to build from source, refer to the `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for instructions.
 '''  # NOQA
+
+
+# Long description of the ROCm wheel package in reST syntax.
+# `{version}` will be replaced by the ROCm version (e.g., `4.0`).
+WHEEL_LONG_DESCRIPTION_ROCM = _long_description_header + '''\
+This is a CuPy wheel (precompiled binary) package for AMD ROCm {version}.
+You need to install `ROCm {version} <https://rocmdocs.amd.com/en/latest/Installation_Guide/Installation-Guide.html>`_ to use these packages.
+
+If you have another version of ROCm, or want to build from source, refer to the `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for instructions.
+'''  # NOQA
+
 
 # Key-value of python version (used in pyenv) to use for build and its
 # corresponding configurations.
