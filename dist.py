@@ -326,6 +326,12 @@ class Controller(object):
             log('Copying builder directory to: {}'.format(docker_ctx))
             shutil.copytree('builder/', docker_ctx)
 
+            # Extract optional CUDA libraries.
+            optlib_workdir = '{}/cuda_lib'.format(docker_ctx)
+            log('Creating CUDA optional lib directory under '
+                'builder directory: {}'.format(optlib_workdir))
+            os.mkdir(optlib_workdir)
+
             # Install CUDA optional libraries and generate a wheel metadata.
             if target == 'wheel-linux':
                 wheel_metadata = {
@@ -333,11 +339,6 @@ class Controller(object):
                     'packaging': 'pip',
                 }
 
-                # Extract optional CUDA libraries.
-                optlib_workdir = '{}/cuda_lib'.format(docker_ctx)
-                log('Creating CUDA optional lib directory under '
-                    'builder directory: {}'.format(optlib_workdir))
-                os.mkdir(optlib_workdir)
                 for p in preloads:
                     wheel_metadata[p] = prepare_cuda_opt_library(
                         p, cuda_version, optlib_workdir)
