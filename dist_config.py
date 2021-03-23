@@ -7,7 +7,8 @@ CYTHON_VERSION = '0.29.22'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:9.2-devel-centos6',
-    'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
+    # This image contains cuDNN and NCCL.
+    'verify_image': 'nvidia/cuda:10.0-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
 
