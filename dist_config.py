@@ -9,7 +9,6 @@ SDIST_CONFIG = {
     'image': 'nvidia/cuda:9.2-devel-centos6',
     'verify_image': 'nvidia/cuda:9.2-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
-    'preloads': [],
 }
 
 
