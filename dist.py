@@ -13,6 +13,7 @@ import time
 
 
 from dist_config import (
+    CUPY_MAJOR_VERSION,
     CYTHON_VERSION,
     SDIST_CONFIG,
     SDIST_LONG_DESCRIPTION,
@@ -224,6 +225,11 @@ class Controller(object):
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
+        if version.split('.')[0] != CUPY_MAJOR_VERSION:
+            raise RuntimeError(
+                'Version mismatch. cupy-release-tools is for CuPy v{} '
+                'but your source tree is CuPy v{}.'.format(
+                    CUPY_MAJOR_VERSION, version))
 
         if target == 'wheel-linux':
             assert cuda_version is not None
