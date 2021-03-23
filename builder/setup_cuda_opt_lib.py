@@ -31,6 +31,8 @@ def merge_directory(src_dir, dst_dir):
 def _child(path):
     """Returns a child of the given path."""
     children = list(path.iterdir())
+    if len(children) == 0:
+        return None
     assert len(children) == 1
     return children[0]
 
@@ -41,6 +43,9 @@ def _install_library(name, src_dir, dst_dir, install_map):
 
     # $src_dir/$CUDA_VERSION/$name/$LIB_VERSION
     src_dir = _child(src_dir)  # $CUDA_VERSION
+    if src_dir is None:
+        print('Skip installing {} (no preloading libraries)'.format(name))
+        return
     src_dir = src_dir.joinpath(name)  # $name
     if not src_dir.exists():
         print('Skip installing {} (unavailable)'.format(name))
