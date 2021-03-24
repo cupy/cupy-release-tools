@@ -9,6 +9,7 @@ JOB_GROUP=${4:-}
 
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 
+./download_nccl.sh "${CUDA}"
 ./build.sh "${CUDA}" "${PYTHON}"
 
 if [ -z "${JOB_GROUP}" ]; then
