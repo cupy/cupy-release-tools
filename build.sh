@@ -25,7 +25,6 @@ else
 fi
 
 if [ "${HAVE_NCCL}" = "yes" ]; then
-  ./download_nccl.sh "${CUDA}"
   VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/nccl"
 fi
 
