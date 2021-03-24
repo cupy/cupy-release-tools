@@ -219,17 +219,20 @@ class Controller(object):
         ] + agent_args
         run_command(*command)
 
+    def _ensure_compatible_branch(self, version):
+        if version.split('.')[0] != CUPY_MAJOR_VERSION:
+            raise RuntimeError(
+                'Version mismatch. cupy-release-tools is for CuPy v{} '
+                'but your source tree is CuPy v{}.'.format(
+                    CUPY_MAJOR_VERSION, version))
+
     def build_linux(
             self, target, cuda_version, python_version,
             source, output):
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
-        if version.split('.')[0] != CUPY_MAJOR_VERSION:
-            raise RuntimeError(
-                'Version mismatch. cupy-release-tools is for CuPy v{} '
-                'but your source tree is CuPy v{}.'.format(
-                    CUPY_MAJOR_VERSION, version))
+        self._ensure_compatible_branch(version)
 
         if target == 'wheel-linux':
             assert cuda_version is not None
@@ -409,6 +412,7 @@ class Controller(object):
             raise ValueError('unknown target')
 
         version = get_version_from_source_tree(source)
+        self._ensure_compatible_branch(version)
 
         log(
             'Starting wheel-win build from {} '
