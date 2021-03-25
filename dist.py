@@ -221,7 +221,7 @@ class Controller(object):
             template = 'debian'
         else:
             raise RuntimeError(
-                'cannot detect OS from image name: '.format(base_image))
+                'cannot detect OS from image name: {}'.format(base_image))
         shutil.copy2(
             '{}/Dockerfile.{}'.format(docker_ctx, template),
             '{}/Dockerfile'.format(docker_ctx))
@@ -373,7 +373,7 @@ class Controller(object):
 
             # Copy builder directory to working directory.
             docker_ctx = '{}/builder'.format(workdir)
-            log('Copying builder directory to: '.format(docker_ctx))
+            log('Copying builder directory to: {}'.format(docker_ctx))
             shutil.copytree('builder/', docker_ctx)
 
             # Extract NCCL archive.
