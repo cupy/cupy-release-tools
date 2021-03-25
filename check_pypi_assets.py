@@ -24,27 +24,27 @@ _v8_cuda_matrix = [(CP35, LINUX)] + _v9_cuda_matrix
 wheel_projects = {
     # v8.x
     '8': [
-            ('cupy-cuda90',   _v8_cuda_matrix),
-            ('cupy-cuda92',   _v8_cuda_matrix),
-            ('cupy-cuda100',  _v8_cuda_matrix),
-            ('cupy-cuda101',  _v8_cuda_matrix),
-            ('cupy-cuda102',  _v8_cuda_matrix),
-            ('cupy-cuda110',  _v8_cuda_matrix),
-            ('cupy-cuda111',  _v8_cuda_matrix),
-            ('cupy-cuda112',  _v8_cuda_matrix),
+        ('cupy-cuda90',   _v8_cuda_matrix),
+        ('cupy-cuda92',   _v8_cuda_matrix),
+        ('cupy-cuda100',  _v8_cuda_matrix),
+        ('cupy-cuda101',  _v8_cuda_matrix),
+        ('cupy-cuda102',  _v8_cuda_matrix),
+        ('cupy-cuda110',  _v8_cuda_matrix),
+        ('cupy-cuda111',  _v8_cuda_matrix),
+        ('cupy-cuda112',  _v8_cuda_matrix),
     ],
 
     # v9.x
     '9': [
-            ('cupy-cuda92',    _v9_cuda_matrix),
-            ('cupy-cuda100',   _v9_cuda_matrix),
-            ('cupy-cuda101',   _v9_cuda_matrix),
-            ('cupy-cuda102',   _v9_cuda_matrix),
-            ('cupy-cuda110',   _v9_cuda_matrix),
-            ('cupy-cuda111',   _v9_cuda_matrix),
-            ('cupy-cuda112',   _v9_cuda_matrix),
-            ('cupy-rocm-4-0',  list(itertools.product(
-                (CP36, CP37, CP38, CP39), (LINUX,)))),
+        ('cupy-cuda92',    _v9_cuda_matrix),
+        ('cupy-cuda100',   _v9_cuda_matrix),
+        ('cupy-cuda101',   _v9_cuda_matrix),
+        ('cupy-cuda102',   _v9_cuda_matrix),
+        ('cupy-cuda110',   _v9_cuda_matrix),
+        ('cupy-cuda111',   _v9_cuda_matrix),
+        ('cupy-cuda112',   _v9_cuda_matrix),
+        ('cupy-rocm-4-0',  list(itertools.product(
+            (CP36, CP37, CP38, CP39), (LINUX,)))),
     ],
 }
 
