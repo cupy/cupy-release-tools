@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# CuPy major version supported by this tool.
+CUPY_MAJOR_VERSION = '9'
+
 # Cython version to cythonize the code.
 CYTHON_VERSION = '0.29.22'
 
