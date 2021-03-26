@@ -60,7 +60,7 @@ class VerifierAgent(object):
         # Raise on warning to to catch bugs of preload warnings, e.g.:
         # https://github.com/cupy/cupy/pull/4933
         cmdline = pycommand + [
-            '-c', 'import cupy; cupy.show_config()'
+            '-Werror', '-c', 'import cupy; cupy.show_config()'
         ]
         self._run(*cmdline)
 
