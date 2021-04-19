@@ -12,11 +12,35 @@ $ErrorActionPreference = "Stop"
 
 PrioritizeFlexCIDaemon
 
-# Configure environment
-ActivatePython ($python.Split(".")[0..1] -join ".")
-ActivateCUDA $cuda
+function UninstallCuDNN($cuda_path) {
+    echo "Uninstalling cuDNN installation from ${cuda_path}"
+    Remove-Item -Force -Verbose ${cuda_path}\bin\cudnn*.dll
+    Remove-Item -Force -Verbose ${cuda_path}\include\cudnn*.h
+    Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cudnn*.lib
+}
 
+function UninstallCuTENSOR($cuda_path) {
+    echo "Uninstalling cuTENSOR installation from ${cuda_path}"
+    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.dll
+    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.lib
+    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor_static.lib
+    Remove-Item -Force -Verbose ${cuda_path}\include\cutensor.h
+    Remove-Item -Recurse -Force -Verbose ${cuda_path}\include\cutensor
+}
+
+# Uninstall existing cuDNN for the default CUDA
 $cuda_path = $Env:CUDA_PATH
+UninstallCuDNN $cuda_path
+
+# Activate target CUDA and uninstall existing cuDNN for the target CUDA
+ActivateCUDA $cuda
+$cuda_path = $Env:CUDA_PATH
+UninstallCuDNN $cuda_path
+
+# Note: cuTENSOR is not installed by default, so no need to remove it.
+
+# Activate target Python
+ActivatePython ($python.Split(".")[0..1] -join ".")
 
 # Show build configuration
 echo ">> Environment Variables"
@@ -24,12 +48,6 @@ echo "     CUDA_PATH:   $cuda_path"
 echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
 RunOrDie python -V
-
-# Remove existing cuDNN installation
-echo "Uninstalling existing cuDNN installation from ${cuda_path}"
-Remove-Item -Force -Verbose ${cuda_path}\bin\cudnn*.dll
-Remove-Item -Force -Verbose ${cuda_path}\include\cudnn*.h
-Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cudnn*.lib
 
 # Clone CuPy and checkout the target branch
 RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
@@ -41,6 +59,7 @@ echo ">> Packages installed:"
 RunOrDie python -m pip list
 
 # Build
+# Note: cuDNN and cuTENSOR will be installed by the tool.
 echo ">> Starting build..."
 RunOrDie python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
 
@@ -54,6 +73,10 @@ echo ">> Wheel File: ${wheel_file}"
 
 # List files
 Get-ChildItem
+
+# Uninstall cuDNN and cuTENSOR
+UninstallCuDNN $cuda_path
+UninstallCuTENSOR $cuda_path
 
 # Verify
 echo ">> Starting verification..."
