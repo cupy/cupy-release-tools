@@ -617,6 +617,7 @@ class Controller(object):
         if target != 'wheel-win':
             raise ValueError('unknown target')
 
+        preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
         log('Starting verification for {} with Python {}'.format(
             dist, python_version))
 
@@ -626,6 +627,10 @@ class Controller(object):
         agent_args = [
             '--dist', dist,
         ]
+        if 0 < len(preloads):
+            agent_args += ['--cuda', cuda_version]
+            for p in preloads:
+                agent_args += ['--preload', p]
 
         # Add arguments for `python -m pytest`.
         agent_args += ['tests']
