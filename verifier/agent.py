@@ -52,13 +52,14 @@ class VerifierAgent(object):
 
         self._log('Installing distribution...')
         cmdline = pycommand + [
-            '-m', 'pip', 'install', '-vvv', '--user', args.dist,
+            '-m', 'pip', 'install', '-v', '--user', args.dist,
         ]
         self._run(*cmdline)
 
         # Importing CuPy should not be emit warnings,
         # Raise on warning to to catch bugs of preload warnings, e.g.:
         # https://github.com/cupy/cupy/pull/4933
+        self._log('CuPy Configuration (before preloading)')
         cmdline = pycommand + [
             '-Werror', '-c', 'import cupy; cupy.show_config()'
         ]
@@ -71,6 +72,12 @@ class VerifierAgent(object):
                 '--library', p, '--cuda', args.cuda,
             ]
             self._run(*cmdline)
+
+        self._log('CuPy Configuration (after preloading)')
+        cmdline = pycommand + [
+            '-Werror', '-c', 'import cupy; cupy.show_config()'
+        ]
+        self._run(*cmdline)
 
         try:
             cmdline = pycommand + ['-m', 'pytest'] + pytest_args
