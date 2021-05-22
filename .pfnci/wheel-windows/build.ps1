@@ -50,7 +50,7 @@ echo ">> Python Version:"
 RunOrDie python -V
 
 # Clone CuPy and checkout the target branch
-RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
+RunOrDie git clone --recursive --branch fix-win --depth 1 https://github.com/emcastillo/cupy.git cupy
 
 # Install dependencies
 echo ">> Installing dependences for wheel build..."
