@@ -28,7 +28,11 @@ class TestPreload(unittest.TestCase):
             return
         preload_version = self._get_config()['nccl']['version']
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
-        expected_version = major * 1000 + minor * 100 + patchlevel
+        major_mult = 1000
+        if major >= 2 and minor > 8:
+            # NCCL 2.9 shows version as 20908 instead of 2908
+            major_mult = 10000
+        expected_version = major * major_mult + minor * 100 + patchlevel
         assert libnccl.available
         assert libnccl.get_build_version() == expected_version
         assert libnccl.get_version() == expected_version
