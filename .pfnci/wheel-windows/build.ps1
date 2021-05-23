@@ -28,7 +28,7 @@ function UninstallCuTENSOR($cuda_path) {
         Remove-Item -Force -Verbose ${cuda_path}\include\cutensor.h
         Remove-Item -Recurse -Force -Verbose ${cuda_path}\include\cutensor
     } else {
-       echo "cuTENSOR installation not detected
+       echo "cuTENSOR installation not detected"
     }
 }
 
