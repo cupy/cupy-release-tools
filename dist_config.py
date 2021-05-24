@@ -127,6 +127,17 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
     },
+    'rocm-4.2': {
+        'name': 'cupy-rocm-4-2',
+        'kind': 'rocm',
+        'platform_version': '4.2',
+        'image': 'rocm/dev-centos-7:4.2',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'rocm/rocm-terminal:4.2',
+        'verify_systems': ['default'],
+    },
 }
 
 # Key-value of CUDA version and its corresponding build settings for Windows.
