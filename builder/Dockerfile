@@ -28,7 +28,7 @@ RUN /setup_cuda_opt_lib.py --src /cuda_lib --dst /usr/local/cuda
 
 # Install additional dependencies for ROCm.
 RUN [ ! -d /opt/rocm ] || ( \
-        yum -y install hipblas4.0.1 hipsparse4.0.1 rocsparse4.0.1 rocrand4.0.1 rocthrust4.0.1 rocsolver4.0.1 rocfft4.0.1 hipcub4.0.1 rocprim4.0.1 rccl4.0.1 && \
+        yum -y install hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl && \
         yum clean all \
     )
 
