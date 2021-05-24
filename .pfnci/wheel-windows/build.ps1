@@ -21,11 +21,15 @@ function UninstallCuDNN($cuda_path) {
 
 function UninstallCuTENSOR($cuda_path) {
     echo "Uninstalling cuTENSOR installation from ${cuda_path}"
-    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.dll
-    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.lib
-    Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor_static.lib
-    Remove-Item -Force -Verbose ${cuda_path}\include\cutensor.h
-    Remove-Item -Recurse -Force -Verbose ${cuda_path}\include\cutensor
+    if(Test-Path ${cuda_path}\bin\cutensor.dll) {
+        Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.dll
+        Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.lib
+        Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor_static.lib
+        Remove-Item -Force -Verbose ${cuda_path}\include\cutensor.h
+        Remove-Item -Recurse -Force -Verbose ${cuda_path}\include\cutensor
+    } else {
+       echo "cuTENSOR installation not detected"
+    }
 }
 
 # Uninstall existing cuDNN for the default CUDA
