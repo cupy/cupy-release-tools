@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/test.sh 3.8.0 11.2 v9"
+    command: "sh .pfnci/test.sh 3.8.0 11.3 v9"
   }
 }
 configs {
@@ -26,7 +26,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 11.2 v9"
+    command: ".pfnci\\wheel-windows\\main.bat 3.9.0 11.3 v9"
   }
 }
 configs {
