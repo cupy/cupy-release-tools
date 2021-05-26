@@ -244,10 +244,10 @@ _long_description_header = '''\
 .. image:: https://raw.githubusercontent.com/cupy/cupy/master/docs/image/cupy_logo_1000px.png
    :width: 400
 
-CuPy : A NumPy-compatible array library accelerated by CUDA
-===========================================================
+CuPy : NumPy & SciPy for GPU
+============================
 
-`CuPy <https://cupy.dev/>`_ is an implementation of NumPy-compatible multi-dimensional array on CUDA.
+`CuPy <https://cupy.dev/>`_ is a NumPy/SciPy-compatible array library for GPU-accelerated computing with Python.
 
 '''  # NOQA
 
