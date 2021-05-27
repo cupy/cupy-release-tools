@@ -18,20 +18,22 @@ WINDOWS = 'win_amd64'
 
 sdist_project = 'cupy'
 
+_v10_cuda_matrix = list(itertools.product(
+    (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
 _v9_cuda_matrix = list(itertools.product(
     (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
-_v8_cuda_matrix = [(CP35, LINUX)] + _v9_cuda_matrix
 wheel_projects = {
-    # v8.x
-    '8': [
-        ('cupy-cuda90',   _v8_cuda_matrix),
-        ('cupy-cuda92',   _v8_cuda_matrix),
-        ('cupy-cuda100',  _v8_cuda_matrix),
-        ('cupy-cuda101',  _v8_cuda_matrix),
-        ('cupy-cuda102',  _v8_cuda_matrix),
-        ('cupy-cuda110',  _v8_cuda_matrix),
-        ('cupy-cuda111',  _v8_cuda_matrix),
-        ('cupy-cuda112',  _v8_cuda_matrix),
+    # v10.x
+    '10': [
+        ('cupy-cuda92',   _v10_cuda_matrix),
+        ('cupy-cuda100',  _v10_cuda_matrix),
+        ('cupy-cuda101',  _v10_cuda_matrix),
+        ('cupy-cuda102',  _v10_cuda_matrix),
+        ('cupy-cuda110',  _v10_cuda_matrix),
+        ('cupy-cuda111',  _v10_cuda_matrix),
+        ('cupy-cuda112',  _v10_cuda_matrix),
+        ('cupy-rocm-4-0',  list(itertools.product(
+            (CP36, CP37, CP38, CP39), (LINUX,)))),
     ],
 
     # v9.x
