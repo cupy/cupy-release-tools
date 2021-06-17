@@ -30,19 +30,6 @@ SDIST_CONFIG = {
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
 WHEEL_LINUX_CONFIGS = {
-    '9.2': {
-        'name': 'cupy-cuda92',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:9.2-devel-centos6',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': ['nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
-        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
-        'verify_systems': ['ubuntu16.04'],
-    },
     '10.0': {
         'name': 'cupy-cuda100',
         'kind': 'cuda',
@@ -157,16 +144,6 @@ WHEEL_LINUX_CONFIGS = {
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
-    '9.2': {
-        'name': 'cupy-cuda92',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cudnn'],
-        'cudart_lib': 'cudart64_92',
-        'check_version': lambda x: 9020 <= x < 9030,
-    },
     '10.0': {
         'name': 'cupy-cuda100',
         'kind': 'cuda',
@@ -264,8 +241,6 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
-- `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
-- `cupy-cuda90 <https://pypi.org/project/cupy-cuda90/>`_ (for CUDA 9.0)
 
 - `cupy-rocm-4-0 <https://pypi.org/project/cupy-rocm-4-0/>`_ (for ROCm 4.0)
 
