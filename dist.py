@@ -155,7 +155,8 @@ class Controller(object):
                     args.target, args.cuda, args.python,
                     args.dist, args.test)
 
-    def _create_builder_linux(self, image_tag, base_image, rocm_packages, docker_ctx):
+    def _create_builder_linux(
+            self, image_tag, base_image, system_packages, docker_ctx):
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(PYTHON_VERSIONS)
@@ -166,11 +167,12 @@ class Controller(object):
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
-            '--build-arg', 'rocm_packages={}'.format(rocm_packages),
+            '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
         )
 
-    def _create_verifier_linux(self, image_tag, base_image, rocm_packages, docker_ctx):
+    def _create_verifier_linux(
+            self, image_tag, base_image, system_packages, docker_ctx):
         """Create a docker image to verify distributions."""
 
         # Choose Dockerfile template
@@ -194,7 +196,7 @@ class Controller(object):
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
-            '--build-arg', 'rocm_packages={}'.format(rocm_packages),
+            '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
         )
 
@@ -250,7 +252,8 @@ class Controller(object):
                 'platform_version', cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
-            rocm_packages = WHEEL_LINUX_CONFIGS[cuda_version].get('rocm_packages', '')
+            system_packages = \
+                WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
 
             if kind == 'cuda':
                 long_description_tmpl = WHEEL_LONG_DESCRIPTION_CUDA
@@ -276,7 +279,7 @@ class Controller(object):
             preloads = []
             base_image = SDIST_CONFIG['image']
             package_name = 'cupy'
-            rocm_packages = ''
+            system_packages = ''
             long_description = SDIST_LONG_DESCRIPTION
 
             # Rename not needed for sdist.
@@ -360,7 +363,8 @@ class Controller(object):
                     json.dump(wheel_metadata, f)
 
             # Creates a Docker image to build distribution.
-            self._create_builder_linux(image_tag, base_image, rocm_packages, docker_ctx)
+            self._create_builder_linux(
+                image_tag, base_image, system_packages, docker_ctx)
 
             # Build.
             log('Starting build')
@@ -537,7 +541,7 @@ class Controller(object):
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
             preloads = []
-            rocm_packages = ''
+            system_packages = ''
         elif target == 'wheel-linux':
             assert cuda_version is not None
             image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
@@ -545,7 +549,8 @@ class Controller(object):
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
-            rocm_packages = WHEEL_LINUX_CONFIGS[cuda_version].get('rocm_packages', '')
+            system_packages = \
+                WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
         else:
             raise RuntimeError('unknown target')
 
@@ -557,11 +562,11 @@ class Controller(object):
             self._verify_linux(
                 image_tag_system, image, kind, dist, tests,
                 python_version,
-                cuda_version, preloads, rocm_packages)
+                cuda_version, preloads, system_packages)
 
     def _verify_linux(
             self, image_tag, base_image, kind, dist, tests, python_version,
-            cuda_version, preloads, rocm_packages):
+            cuda_version, preloads, system_packages):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -601,7 +606,8 @@ class Controller(object):
             shutil.copytree('verifier/', docker_ctx)
 
             # Creates a Docker image to verify specified distribution.
-            self._create_verifier_linux(image_tag, base_image, rocm_packages, docker_ctx)
+            self._create_verifier_linux(
+                image_tag, base_image, system_packages, docker_ctx)
 
             # Verify.
             log('Starting verification')

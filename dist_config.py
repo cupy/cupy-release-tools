@@ -29,6 +29,8 @@ SDIST_CONFIG = {
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
+# - `system_packages`: a string of depending library names expanded into the
+#                      package manager command.
 WHEEL_LINUX_CONFIGS = {
     '9.2': {
         'name': 'cupy-cuda92',
@@ -42,6 +44,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
         # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
         'verify_systems': ['ubuntu16.04'],
+        'system_packages': '',
     },
     '10.0': {
         'name': 'cupy-cuda100',
@@ -54,6 +57,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.0-devel-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'system_packages': '',
     },
     '10.1': {
         'name': 'cupy-cuda101',
@@ -66,6 +70,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'system_packages': '',
     },
     '10.2': {
         'name': 'cupy-cuda102',
@@ -78,6 +83,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'system_packages': '',
     },
     '11.0': {
         'name': 'cupy-cuda110',
@@ -91,6 +97,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
     },
     '11.1': {
         'name': 'cupy-cuda111',
@@ -103,6 +110,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
     },
     '11.2': {
         'name': 'cupy-cuda112',
@@ -115,6 +123,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
     },
     '11.3': {
         'name': 'cupy-cuda113',
@@ -125,6 +134,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.3.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
     },
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
@@ -136,7 +146,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
-        'rocm_packages': 'rocm-dev hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'
+        'system_packages': 'rocm-dev hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
     },
     'rocm-4.2': {
         'name': 'cupy-rocm-4-2',
@@ -148,7 +158,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.2',
         'verify_systems': ['default'],
-        'rocm_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'
+        'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
     },
 }
 
