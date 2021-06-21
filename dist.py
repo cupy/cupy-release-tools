@@ -70,7 +70,7 @@ def prepare_cuda_opt_library(library, cuda_version, prefix):
         if record['cuda'] == cuda_version:
             metadata = {
                 'version': record[library],
-                'filename': record['assets'][target_system]['filename'],
+                'filenames': record['assets'][target_system]['filenames'],
             }
             break
     else:
