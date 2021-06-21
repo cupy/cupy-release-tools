@@ -42,7 +42,7 @@ RUN for VERSION in ${python_versions}; do \
     done
 
 # Tentatively pin verifier to use rocm-4.0
-RUN [ ! -d /opt/rocm ] || ( \
+RUN [ ! -d /opt/rocm-4.0.0 ] || ( \
         sed -ie 's|http://repo.radeon.com/rocm/apt/debian/|http://repo.radeon.com/rocm/apt/4.0/|' /etc/apt/sources.list.d/rocm.list && \
     )
 
