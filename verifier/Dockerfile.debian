@@ -42,11 +42,12 @@ RUN for VERSION in ${python_versions}; do \
     done
 
 # Install additional dependencies for ROCm.
+ARG rocm_packages
 RUN [ ! -d /opt/rocm ] || ( \
         export DEBIAN_FRONTEND=noninteractive && \
         sed -ie 's|http://repo.radeon.com/rocm/apt/debian/|http://repo.radeon.com/rocm/apt/4.0/|' /etc/apt/sources.list.d/rocm.list && \
         apt-get -y update && \
-        apt-get -y install hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl && \
+        apt-get -y install $rocm_packages && \
         rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
     )
 

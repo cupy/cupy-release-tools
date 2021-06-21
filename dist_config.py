@@ -136,6 +136,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.0',
         'verify_systems': ['default'],
+        'rocm_packages': 'rocm-dev hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'
     },
     'rocm-4.2': {
         'name': 'cupy-rocm-4-2',
@@ -147,6 +148,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'verify_image': 'rocm/rocm-terminal:4.2',
         'verify_systems': ['default'],
+        'rocm_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'
     },
 }
 
