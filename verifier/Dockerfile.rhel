@@ -30,9 +30,10 @@ RUN for VERSION in ${python_versions}; do \
       pip install numpy scipy; \
     done
 
-# Install additional dependencies for ROCm.
-RUN [ ! -d /opt/rocm ] || ( \
-        yum -y install hipblas hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl && \
+# Install additional dependicies.
+ARG system_packages
+RUN [ -z "${system_packages}" ] || ( \
+        yum -y install ${system_packages} && \
         yum clean all \
     )
 
