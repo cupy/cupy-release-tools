@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/test.sh 3.8.0 11.3 master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.8.0 11.3 master"
   }
 }
 configs {

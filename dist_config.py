@@ -9,7 +9,7 @@ CYTHON_VERSION = '0.29.22'
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:9.2-devel-centos6',
+    'image': 'nvidia/cuda:10.2-devel-centos6',
     # This image contains cuDNN and NCCL.
     'verify_image': 'nvidia/cuda:10.0-cudnn7-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
@@ -32,20 +32,6 @@ SDIST_CONFIG = {
 # - `system_packages`: a string of depending library names expanded into the
 #                      package manager command.
 WHEEL_LINUX_CONFIGS = {
-    '9.2': {
-        'name': 'cupy-cuda92',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:9.2-devel-centos6',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': ['nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:9.2-runtime-{system}',
-        # 'verify_systems': ['ubuntu16.04', 'centos7', 'centos6'],
-        'verify_systems': ['ubuntu16.04'],
-        'system_packages': '',
-    },
     '10.0': {
         'name': 'cupy-cuda100',
         'kind': 'cuda',
@@ -168,16 +154,6 @@ WHEEL_LINUX_CONFIGS = {
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
-    '9.2': {
-        'name': 'cupy-cuda92',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cudnn'],
-        'cudart_lib': 'cudart64_92',
-        'check_version': lambda x: 9020 <= x < 9030,
-    },
     '10.0': {
         'name': 'cupy-cuda100',
         'kind': 'cuda',
@@ -275,7 +251,6 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
-- `cupy-cuda92 <https://pypi.org/project/cupy-cuda92/>`_ (for CUDA 9.2)
 
 - `cupy-rocm-4-2 <https://pypi.org/project/cupy-rocm-4-2/>`_ (for ROCm 4.2)
 - `cupy-rocm-4-0 <https://pypi.org/project/cupy-rocm-4-0/>`_ (for ROCm 4.0)
