@@ -91,7 +91,12 @@ echo ">> Build configuration"
 RunOrDie python -c "import cupy; cupy.show_config()"
 
 # Upload to GCS
-echo ">> Uploading an artifact..."
-RunOrDie gsutil -m cp $wheel_file gs://tmp-asia-pfn-public-ci/cupy-release-tools/build-windows/${job_group}_${branch}/${Env:FLEXCI_JOB_ID}_py${python}_cuda${cuda}/
+if ($job_group -eq "") {
+    echo ">> Upload skipped as job group is not specified"
+} else {
+    $url = "gs://tmp-asia-pfn-public-ci/cupy-release-tools/build-windows/${job_group}_${branch}/${Env:FLEXCI_JOB_ID}_py${python}_cuda${cuda}/"
+    echo ">> Uploading an artifact: $url"
+    RunOrDie gsutil -m cp $wheel_file $url
+}
 
 echo ">> Done!"
