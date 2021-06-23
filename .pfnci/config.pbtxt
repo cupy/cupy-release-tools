@@ -51,7 +51,7 @@ configs {
     requirement {
       cpu: 8
       gpu: 1
-      memory: 36
+      memory: 48
       disk: 30
     }
     time_limit {
