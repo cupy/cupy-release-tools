@@ -252,6 +252,7 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
 
+- `cupy-rocm-4-2 <https://pypi.org/project/cupy-rocm-4-2/>`_ (for ROCm 4.2)
 - `cupy-rocm-4-0 <https://pypi.org/project/cupy-rocm-4-0/>`_ (for ROCm 4.0)
 
 Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
