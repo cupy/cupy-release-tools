@@ -15,13 +15,36 @@ case ${CUDA} in
     ;;
 esac
 
-VERIFY_ARGS="--test release-tests/common --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl"
+# Set VERIFY_ARGS
+VERIFY_ARGS="--test release-tests/common --test release-tests/nccl"
+case ${CUDA} in
+  sdist )
+    # CUDA (sdist)
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn  --test release-tests/pkg_sdist"
+    ;;
+  rocm-* )
+    # ROCm (wheel)
+    VERIFY_ARGS="${VERIFY_ARGS}"
+    ;;
+  * )
+    # CUDA (wheel)
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn  --test release-tests/pkg_wheel"
+    ;;
+esac
 
-if [ "${CUDA}" = "sdist" ]; then
-  VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/pkg_sdist"
-else
-  VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/pkg_wheel"
-fi
+# Set additional environment variables
+case ${CUDA} in
+  rocm-* )
+    # https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support
+    # https://rocmdocs.amd.com/en/latest/ROCm_Compiler_SDK/ROCm-Native-ISA.html#processors
+    export HCC_AMDGPU_TARGET=gfx801,gfx802,gfx803,gfx900,gfx906,gfx908,gfx1010,gfx1011,gfx1012
+    ;;
+  * )
+    ;;
+esac
 
 ./dist.py --action build  ${DIST_OPTIONS} --source cupy --output .
-./dist.py --action verify ${DIST_OPTIONS} --dist ${DIST_FILE_NAME} ${VERIFY_ARGS}
+
+if [[ "${CUPY_RELEASE_SKIP_VERIFY}" != "1" ]]; then
+  ./dist.py --action verify ${DIST_OPTIONS} --dist ${DIST_FILE_NAME} ${VERIFY_ARGS}
+fi
