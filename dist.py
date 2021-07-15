@@ -206,12 +206,15 @@ class Controller(object):
         if kind == 'cuda':
             docker_run = ['nvidia-docker', 'run']
         elif kind == 'rocm':
+            targets = os.environ.get('HCC_AMDGPU_TARGET', None)
+            if targets is None:
+                raise RuntimeError('HCC_AMDGPU_TARGET is not set')
+            log('HCC_AMDGPU_TARGET = {}'.format(targets))
             docker_run = [
                 'docker', 'run',
                 '--device=/dev/kfd', '--device=/dev/dri',
-                '--security-opt', 'seccomp=unconfined',
                 '--group-add', 'video',
-                '--env', 'HCC_AMDGPU_TARGET',
+                '--env', 'HCC_AMDGPU_TARGET={}'.format(targets),
             ]
         else:
             assert False
