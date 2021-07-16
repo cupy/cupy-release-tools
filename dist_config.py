@@ -136,6 +136,17 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
+    '11.4': {
+        'name': 'cupy-cuda114',
+        'kind': 'cuda',
+        'image': 'nvidia/cuda:11.4.0-devel-centos7',
+        'libs': [],
+        'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'verify_image': 'nvidia/cuda:11.4.0-runtime-{system}',
+        'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
+    },
     'rocm-4.0': {
         'name': 'cupy-rocm-4-0',
         'kind': 'rocm',
@@ -249,6 +260,16 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11030 <= x < 11040,
     },
+    '11.4': {
+        'name': 'cupy-cuda114',
+        'kind': 'cuda',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'preloads': ['cutensor', 'cudnn'],
+        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
+        'check_version': lambda x: 11040 <= x < 11050,
+    },
 }
 
 
@@ -269,6 +290,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda114 <https://pypi.org/project/cupy-cuda114/>`_ (for CUDA 11.4)
 - `cupy-cuda113 <https://pypi.org/project/cupy-cuda113/>`_ (for CUDA 11.3)
 - `cupy-cuda112 <https://pypi.org/project/cupy-cuda112/>`_ (for CUDA 11.2)
 - `cupy-cuda111 <https://pypi.org/project/cupy-cuda111/>`_ (for CUDA 11.1)
