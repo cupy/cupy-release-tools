@@ -74,8 +74,7 @@ WHEEL_LINUX_CONFIGS = {
     '11.0': {
         'name': 'cupy-cuda110',
         'kind': 'cuda',
-        # TODO(kmaehashi): Use the official image when released.
-        'image': 'kmaehashi/cuda11-centos7:11.0-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.0.2-centos7',
         'libs': [
         ],
         'includes': [
@@ -88,7 +87,7 @@ WHEEL_LINUX_CONFIGS = {
     '11.1': {
         'name': 'cupy-cuda111',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:11.1-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.1.0-centos7',
         'libs': [
         ],
         'includes': [
@@ -101,7 +100,7 @@ WHEEL_LINUX_CONFIGS = {
     '11.2': {
         'name': 'cupy-cuda112',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:11.2.1-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.2.0-centos7',
         'libs': [
         ],
         'includes': [
@@ -114,7 +113,7 @@ WHEEL_LINUX_CONFIGS = {
     '11.3': {
         'name': 'cupy-cuda113',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:11.3.0-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.3.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
