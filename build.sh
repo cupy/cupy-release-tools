@@ -45,6 +45,6 @@ esac
 
 ./dist.py --action build  ${DIST_OPTIONS} --source cupy --output .
 
-if [[ "${CUPY_RELEASE_SKIP_VERIFY}" != "1" ]]; then
+if [[ "${CUPY_RELEASE_SKIP_VERIFY:-0}" != "1" ]]; then
   ./dist.py --action verify ${DIST_OPTIONS} --dist ${DIST_FILE_NAME} ${VERIFY_ARGS}
 fi
