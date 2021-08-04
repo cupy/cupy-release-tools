@@ -210,12 +210,14 @@ class Controller(object):
             if targets is None:
                 raise RuntimeError('HCC_AMDGPU_TARGET is not set')
             log('HCC_AMDGPU_TARGET = {}'.format(targets))
+            video_group = os.environ.get('CUPY_RELEASE_VIDEO_GROUP', 'video')
             docker_run = [
                 'docker', 'run',
                 '--device=/dev/kfd', '--device=/dev/dri',
-                '--group-add', 'video',
                 '--env', 'HCC_AMDGPU_TARGET={}'.format(targets),
             ]
+            if video_group != '':
+                docker_run += ['--group-add', video_group]
         else:
             assert False
         command = docker_run + [
