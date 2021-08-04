@@ -34,11 +34,11 @@ def get_jobs(job_ids):
     for job in response['results']:
         job_id = job['job']['job_id']['id']
         command = job['job']['config']['command']
-        exec_run_id = None
+        run_id = None
         if 'execution_run_ids' in job['job']:
-            exec_run_id = max(
+            run_id = max(
                 [x['id'] for x in job['job']['execution_run_ids']])
-        jobs[job_id] = (command, exec_run_id)
+        jobs[job_id] = (command, run_id)
     return jobs
 
 
@@ -66,9 +66,9 @@ def main():
     stats = get_job_run_stats(jobs)
 
     for job_id in sorted(jobs.keys()):
-        command, exec_id = jobs[job_id]
+        command, run_id = jobs[job_id]
         exit_status = stats.get(job_id, None)
-        if exec_id is None:
+        if run_id is None:
             progress = '⌛️ WAIT'
         elif exit_status is None:
             progress = '💪 BUILD'
@@ -77,7 +77,7 @@ def main():
         else:
             progress = '🚨 FAIL'
         print(f'Job #{job_id}: {command} ... {progress}: '
-              f'https://ci.preferred.jp/r/job/{job_id} (Exec #{exec_id})')
+              f'https://ci.preferred.jp/r/job/{job_id} (Exec #{run_id})')
 
 
 main()
