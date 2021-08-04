@@ -335,7 +335,7 @@ If you have another version of ROCm, or want to build from source, refer to the 
 # - `requires`: a list of required packages; this is needed as some older
 #               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '3.6.0': {
+    '3.6.14': {
         'python_tag': 'cp36',
         'abi_tag': 'cp36m',
         'requires': [],
