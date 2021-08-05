@@ -31,6 +31,8 @@ wheel_projects = {
         ('cupy-cuda110',  _v10_cuda_matrix),
         ('cupy-cuda111',  _v10_cuda_matrix),
         ('cupy-cuda112',  _v10_cuda_matrix),
+        ('cupy-cuda113',  _v10_cuda_matrix),
+        ('cupy-cuda114',  _v10_cuda_matrix),
         ('cupy-rocm-4-0',  list(itertools.product(
             (CP36, CP37, CP38, CP39), (LINUX,)))),
         ('cupy-rocm-4-2',  list(itertools.product(
@@ -46,6 +48,8 @@ wheel_projects = {
         ('cupy-cuda110',   _v9_cuda_matrix),
         ('cupy-cuda111',   _v9_cuda_matrix),
         ('cupy-cuda112',   _v9_cuda_matrix),
+        ('cupy-cuda113',  _v10_cuda_matrix),
+        ('cupy-cuda114',  _v10_cuda_matrix),
         ('cupy-rocm-4-0',  list(itertools.product(
             (CP36, CP37, CP38, CP39), (LINUX,)))),
         ('cupy-rocm-4-2',  list(itertools.product(
