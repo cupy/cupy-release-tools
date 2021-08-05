@@ -18,7 +18,6 @@ configs {
   value {
     requirement {
       cpu: 8
-      gpu: 1
       memory: 36
       disk: 30
     }
