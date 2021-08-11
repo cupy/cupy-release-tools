@@ -156,6 +156,18 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['default'],
         'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
     },
+    'rocm-4.3': {
+        'name': 'cupy-rocm-4-3',
+        'kind': 'rocm',
+        'platform_version': '4.3',
+        'image': 'rocm/dev-centos-7:4.3',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'rocm/rocm-terminal:4.3',
+        'verify_systems': ['default'],
+        'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
+    },
 }
 
 # Key-value of CUDA version and its corresponding build settings for Windows.
@@ -274,6 +286,7 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
 - `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
 
+- `cupy-rocm-4-3 <https://pypi.org/project/cupy-rocm-4-3/>`_ (for ROCm 4.3)
 - `cupy-rocm-4-2 <https://pypi.org/project/cupy-rocm-4-2/>`_ (for ROCm 4.2)
 - `cupy-rocm-4-0 <https://pypi.org/project/cupy-rocm-4-0/>`_ (for ROCm 4.0)
 

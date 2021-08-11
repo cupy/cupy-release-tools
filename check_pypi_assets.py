@@ -37,6 +37,8 @@ wheel_projects = {
             (CP36, CP37, CP38, CP39), (LINUX,)))),
         ('cupy-rocm-4-2',  list(itertools.product(
             (CP36, CP37, CP38, CP39), (LINUX,)))),
+        ('cupy-rocm-4-3',  list(itertools.product(
+            (CP36, CP37, CP38, CP39), (LINUX,)))),
     ],
 
     # v9.x
@@ -53,6 +55,8 @@ wheel_projects = {
         ('cupy-rocm-4-0',  list(itertools.product(
             (CP36, CP37, CP38, CP39), (LINUX,)))),
         ('cupy-rocm-4-2',  list(itertools.product(
+            (CP36, CP37, CP38, CP39), (LINUX,)))),
+        ('cupy-rocm-4-3',  list(itertools.product(
             (CP36, CP37, CP38, CP39), (LINUX,)))),
     ],
 }
