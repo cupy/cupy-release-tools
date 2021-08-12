@@ -200,26 +200,31 @@ class Controller(object):
             docker_ctx,
         )
 
-    def _run_container(self, image_tag, kind, workdir, agent_args):
+    def _run_container(
+            self, image_tag, kind, workdir, agent_args, *,
+            require_runtime=True):
+        assert kind in ('cuda', 'rocm')
         log('Running docker container with image: {} ({})'.format(
             image_tag, kind))
-        if kind == 'cuda':
+        docker_run = ['docker', 'run']
+        if kind == 'cuda' and require_runtime:
             docker_run = ['nvidia-docker', 'run']
         elif kind == 'rocm':
             targets = os.environ.get('HCC_AMDGPU_TARGET', None)
             if targets is None:
                 raise RuntimeError('HCC_AMDGPU_TARGET is not set')
             log('HCC_AMDGPU_TARGET = {}'.format(targets))
-            video_group = os.environ.get('CUPY_RELEASE_VIDEO_GROUP', 'video')
-            docker_run = [
-                'docker', 'run',
-                '--device=/dev/kfd', '--device=/dev/dri',
+            docker_run += [
                 '--env', 'HCC_AMDGPU_TARGET={}'.format(targets),
             ]
-            if video_group != '':
-                docker_run += ['--group-add', video_group]
-        else:
-            assert False
+            if require_runtime:
+                video_group = os.environ.get(
+                    'CUPY_RELEASE_VIDEO_GROUP', 'video')
+                docker_run += [
+                    '--device=/dev/kfd', '--device=/dev/dri',
+                ]
+                if video_group != '':
+                    docker_run += ['--group-add', video_group]
         command = docker_run + [
             '--rm',
             '--volume', '{}:/work'.format(workdir),
@@ -373,7 +378,8 @@ class Controller(object):
 
             # Build.
             log('Starting build')
-            self._run_container(image_tag, kind, workdir, agent_args)
+            self._run_container(
+                image_tag, kind, workdir, agent_args, require_runtime=False)
             log('Finished build')
 
             # Copy assets.
