@@ -304,6 +304,7 @@ If you have another version of ROCm, or want to build from source, refer to the 
 # Key-value of python version (used in pyenv) to use for build and its
 # corresponding configurations.
 # Keys of the configuration are as follows:
+# - `pyenv`: a full CPython version to use (only effective for Linux builds)
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
 WHEEL_PYTHON_VERSIONS = {
