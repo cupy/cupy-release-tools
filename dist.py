@@ -22,8 +22,6 @@ from dist_config import (
     WHEEL_PYTHON_VERSIONS,
     WHEEL_LONG_DESCRIPTION_CUDA,
     WHEEL_LONG_DESCRIPTION_ROCM,
-    VERIFY_PYTHON_VERSIONS,
-    PYTHON_VERSIONS,
 )  # NOQA
 
 from dist_utils import (
@@ -100,7 +98,8 @@ class Controller(object):
             '--cuda', type=str,
             help='CUDA version for the wheel distribution')
         parser.add_argument(
-            '--python', type=str, choices=PYTHON_VERSIONS, required=True,
+            '--python', type=str, choices=WHEEL_PYTHON_VERSIONS.keys(),
+            required=True,
             help='python version')
 
         # Build mode options:
@@ -159,7 +158,8 @@ class Controller(object):
             self, image_tag, base_image, system_packages, docker_ctx):
         """Create a docker image to build distributions."""
 
-        python_versions = ' '.join(PYTHON_VERSIONS)
+        python_versions = ' '.join(
+            [x['pyenv'] for x in WHEEL_PYTHON_VERSIONS.values()])
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
@@ -189,7 +189,8 @@ class Controller(object):
             '{}/Dockerfile.{}'.format(docker_ctx, template),
             '{}/Dockerfile'.format(docker_ctx))
 
-        python_versions = ' '.join(VERIFY_PYTHON_VERSIONS)
+        python_versions = ' '.join(
+            [x['pyenv'] for x in WHEEL_PYTHON_VERSIONS.values()])
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
@@ -312,10 +313,6 @@ class Controller(object):
             '--cupy-long-description', '../description.rst',
         ]
         if target == 'wheel-linux':
-            # Add requirements for build.
-            for req in WHEEL_PYTHON_VERSIONS[python_version]['requires']:
-                agent_args += ['--requires', req]
-
             setup_args += [
                 '--cupy-no-rpath',
                 '--cupy-wheel-metadata', '../_wheel.json',
@@ -453,10 +450,6 @@ class Controller(object):
             '--action', action,
             '--source', 'cupy',
         ]
-
-        # Add requirements for build.
-        for req in WHEEL_PYTHON_VERSIONS[python_version]['requires']:
-            agent_args += ['--requires', req]
 
         # Add arguments to pass to setup.py.
         setup_args = [

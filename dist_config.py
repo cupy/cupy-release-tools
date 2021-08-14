@@ -306,36 +306,25 @@ If you have another version of ROCm, or want to build from source, refer to the 
 # Keys of the configuration are as follows:
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
-# - `requires`: a list of required packages; this is needed as some older
-#               NumPy does not support newer Python.
 WHEEL_PYTHON_VERSIONS = {
-    '3.6.14': {
+    '3.6': {
+        'pyenv': '3.6.14',
         'python_tag': 'cp36',
         'abi_tag': 'cp36m',
-        'requires': [],
     },
-    '3.7.0': {
+    '3.7': {
+        'pyenv': '3.7.11',
         'python_tag': 'cp37',
         'abi_tag': 'cp37m',
-        'requires': [],
     },
-    '3.8.0': {
+    '3.8': {
+        'pyenv': '3.8.11',
         'python_tag': 'cp38',
         'abi_tag': 'cp38',
-        'requires': [],
     },
-    '3.9.0': {
+    '3.9': {
+        'pyenv': '3.9.6',
         'python_tag': 'cp39',
         'abi_tag': 'cp39',
-        'requires': [],
     },
 }
-
-# Python versions available for verification.
-VERIFY_PYTHON_VERSIONS = sorted(list(WHEEL_PYTHON_VERSIONS.keys()))
-
-# Sorted list of all possible python versions used in build process.
-PYTHON_VERSIONS = sorted(set(
-    list(WHEEL_PYTHON_VERSIONS.keys()) +
-    VERIFY_PYTHON_VERSIONS
-))
