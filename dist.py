@@ -303,7 +303,7 @@ class Controller(object):
         agent_args = [
             '--action', action,
             '--source', 'cupy',
-            '--python', python_version,
+            '--python', WHEEL_PYTHON_VERSIONS[python_version]['pyenv'],
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
 
@@ -396,10 +396,11 @@ class Controller(object):
                 'you are on non-Windows system: {}'.format(sys.platform))
 
         # Check Python version.
-        current_python_version = '.'.join(map(str, sys.version_info[0:3]))
+        current_python_version = '.'.join(map(str, sys.version_info[0:2]))
         if python_version != current_python_version:
-            log('Note: Building wheel for Python {} using Python {}'.format(
-                python_version, current_python_version))
+            raise RuntimeError(
+                'Cannot build a wheel for Python {} using Python {}'.format(
+                    python_version, current_python_version))
 
         # Check CUDA runtime version.
         config = WHEEL_WINDOWS_CONFIGS[cuda_version]
@@ -575,7 +576,7 @@ class Controller(object):
 
         # Arguments for the agent.
         agent_args = [
-            '--python', python_version,
+            '--python', WHEEL_PYTHON_VERSIONS[python_version]['pyenv'],
             '--dist', dist_basename,
             '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
         ]
