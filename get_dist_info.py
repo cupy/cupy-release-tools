@@ -6,7 +6,7 @@ import argparse
 from dist_config import (
     WHEEL_LINUX_CONFIGS,
     WHEEL_WINDOWS_CONFIGS,
-    PYTHON_VERSIONS,
+    WHEEL_PYTHON_VERSIONS,
 )  # NOQA
 
 from dist_utils import (
@@ -34,7 +34,7 @@ class DistInfoPrinter(object):
             '--cuda', type=str,
             help='CUDA version for the wheel distribution')
         parser.add_argument(
-            '--python', type=str, choices=PYTHON_VERSIONS,
+            '--python', type=str, choices=WHEEL_PYTHON_VERSIONS.keys(),
             help='python version to build wheel with')
 
         return parser.parse_args()
