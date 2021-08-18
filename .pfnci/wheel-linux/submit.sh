@@ -2,6 +2,8 @@
 
 # Submit as FlexCI jobs
 
+set -u
+
 BRANCH="v9"
 JOB_GROUP="$(date +"%F_%T")"
 
