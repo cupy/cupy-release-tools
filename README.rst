@@ -74,7 +74,7 @@ This example builds wheel of CuPy with CUDA 10.0 for Python 3.8.
   ./dist.py --action build --target wheel-linux --python 3.8 --cuda 10.0 --source path/to/cupy_repo
 
 Use ``--target wheel-win`` for Windows build.
-Use ``--cuda rocm-4.0`` for ROCm (AMD GPU) build.
+Use ``--cuda rocm-4.3`` for ROCm (AMD GPU) build.
 
 Working Directory
 ~~~~~~~~~~~~~~~~~
