@@ -9,6 +9,9 @@ JOB_GROUP=${4:-}
 
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 
+# Display wheel information
+./get_dist_info.py --target wheel-linux --source ./cupy --cuda "${CUDA}" --python "${PYTHON}"
+
 ./build.sh "${CUDA}" "${PYTHON}"
 
 if [ -z "${JOB_GROUP}" ]; then
