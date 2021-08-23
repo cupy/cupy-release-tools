@@ -5,9 +5,7 @@ import ctypes.util
 import imp
 import os
 
-from dist_config import (
-    WHEEL_PYTHON_VERSIONS,
-)  # NOQA
+from dist_config import WHEEL_PYTHON_VERSIONS
 
 
 def sdist_name(package_name, version):

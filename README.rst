@@ -35,11 +35,11 @@ You can use the following shell scripts that wrap the process on Linux.
   # Prepare source tree
   git clone --recursive https://github.com/cupy/cupy.git
 
-  # Build & verify a sdist (using Python 3.7.0)
-  ./build.sh sdist 3.7.0
+  # Build & verify a sdist (using Python 3.7)
+  ./build.sh sdist 3.7
 
-  # Build & verify a wheel for CUDA 11.0 + Python 3.8.0
-  ./build.sh 11.0 3.8.0
+  # Build & verify a wheel for CUDA 11.0 + Python 3.8
+  ./build.sh 11.0 3.8
 
 For Windows, or if you need some more detailed configuration, see the sections below to manually run the tool.
 
@@ -71,7 +71,7 @@ This example builds wheel of CuPy with CUDA 10.0 for Python 3.8.
 
 ::
 
-  ./dist.py --action build --target wheel-linux --python 3.8.0 --cuda 10.0 --source path/to/cupy_repo
+  ./dist.py --action build --target wheel-linux --python 3.8 --cuda 10.0 --source path/to/cupy_repo
 
 Use ``--target wheel-win`` for Windows build.
 Use ``--cuda rocm-4.3`` for ROCm (AMD GPU) build.
@@ -98,7 +98,7 @@ To verify the built distribution, use the following command:
 
 ::
 
-  ./dist.py --action verify --target wheel-linux --python 3.8.0 --cuda 10.0 --dist cupy_cuda100-9.0.0b2-cp38-cp38-manylinux_x86_64.whl --test release-tests/common --test release-tests/cudnn --test release-tests/nccl
+  ./dist.py --action verify --target wheel-linux --python 3.8 --cuda 10.0 --dist cupy_cuda100-9.0.0b2-cp38-cp38-manylinux_x86_64.whl --test release-tests/common --test release-tests/cudnn --test release-tests/nccl
 
 You can specify test suites directory to ``--test`` argument.
 ``release-tests`` is a minimal test cases handy for final check before release.
