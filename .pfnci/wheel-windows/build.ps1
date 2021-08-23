@@ -44,7 +44,7 @@ UninstallCuDNN $cuda_path
 # Note: cuTENSOR is not installed by default, so no need to remove it.
 
 # Activate target Python
-ActivatePython ($python.Split(".")[0..1] -join ".")
+ActivatePython $python
 
 # Show build configuration
 echo ">> Environment Variables"

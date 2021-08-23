@@ -28,7 +28,7 @@ submit_job() {
 }
 
 for CUDA in 10.0 10.1 10.2 11.0 11.1 11.2 11.3 11.4; do
-  for PYTHON in 3.6.14 3.7.0 3.8.0 3.9.0; do
+  for PYTHON in 3.6 3.7 3.8 3.9; do
     submit_job ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
   done
 done
