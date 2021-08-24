@@ -61,6 +61,7 @@ ENV HOME /tmp
 
 # Hotfix for ROCm 4.3: shared libraries are not added to /etc/ld.so.conf.d
 ENV LD_LIBRARY_PATH="/opt/rocm/lib:${LD_LIBRARY_PATH}"
+ENV LLVM_PATH="/opt/rocm/llvm"
 
 COPY agent.py /
 ENTRYPOINT ["/agent.py"]
