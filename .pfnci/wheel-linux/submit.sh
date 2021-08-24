@@ -27,7 +27,7 @@ submit_job() {
   job_ids+=($(basename "${submit_output}"))
 }
 
-submit_job ".pfnci/wheel-linux/main.sh 3.7.0 sdist ${BRANCH} ${JOB_GROUP}"
+submit_job ".pfnci/wheel-linux/main.sh 3.7 sdist ${BRANCH} ${JOB_GROUP}"
 for CUDA in 10.0 10.1 10.2 11.0 11.1 11.2 11.3 11.4; do
   for PYTHON in 3.6 3.7 3.8 3.9; do
     submit_job ".pfnci/wheel-linux/main.sh ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
