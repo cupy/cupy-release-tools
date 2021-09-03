@@ -337,7 +337,7 @@ WHEEL_PYTHON_VERSIONS = {
         'abi_tag': 'cp38',
     },
     '3.9': {
-        'pyenv': '3.9.6',
+        'pyenv': '3.9.0',
         'python_tag': 'cp39',
         'abi_tag': 'cp39',
     },
