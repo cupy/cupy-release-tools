@@ -11,7 +11,7 @@ CYTHON_VERSION = '0.29.22'
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:10.2-devel-centos6',
     # This image contains cuDNN and NCCL.
-    'verify_image': 'nvidia/cuda:10.0-cudnn7-devel-{system}',
+    'verify_image': 'nvidia/cuda:11.4.2-cudnn8-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
 
@@ -32,32 +32,6 @@ SDIST_CONFIG = {
 # - `system_packages`: a string of depending library names expanded into the
 #                      package manager command.
 WHEEL_LINUX_CONFIGS = {
-    '10.0': {
-        'name': 'cupy-cuda100',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:10.0-devel-centos6',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': ['nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:10.0-devel-{system}',
-        'verify_systems': ['ubuntu16.04'],
-        'system_packages': '',
-    },
-    '10.1': {
-        'name': 'cupy-cuda101',
-        'kind': 'cuda',
-        'image': 'nvidia/cuda:10.1-devel-centos6',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:10.1-runtime-{system}',
-        'verify_systems': ['ubuntu16.04'],
-        'system_packages': '',
-    },
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
@@ -177,26 +151,6 @@ WHEEL_LINUX_CONFIGS = {
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS = {
-    '10.0': {
-        'name': 'cupy-cuda100',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cudnn'],
-        'cudart_lib': 'cudart64_100',
-        'check_version': lambda x: 10000 <= x < 10010,
-    },
-    '10.1': {
-        'name': 'cupy-cuda101',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_101',
-        'check_version': lambda x: 10010 <= x < 10020,
-    },
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
@@ -283,8 +237,6 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda111 <https://pypi.org/project/cupy-cuda111/>`_ (for CUDA 11.1)
 - `cupy-cuda110 <https://pypi.org/project/cupy-cuda110/>`_ (for CUDA 11.0)
 - `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
-- `cupy-cuda101 <https://pypi.org/project/cupy-cuda101/>`_ (for CUDA 10.1)
-- `cupy-cuda100 <https://pypi.org/project/cupy-cuda100/>`_ (for CUDA 10.0)
 
 - `cupy-rocm-4-3 <https://pypi.org/project/cupy-rocm-4-3/>`_ (for ROCm 4.3)
 - `cupy-rocm-4-2 <https://pypi.org/project/cupy-rocm-4-2/>`_ (for ROCm 4.2)
@@ -321,11 +273,6 @@ If you have another version of ROCm, or want to build from source, refer to the 
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
 WHEEL_PYTHON_VERSIONS = {
-    '3.6': {
-        'pyenv': '3.6.14',
-        'python_tag': 'cp36',
-        'abi_tag': 'cp36m',
-    },
     '3.7': {
         'pyenv': '3.7.11',
         'python_tag': 'cp37',
