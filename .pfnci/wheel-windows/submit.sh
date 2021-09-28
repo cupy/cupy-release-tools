@@ -27,8 +27,8 @@ submit_job() {
   job_ids+=($(basename "${submit_output}"))
 }
 
-for CUDA in 10.0 10.1 10.2 11.0 11.1 11.2 11.3 11.4; do
-  for PYTHON in 3.6 3.7 3.8 3.9; do
+for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4; do
+  for PYTHON in 3.7 3.8 3.9; do
     submit_job ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
   done
 done

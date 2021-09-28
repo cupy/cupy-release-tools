@@ -7,7 +7,6 @@ import sys
 import distlib.locators
 
 
-CP35 = 'cp35-cp35m'
 CP36 = 'cp36-cp36m'
 CP37 = 'cp37-cp37m'
 CP38 = 'cp38-cp38'
@@ -19,45 +18,42 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _v10_cuda_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
+    (CP37, CP38, CP39), (LINUX, WINDOWS)))
+_v10_rocm_matrix = list(itertools.product(
+    (CP37, CP38, CP39), (LINUX,)))
 _v9_cuda_matrix = list(itertools.product(
     (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
+_v9_rocm_matrix = list(itertools.product(
+    (CP36, CP37, CP38, CP39), (LINUX,)))
+
 wheel_projects = {
     # v10.x
     '10': [
-        ('cupy-cuda100',  _v10_cuda_matrix),
-        ('cupy-cuda101',  _v10_cuda_matrix),
         ('cupy-cuda102',  _v10_cuda_matrix),
         ('cupy-cuda110',  _v10_cuda_matrix),
         ('cupy-cuda111',  _v10_cuda_matrix),
         ('cupy-cuda112',  _v10_cuda_matrix),
         ('cupy-cuda113',  _v10_cuda_matrix),
         ('cupy-cuda114',  _v10_cuda_matrix),
-        ('cupy-rocm-4-0',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
-        ('cupy-rocm-4-2',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
-        ('cupy-rocm-4-3',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
+        ('cupy-rocm-4-0', _v10_rocm_matrix),
+        ('cupy-rocm-4-2', _v10_rocm_matrix),
+        ('cupy-rocm-4-3', _v10_rocm_matrix),
     ],
 
     # v9.x
     '9': [
-        ('cupy-cuda92',    _v9_cuda_matrix),
-        ('cupy-cuda100',   _v9_cuda_matrix),
-        ('cupy-cuda101',   _v9_cuda_matrix),
-        ('cupy-cuda102',   _v9_cuda_matrix),
-        ('cupy-cuda110',   _v9_cuda_matrix),
-        ('cupy-cuda111',   _v9_cuda_matrix),
-        ('cupy-cuda112',   _v9_cuda_matrix),
-        ('cupy-cuda113',  _v10_cuda_matrix),
-        ('cupy-cuda114',  _v10_cuda_matrix),
-        ('cupy-rocm-4-0',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
-        ('cupy-rocm-4-2',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
-        ('cupy-rocm-4-3',  list(itertools.product(
-            (CP36, CP37, CP38, CP39), (LINUX,)))),
+        ('cupy-cuda92',   _v9_cuda_matrix),
+        ('cupy-cuda100',  _v9_cuda_matrix),
+        ('cupy-cuda101',  _v9_cuda_matrix),
+        ('cupy-cuda102',  _v9_cuda_matrix),
+        ('cupy-cuda110',  _v9_cuda_matrix),
+        ('cupy-cuda111',  _v9_cuda_matrix),
+        ('cupy-cuda112',  _v9_cuda_matrix),
+        ('cupy-cuda113',  _v9_cuda_matrix),
+        ('cupy-cuda114',  _v9_cuda_matrix),
+        ('cupy-rocm-4-0', _v9_rocm_matrix),
+        ('cupy-rocm-4-2', _v9_rocm_matrix),
+        ('cupy-rocm-4-3', _v9_rocm_matrix),
     ],
 }
 
