@@ -45,6 +45,20 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu16.04'],
         'system_packages': '',
     },
+    '10.2-jetson': {
+        'name': 'cupy-cuda102',
+        'kind': 'cuda',
+        'image': 'nvcr.io/nvidia/l4t-base:r32.5.0',
+        'libs': [
+        ],
+        'includes': [
+        ],
+        'builder_dockerfile': 'Dockerfile.jetson',
+        'preloads': [],  # no extra libraries in Jetson
+        'verify_image': 'nvcr.io/nvidia/l4t-base:r32.5.0',
+        'verify_systems': ['default'],
+        'system_packages': '',
+    },
     '11.0': {
         'name': 'cupy-cuda110',
         'kind': 'cuda',

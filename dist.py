@@ -156,7 +156,8 @@ class Controller(object):
                     args.dist, args.test)
 
     def _create_builder_linux(
-            self, image_tag, base_image, system_packages, docker_ctx):
+            self, image_tag, base_image, builder_dockerfile, system_packages,
+            docker_ctx):
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(
@@ -164,6 +165,7 @@ class Controller(object):
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
+            '--file', f'{docker_ctx}/{builder_dockerfile}',
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
@@ -264,6 +266,8 @@ class Controller(object):
             platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
                 'platform_version', cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
+            builder_dockerfile = WHEEL_LINUX_CONFIGS[cuda_version].get(
+                'builder_dockerfile', 'Dockerfile')
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             system_packages = \
                 WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
@@ -293,6 +297,7 @@ class Controller(object):
             kind = 'cuda'
             preloads = []
             base_image = SDIST_CONFIG['image']
+            builder_dockerfile = 'Dockerfile'
             package_name = 'cupy'
             system_packages = ''
             long_description = SDIST_LONG_DESCRIPTION
@@ -375,7 +380,8 @@ class Controller(object):
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(
-                image_tag, base_image, system_packages, docker_ctx)
+                image_tag, base_image, builder_dockerfile, system_packages,
+                docker_ctx)
 
             # Build.
             log('Starting build')
