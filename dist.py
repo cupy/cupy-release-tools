@@ -25,6 +25,7 @@ from dist_config import (
 )  # NOQA
 
 from dist_utils import (
+    wheel_platform_tag,
     sdist_name,
     wheel_name,
     get_version_from_source_tree,
@@ -179,7 +180,8 @@ class Controller(object):
         if 'rhel' in base_image or 'centos' in base_image:
             log('Using RHEL Dockerfile template')
             template = 'rhel'
-        elif 'ubuntu' in base_image or 'rocm' in base_image:
+        elif ('ubuntu' in base_image or 'rocm' in base_image or
+                'l4t-base' in base_image):
             log('Using Debian Dockerfile template')
             template = 'debian'
         else:
@@ -275,11 +277,13 @@ class Controller(object):
             long_description = long_description_tmpl.format(
                 version=platform_version)
 
-            # Rename wheels to manylinux1.
+            # Rename wheels to manylinux.
             asset_name = wheel_name(
-                package_name, version, python_version, 'linux_x86_64')
+                package_name, version, python_version,
+                wheel_platform_tag(False))
             asset_dest_name = wheel_name(
-                package_name, version, python_version, 'manylinux1_x86_64')
+                package_name, version, python_version,
+                wheel_platform_tag(True))
         elif target == 'sdist':
             assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(
