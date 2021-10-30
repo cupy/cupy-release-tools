@@ -272,6 +272,7 @@ class Controller(object):
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
+            arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
             platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
                 'platform_version', cuda_version)
@@ -294,10 +295,10 @@ class Controller(object):
             # Rename wheels to manylinux.
             asset_name = wheel_name(
                 package_name, version, python_version,
-                wheel_platform_tag(False))
+                wheel_platform_tag(arch, False))
             asset_dest_name = wheel_name(
                 package_name, version, python_version,
-                wheel_platform_tag(True))
+                wheel_platform_tag(arch, True))
         elif target == 'sdist':
             assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(

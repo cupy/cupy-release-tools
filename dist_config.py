@@ -20,8 +20,9 @@ SDIST_CONFIG = {
 # Keys of the build settings are as follows:
 # - `name`: a package name
 # - `kind`: type of the package (`cuda` or `rocm`)
+# - `arch`: platform for the package (optional, default: `x86_64`)
 # - `platform_version`: alternate name of the `kind` platform version used
-#                       for long description
+#                       for long description (optional, defualt: dict key)
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
@@ -48,6 +49,8 @@ WHEEL_LINUX_CONFIGS = {
     '10.2-jetson': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '10.2',
         'image': 'nvcr.io/nvidia/l4t-base:r32.5.0',
         'libs': [
         ],

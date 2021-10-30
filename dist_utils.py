@@ -8,8 +8,8 @@ import os
 from dist_config import WHEEL_PYTHON_VERSIONS
 
 
-def wheel_platform_tag(manylinux):
-    cpu = os.uname().machine
+def wheel_platform_tag(cpu: str, manylinux: bool) -> str:
+    assert cpu in ('aarch64', 'x86_64')
     if manylinux:
         if cpu == 'aarch64':
             tag = 'manylinux2014'
