@@ -81,16 +81,6 @@ def prepare_cuda_opt_library(library, cuda_version, prefix):
     return metadata
 
 
-def build_needs_docker_runtime():
-    if os.uname().machine == 'aarch64':
-        # It seems that L4T docker image does not contain cuBLAS and cuDNN,
-        # that are needed to build CuPy.
-        # They are mounted from host only when launching a container via
-        # nvidia-docker.
-        return True
-    return False
-
-
 class Controller(object):
 
     def parse_args(self):
@@ -398,7 +388,7 @@ class Controller(object):
             log('Starting build')
             self._run_container(
                 image_tag, kind, workdir, agent_args,
-                require_runtime=build_needs_docker_runtime())
+                require_runtime=False)
             log('Finished build')
 
             # Copy assets.
