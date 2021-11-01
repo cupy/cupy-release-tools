@@ -207,8 +207,9 @@ class Controller(object):
 
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
-            require_runtime=True):
+            require_runtime=True, docker_opts=None):
         assert kind in ('cuda', 'rocm')
+
         log('Running docker container with image: {} ({})'.format(
             image_tag, kind))
         docker_run = ['docker', 'run']
@@ -230,7 +231,7 @@ class Controller(object):
                 ]
                 if video_group != '':
                     docker_run += ['--group-add', video_group]
-        command = docker_run + [
+        command = docker_run + (docker_opts if docker_opts else []) + [
             '--rm',
             '--volume', '{}:/work'.format(workdir),
             '--workdir', '/work',
@@ -296,6 +297,7 @@ class Controller(object):
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
             kind = 'cuda'
+            arch = None
             preloads = []
             base_image = SDIST_CONFIG['image']
             builder_dockerfile = 'Dockerfile'
@@ -378,6 +380,16 @@ class Controller(object):
                 log('Writing wheel metadata')
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
+
+            # Enable QEMU for cross-compilation.
+            if arch is not None and arch != platform.uname().machine:
+                log('Cross-build requested, registering binfmt interpreter')
+                self._run_container(
+                    'multiarch/qemu-user-static', kind, workdir,
+                    ['--reset', '-p', 'yes'],
+                    require_runtime=False,
+                    docker_opts=['--privileged'],
+                )
 
             # Creates a Docker image to build distribution.
             self._create_builder_linux(
