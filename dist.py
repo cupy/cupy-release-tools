@@ -25,7 +25,7 @@ from dist_config import (
 )  # NOQA
 
 from dist_utils import (
-    wheel_platform_tag,
+    wheel_linux_platform_tag,
     sdist_name,
     wheel_name,
     get_version_from_source_tree,
@@ -286,10 +286,10 @@ class Controller(object):
             # Rename wheels to manylinux.
             asset_name = wheel_name(
                 package_name, version, python_version,
-                wheel_platform_tag(arch, False))
+                wheel_linux_platform_tag(arch, False))
             asset_dest_name = wheel_name(
                 package_name, version, python_version,
-                wheel_platform_tag(arch, True))
+                wheel_linux_platform_tag(arch, True))
         elif target == 'sdist':
             assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(
