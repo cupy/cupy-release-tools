@@ -53,7 +53,7 @@ WHEEL_LINUX_CONFIGS = {
         'platform_version': '10.2',
         # Note: this image is not publicly accessible.
         # Use `buidler/base/cuda-10.2-jetson` to build by your own.
-        'image': 'asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson',
+        'image': 'asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson',  # NOQA
         'libs': [
         ],
         'includes': [
