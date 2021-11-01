@@ -51,7 +51,9 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'arch': 'aarch64',
         'platform_version': '10.2',
-        'image': 'nvcr.io/nvidia/l4t-base:r32.5.0',
+        # Note: this image is not publicly accessible.
+        # Use `buidler/base/cuda-10.2-jetson` to build by your own.
+        'image': 'asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson',
         'libs': [
         ],
         'includes': [
