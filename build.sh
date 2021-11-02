@@ -16,11 +16,15 @@ case ${CUDA} in
 esac
 
 # Set VERIFY_ARGS
-VERIFY_ARGS="--test release-tests/common --test release-tests/nccl"
+VERIFY_ARGS="--test release-tests/common"
 case ${CUDA} in
   sdist )
     # CUDA (sdist)
-    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn  --test release-tests/pkg_sdist"
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl --test release-tests/pkg_sdist"
+    ;;
+  10.2-jetson )
+    # CUDA Jetson (wheel)
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn"
     ;;
   rocm-* )
     # ROCm (wheel)
@@ -28,7 +32,7 @@ case ${CUDA} in
     ;;
   * )
     # CUDA (wheel)
-    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn  --test release-tests/pkg_wheel"
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl --test release-tests/pkg_wheel"
     ;;
 esac
 

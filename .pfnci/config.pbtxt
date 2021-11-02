@@ -14,6 +14,21 @@ configs {
   }
 }
 configs {
+  key: "cupy-release-tools.linux.jetson"
+  value {
+    requirement {
+      cpu: 8
+      memory: 36
+      disk: 30
+    }
+    time_limit {
+      seconds: 10800
+    }
+    command: "sh .pfnci/wheel-linux/main.sh 3.8 10.2-jetson master"
+    environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
+  }
+}
+configs {
   key: "cupy-release-tools.linux.rocm"
   value {
     requirement {
