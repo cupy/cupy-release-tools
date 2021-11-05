@@ -10,7 +10,8 @@ CYTHON_VERSION = '0.29.22'
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:10.2-devel-centos6',
-    'verify_image': 'nvidia/cuda:11.5.0-devel-{system}',
+    # This image contains cuDNN and NCCL.
+    'verify_image': 'nvidia/cuda:11.4.2-cudnn8-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
 
@@ -127,11 +128,11 @@ WHEEL_LINUX_CONFIGS = {
     '11.5': {
         'name': 'cupy-cuda115',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:11.5.0-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.5.0-runtime-{system}',
+        'verify_image': 'cupy/cupy-releafse-tools:cuda-runfile-11.5.0-centos7',
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
