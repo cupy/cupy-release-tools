@@ -7,6 +7,8 @@ CUDA=$2
 BRANCH=$3
 JOB_GROUP=${4:-}
 
+gcloud auth configure-docker || echo "Failed to configure access to GCR"
+
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 
 ./build.sh "${CUDA}" "${PYTHON}"
