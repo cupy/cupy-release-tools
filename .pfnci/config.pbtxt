@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.4 master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.5 master"
   }
 }
 configs {
@@ -56,7 +56,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.9 11.4 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.9 11.5 master"
   }
 }
 configs {
