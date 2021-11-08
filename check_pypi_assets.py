@@ -11,6 +11,7 @@ CP36 = 'cp36-cp36m'
 CP37 = 'cp37-cp37m'
 CP38 = 'cp38-cp38'
 CP39 = 'cp39-cp39'
+CP310 = 'cp310-cp310'
 LINUX = 'manylinux1_x86_64'
 WINDOWS = 'win_amd64'
 
@@ -18,13 +19,13 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _v10_cuda_matrix = list(itertools.product(
-    (CP37, CP38, CP39), (LINUX, WINDOWS)))
+    (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
 _v10_rocm_matrix = list(itertools.product(
-    (CP37, CP38, CP39), (LINUX,)))
+    (CP37, CP38, CP39, CP310), (LINUX,)))
 _v9_cuda_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
+    (CP36, CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
 _v9_rocm_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39), (LINUX,)))
+    (CP36, CP37, CP38, CP39, CP310), (LINUX,)))
 
 wheel_projects = {
     # v10.x
