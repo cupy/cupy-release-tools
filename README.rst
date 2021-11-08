@@ -2,6 +2,7 @@ cupy-release-tools
 ==================
 
 Tools to automate the CuPy release process.
+This tool is used to create both source distribution (``sdist``) and wheels.
 
 The release process consists of 3 steps:
 
@@ -12,23 +13,33 @@ The release process consists of 3 steps:
 Requirements
 ------------
 
-To build ``sdist`` and wheels for Linux, you will need:
+Linux
+~~~~~
 
-* Linux with Docker support
-* Docker
-* For CUDA build:
-    * ``nvidia-docker``
-    * ``tar`` with ``xz`` support
+* For ``sdist`` and CUDA (x86_64) wheel build, run the tool on Linux (x86_64). ``nvidia-docker`` and NVIDIA GPU are required for Verify step.
+* For CUDA (JetPack (aarch64)) wheel build, run the tool on Linux (x86_64 with QEMU (aarch64) or Tegra). ``nvidia-docker`` is required for Verify step.
+* For ROCm wheel build, run the tool on Linux (x86_64). AMD GPU is required for Verify step.
 
-To build wheels for Windows, you will need:
+Notes:
 
-* Windows
-* Visual C++
+* To ensure the reproducibility of builds, the build environment is isolated by Docker.
+
+Windows
+~~~~~~~
+
+* Windows 8+ (x86_64)
+* Python, CUDA and Visual C++ are required. Versions depend on the target of the wheel.
+
+Notes:
+
+* Be aware that Windows tools in this repository is expected to be run on isolated virtual machine.
+  Especially note that the tool directly installs the dependency libraries to ``%CUDA_PATH%``.
+* ``sdist`` build on Windows is not supported.
 
 Quick Guide
 -----------
 
-You can use the following shell scripts that wrap the process on Linux.
+For Linux builds, you can use the ``build.sh`` shell script that wraps the Build and Verify steps.
 
 ::
 
@@ -46,13 +57,7 @@ For Windows, or if you need some more detailed configuration, see the sections b
 Build
 -----
 
-This tool can be used to create both source distribution (``sdist``) and wheels.
-To ensure the reproducibility of builds, the environment is isolated by Docker on Linux.
-
-Wheel Matrix
-~~~~~~~~~~~~
-
-This tool builds wheels for Linux & Windows (x86_64) for the matrix of all supported CUDA X Python variants, defined in ``dist_config.py``.
+This tool can build wheels for Linux & Windows for supported CUDA/ROCm x Python variants defined in ``dist_config.py``.
 
 Building Distributions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -74,22 +79,23 @@ This example builds wheel of CuPy with CUDA 10.0 for Python 3.8.
   ./dist.py --action build --target wheel-linux --python 3.8 --cuda 10.0 --source path/to/cupy_repo
 
 Use ``--target wheel-win`` for Windows build.
+Use ``--cuda 10.2-jetson`` for JetPack (Tegra / CUDA 10.2 aarch64) build.
 Use ``--cuda rocm-4.3`` for ROCm (AMD GPU) build.
 
-Working Directory
-~~~~~~~~~~~~~~~~~
+The resulting asset (sdist/wheel) will be generated to the current directory.
+
+Working Directory (Linux)
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is safe to run multiple ``dist.py`` at a time.
 Each time you run the tool, a dedicated temporary directory (``/tmp/cupy-dist-XXXXX``) is created.
 The temporary directory is shared with the builder docker container as a volume.
 The working directory will be removed after the build.
 
-The resulting asset (sdist/wheel) will be copied back to the current directory.
-
 Verify
 ------
 
-The tool can be used to confirm that the built distribution will work with multiple environments.
+The tool can be used to confirm that the built distribution can work on multiple environments.
 
 Verifying Distributions
 ~~~~~~~~~~~~~~~~~~~~~~~

@@ -20,8 +20,9 @@ SDIST_CONFIG = {
 # Keys of the build settings are as follows:
 # - `name`: a package name
 # - `kind`: type of the package (`cuda` or `rocm`)
+# - `arch`: platform for the package (optional, default: `x86_64`)
 # - `platform_version`: alternate name of the `kind` platform version used
-#                       for long description
+#                       for long description (optional, defualt: dict key)
 # - `image`: a name of the base docker image name used for build
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
@@ -43,6 +44,24 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu16.04'],
+        'system_packages': '',
+    },
+    '10.2-jetson': {
+        'name': 'cupy-cuda102',
+        'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '10.2',
+        # Note: this image is not publicly accessible.
+        # Use `buidler/base/cuda-10.2-jetson` to build by your own.
+        'image': 'asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson',  # NOQA
+        'libs': [
+        ],
+        'includes': [
+        ],
+        'builder_dockerfile': 'Dockerfile.jetson',
+        'preloads': [],  # no extra libraries in Jetson
+        'verify_image': 'nvcr.io/nvidia/l4t-base:r32.5.0',
+        'verify_systems': ['default'],
         'system_packages': '',
     },
     '11.0': {
@@ -104,6 +123,18 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:11.4.0-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
+    },
+    '11.5': {
+        'name': 'cupy-cuda115',
+        'kind': 'cuda',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
+        'libs': [],
+        'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        # TODO(kmaehashi): use NVIDIA docker image after released
+        'verify_image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
+        'verify_systems': ['default'],
         'system_packages': '',
     },
     'rocm-4.0': {
@@ -211,6 +242,16 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11040 <= x < 11050,
     },
+    '11.5': {
+        'name': 'cupy-cuda115',
+        'kind': 'cuda',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'preloads': ['cutensor', 'cudnn'],
+        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
+        'check_version': lambda x: 11050 <= x < 11060,
+    },
 }
 
 
@@ -231,6 +272,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda115 <https://pypi.org/project/cupy-cuda115/>`_ (for CUDA 11.5)
 - `cupy-cuda114 <https://pypi.org/project/cupy-cuda114/>`_ (for CUDA 11.4)
 - `cupy-cuda113 <https://pypi.org/project/cupy-cuda113/>`_ (for CUDA 11.3)
 - `cupy-cuda112 <https://pypi.org/project/cupy-cuda112/>`_ (for CUDA 11.2)

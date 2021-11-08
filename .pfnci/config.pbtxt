@@ -10,7 +10,22 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.4 master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.5 master"
+  }
+}
+configs {
+  key: "cupy-release-tools.linux.jetson"
+  value {
+    requirement {
+      cpu: 8
+      memory: 36
+      disk: 30
+    }
+    time_limit {
+      seconds: 18000
+    }
+    command: "sh .pfnci/wheel-linux/main.sh 3.8 10.2-jetson master"
+    environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }
 configs {
@@ -41,7 +56,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.10 11.4 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.10 11.5 master"
   }
 }
 configs {

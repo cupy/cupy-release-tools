@@ -10,6 +10,7 @@ from dist_config import (
 )  # NOQA
 
 from dist_utils import (
+    wheel_linux_platform_tag,
     sdist_name,
     wheel_name,
     get_version_from_source_tree,
@@ -44,8 +45,10 @@ class DistInfoPrinter(object):
         version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
             pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
+            arch = WHEEL_LINUX_CONFIGS[args.cuda].get('arch', 'x86_64')
             filename = wheel_name(
-                pkg_name, version, args.python, 'manylinux1_x86_64')
+                pkg_name, version, args.python,
+                wheel_linux_platform_tag(arch, True))
         elif args.target == 'wheel-win':
             pkg_name = WHEEL_WINDOWS_CONFIGS[args.cuda]['name']
             filename = wheel_name(pkg_name, version, args.python, 'win_amd64')

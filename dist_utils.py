@@ -8,6 +8,20 @@ import os
 from dist_config import WHEEL_PYTHON_VERSIONS
 
 
+def wheel_linux_platform_tag(cpu: str, manylinux: bool) -> str:
+    assert cpu in ('aarch64', 'x86_64')
+    if manylinux:
+        if cpu == 'aarch64':
+            tag = 'manylinux2014'
+        elif cpu == 'x86_64':
+            tag = 'manylinux1'
+        else:
+            assert False
+    else:
+        tag = 'linux'
+    return f'{tag}_{cpu}'
+
+
 def sdist_name(package_name, version):
     return '{package_name}-{version}.tar.gz'.format(
         package_name=package_name,

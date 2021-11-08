@@ -25,6 +25,7 @@ from dist_config import (
 )  # NOQA
 
 from dist_utils import (
+    wheel_linux_platform_tag,
     sdist_name,
     wheel_name,
     get_version_from_source_tree,
@@ -155,7 +156,8 @@ class Controller(object):
                     args.dist, args.test)
 
     def _create_builder_linux(
-            self, image_tag, base_image, system_packages, docker_ctx):
+            self, image_tag, base_image, builder_dockerfile, system_packages,
+            docker_ctx):
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(
@@ -163,6 +165,7 @@ class Controller(object):
         log('Building Docker image: {}'.format(image_tag))
         run_command(
             'docker', 'build',
+            '--file', f'{docker_ctx}/{builder_dockerfile}',
             '--tag', image_tag,
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
@@ -179,7 +182,8 @@ class Controller(object):
         if 'rhel' in base_image or 'centos' in base_image:
             log('Using RHEL Dockerfile template')
             template = 'rhel'
-        elif 'ubuntu' in base_image or 'rocm' in base_image:
+        elif ('ubuntu' in base_image or 'rocm' in base_image or
+                'l4t-base' in base_image):
             log('Using Debian Dockerfile template')
             template = 'debian'
         else:
@@ -203,8 +207,9 @@ class Controller(object):
 
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
-            require_runtime=True):
+            require_runtime=True, docker_opts=None):
         assert kind in ('cuda', 'rocm')
+
         log('Running docker container with image: {} ({})'.format(
             image_tag, kind))
         docker_run = ['docker', 'run']
@@ -226,7 +231,7 @@ class Controller(object):
                 ]
                 if video_group != '':
                     docker_run += ['--group-add', video_group]
-        command = docker_run + [
+        command = docker_run + (docker_opts if docker_opts else []) + [
             '--rm',
             '--volume', '{}:/work'.format(workdir),
             '--workdir', '/work',
@@ -258,10 +263,13 @@ class Controller(object):
             action = 'bdist_wheel'
             image_tag = 'cupy-builder-{}'.format(cuda_version)
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
+            arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
             platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
                 'platform_version', cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
+            builder_dockerfile = WHEEL_LINUX_CONFIGS[cuda_version].get(
+                'builder_dockerfile', 'Dockerfile')
             package_name = WHEEL_LINUX_CONFIGS[cuda_version]['name']
             system_packages = \
                 WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
@@ -275,11 +283,13 @@ class Controller(object):
             long_description = long_description_tmpl.format(
                 version=platform_version)
 
-            # Rename wheels to manylinux1.
+            # Rename wheels to manylinux.
             asset_name = wheel_name(
-                package_name, version, python_version, 'linux_x86_64')
+                package_name, version, python_version,
+                wheel_linux_platform_tag(arch, False))
             asset_dest_name = wheel_name(
-                package_name, version, python_version, 'manylinux1_x86_64')
+                package_name, version, python_version,
+                wheel_linux_platform_tag(arch, True))
         elif target == 'sdist':
             assert cuda_version is None
             log('Starting sdist build from {} (version {})'.format(
@@ -287,8 +297,10 @@ class Controller(object):
             action = 'sdist'
             image_tag = 'cupy-builder-sdist'
             kind = 'cuda'
+            arch = None
             preloads = []
             base_image = SDIST_CONFIG['image']
+            builder_dockerfile = 'Dockerfile'
             package_name = 'cupy'
             system_packages = ''
             long_description = SDIST_LONG_DESCRIPTION
@@ -369,14 +381,26 @@ class Controller(object):
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
 
+            # Enable QEMU for cross-compilation.
+            if arch is not None and arch != platform.uname().machine:
+                log('Cross-build requested, registering binfmt interpreter')
+                self._run_container(
+                    'multiarch/qemu-user-static', kind, workdir,
+                    ['--reset', '-p', 'yes'],
+                    require_runtime=False,
+                    docker_opts=['--privileged'],
+                )
+
             # Creates a Docker image to build distribution.
             self._create_builder_linux(
-                image_tag, base_image, system_packages, docker_ctx)
+                image_tag, base_image, builder_dockerfile, system_packages,
+                docker_ctx)
 
             # Build.
             log('Starting build')
             self._run_container(
-                image_tag, kind, workdir, agent_args, require_runtime=False)
+                image_tag, kind, workdir, agent_args,
+                require_runtime=False)
             log('Finished build')
 
             # Copy assets.
