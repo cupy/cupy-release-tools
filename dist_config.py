@@ -117,7 +117,7 @@ WHEEL_LINUX_CONFIGS = {
     '11.4': {
         'name': 'cupy-cuda114',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:11.4.0-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.4.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
