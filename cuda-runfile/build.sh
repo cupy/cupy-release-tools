@@ -25,6 +25,10 @@ case ${CUDA} in
     CUDA_VERSION="11.4.0"
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.4.0/local_installers/cuda_11.4.0_470.42.01_linux.run"
     ;;
+  11.5 )
+    CUDA_VERSION="11.5.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.5.0/local_installers/cuda_11.5.0_495.29.05_linux.run"
+    ;;
   * )
     echo "Unknown CUDA version: ${CUDA}"
     exit 1
