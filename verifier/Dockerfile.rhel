@@ -6,6 +6,9 @@ RUN sed -ie 's|#baseurl=http://mirror.centos.org/centos/|baseurl=http://ftp.iij.
 RUN yum -y update && \
     yum -y install gcc gcc-c++ make patch git && \
     yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
+    yum -y install epel-release && \
+    yum-config-manager --disable epel && \
+    yum -y install --enablerepo=epel openssl11-devel && \
     yum clean all
 
 # Install pyenv.
@@ -15,20 +18,8 @@ ENV PATH ${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}
 
 # Install Python.
 ARG python_versions
-RUN for VERSION in ${python_versions}; do \
-      echo "Installing Python ${VERSION}..." && \
-      pyenv install ${VERSION}; \
-    done;
-
-# Install Python libraries.
-# The last version installed will be used to run the verifier agent.
-RUN for VERSION in ${python_versions}; do \
-      echo "Installing libraries on Python ${VERSION}..." && \
-      pyenv global ${VERSION} && \
-      pip install -U pip setuptools && \
-      pip install pytest mock; \
-      pip install numpy scipy; \
-    done
+COPY setup_python.sh /
+RUN /setup_python.sh "${python_versions}"
 
 # Install additional dependicies.
 ARG system_packages
