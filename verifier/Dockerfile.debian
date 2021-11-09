@@ -3,6 +3,12 @@ FROM ${base_image}
 
 USER root
 RUN [ ! -d /opt/rocm ] || ( curl -qL https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - )
+
+# Workaround an issue in ROCm 4.0.0 docker image that apt repo is not pinned to the version
+RUN [ ! -d /opt/rocm-4.0.0 ] || ( \
+        sed -ie 's|http://repo.radeon.com/rocm/apt/debian/|http://repo.radeon.com/rocm/apt/4.0/|' /etc/apt/sources.list.d/rocm.list \
+    )
+
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y update && \
     apt-get -y install gcc g++ make patch git && \
@@ -41,11 +47,6 @@ RUN for VERSION in ${python_versions}; do \
       pip install pytest mock; \
       pip install numpy scipy; \
     done
-
-# Tentatively pin verifier to use rocm-4.0
-RUN [ ! -d /opt/rocm-4.0.0 ] || ( \
-        sed -ie 's|http://repo.radeon.com/rocm/apt/debian/|http://repo.radeon.com/rocm/apt/4.0/|' /etc/apt/sources.list.d/rocm.list \
-    )
 
 # Install additional dependencies.
 ARG system_packages
