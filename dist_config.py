@@ -36,7 +36,7 @@ WHEEL_LINUX_CONFIGS = {
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:10.2-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-10.2.89-centos7',
         'libs': [
         ],
         'includes': [
