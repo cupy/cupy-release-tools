@@ -43,7 +43,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
-        'verify_systems': ['ubuntu16.04'],
+        'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
     '10.2-jetson': {
