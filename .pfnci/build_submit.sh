@@ -4,7 +4,7 @@
 
 set -u
 
-BRANCH="master"
+BRANCH="$(cat ./.pfnci/BRANCH)"
 JOB_GROUP="$(date +"%F_%T")"
 
 echo "JOB_GROUP = ${JOB_GROUP}"
@@ -30,24 +30,24 @@ submit_job() {
 }
 
 # sdist
-submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh 3.7 sdist ${BRANCH} ${JOB_GROUP}"
+submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh sdist 3.7 ${BRANCH} ${JOB_GROUP}"
 
 # wheels (Linux)
 for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5; do
   for PYTHON in 3.7 3.8 3.9 3.10; do
-    submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
+    submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${CUDA} ${PYTHON} ${BRANCH} ${JOB_GROUP}"
   done
 done
 
 # Wheel (Linux / Jetson)
 for PYTHON in 3.7 3.8 3.9 3.10; do
-  submit_job cupy-release-tools.linux.jetson ".pfnci/wheel-linux/main.sh ${PYTHON} 10.2-jetson ${BRANCH} ${JOB_GROUP}"
+  submit_job cupy-release-tools.linux.jetson ".pfnci/wheel-linux/main.sh 10.2-jetson ${PYTHON} ${BRANCH} ${JOB_GROUP}"
 done
 
 # wheels (Windows)
 for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5; do
   for PYTHON in 3.7 3.8 3.9 3.10; do
-    submit_job cupy-wheel-win ".pfnci\\wheel-windows\\main.bat ${PYTHON} ${CUDA} ${BRANCH} ${JOB_GROUP}"
+    submit_job cupy-wheel-win ".pfnci\\wheel-windows\\main.bat ${CUDA} ${PYTHON} ${BRANCH} ${JOB_GROUP}"
   done
 done
 
