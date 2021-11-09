@@ -36,14 +36,14 @@ WHEEL_LINUX_CONFIGS = {
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
-        'image': 'nvidia/cuda:10.2-devel-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-10.2.89-centos7',
         'libs': [
         ],
         'includes': [
         ],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
-        'verify_systems': ['ubuntu16.04'],
+        'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
     '10.2-jetson': {
