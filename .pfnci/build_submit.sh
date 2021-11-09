@@ -4,7 +4,7 @@
 
 set -u
 
-BRANCH="master"
+BRANCH="v9"
 JOB_GROUP="$(date +"%F_%T")"
 
 echo "JOB_GROUP = ${JOB_GROUP}"
