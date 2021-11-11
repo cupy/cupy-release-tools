@@ -1,7 +1,6 @@
 ARG base_image
 FROM ${base_image}
 
-RUN sed -ie 's|#baseurl=http://mirror.centos.org/centos/|baseurl=http://ftp.iij.ad.jp/pub/linux/centos-vault/centos/|g' /etc/yum.repos.d/CentOS-Base.repo
 RUN yum -y install gcc gcc-c++ make patch git curl && \
     yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
     yum -y install epel-release && \
