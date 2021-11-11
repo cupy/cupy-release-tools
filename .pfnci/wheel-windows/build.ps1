@@ -1,6 +1,6 @@
 Param(
-	[String]$python,
 	[String]$cuda,
+	[String]$python,
 	[String]$branch,
 	[String]$job_group
 )
@@ -52,6 +52,12 @@ echo "     CUDA_PATH:   $cuda_path"
 echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
 RunOrDie python -V
+
+# Branch to be built.
+if ($branch -eq "") {
+    $branch = Get-Content "./.pfnci/BRANCH"
+}
+echo ">> Using Branch: $branch"
 
 # Clone CuPy and checkout the target branch
 RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
