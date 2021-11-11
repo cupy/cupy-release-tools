@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.5 master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.7 11.5 v10"
   }
 }
 configs {
@@ -24,7 +24,7 @@ configs {
     time_limit {
       seconds: 18000
     }
-    command: "sh .pfnci/wheel-linux/main.sh 3.8 10.2-jetson master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.8 10.2-jetson v10"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }
@@ -39,7 +39,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: "sh .pfnci/wheel-linux/main.sh 3.8 rocm-4.3 master"
+    command: "sh .pfnci/wheel-linux/main.sh 3.8 rocm-4.3 v10"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }
@@ -56,7 +56,7 @@ configs {
     time_limit {
       seconds: 7200
     }
-    command: ".pfnci\\wheel-windows\\main.bat 3.10 11.5 master"
+    command: ".pfnci\\wheel-windows\\main.bat 3.10 11.5 v10"
   }
 }
 configs {
