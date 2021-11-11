@@ -65,19 +65,33 @@ def main():
     jobs = get_jobs(job_ids)
     stats = get_job_run_stats(jobs)
 
+    all_ready = True
+    failed = False
     for job_id in sorted(jobs.keys()):
         command, run_id = jobs[job_id]
         exit_status = stats.get(job_id, None)
         if run_id is None:
             progress = '⌛️ WAIT'
+            all_ready = False
         elif exit_status is None:
             progress = '💪 BUILD'
+            all_ready = False
         elif exit_status == 0:
             progress = '✅ OK'
         else:
             progress = '🚨 FAIL'
+            all_ready = False
+            failed = True
         print(f'Job #{job_id}: {command} ... {progress}: '
               f'https://ci.preferred.jp/r/job/{job_id} (Exec #{run_id})')
+
+    print()
+    if all_ready:
+        print('Result: 🚀 Ship it!')
+    elif failed:
+        print('Result: 😨 Need to fix failures')
+    else:
+        print('Result: ☕️ Wait until all assets are ready...')
 
 
 main()
