@@ -2,6 +2,7 @@
 
 import itertools
 import os
+import subprocess
 import sys
 
 import distlib.locators
@@ -13,6 +14,7 @@ CP38 = 'cp38-cp38'
 CP39 = 'cp39-cp39'
 CP310 = 'cp310-cp310'
 LINUX = 'manylinux1_x86_64'
+LINUX_AARCH64 = 'manylinux2014_aarch64'
 WINDOWS = 'win_amd64'
 
 
@@ -23,14 +25,19 @@ _v10_cuda_matrix = list(itertools.product(
 _v10_rocm_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310), (LINUX,)))
 _v9_cuda_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
+    (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
 _v9_rocm_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39, CP310), (LINUX,)))
+    (CP36, CP37, CP38, CP39), (LINUX,)))
 
 wheel_projects = {
     # v10.x
     '10': [
-        ('cupy-cuda102',  _v10_cuda_matrix),
+        ('cupy-cuda102',  _v10_cuda_matrix + [
+            (CP37, LINUX_AARCH64),
+            (CP38, LINUX_AARCH64),
+            (CP39, LINUX_AARCH64),
+            (CP310, LINUX_AARCH64),
+        ]),
         ('cupy-cuda110',  _v10_cuda_matrix),
         ('cupy-cuda111',  _v10_cuda_matrix),
         ('cupy-cuda112',  _v10_cuda_matrix),
@@ -67,6 +74,14 @@ def get_basenames(project, version):
     if version not in proj:
         return []
     return [os.path.basename(url) for url in proj[version].download_urls]
+
+
+def get_basenames_github(version):
+    return subprocess.check_output([
+        'gh', 'release', '--repo', 'cupy/cupy',
+        'view', f'v{version}',
+        '--json', 'assets',
+        '--jq', '.assets[].name']).decode().splitlines()
 
 
 def get_expected_sdist_basename(project, version):
@@ -119,13 +134,24 @@ def main(argv):
     verify(sdist_project, expected, actual)
 
     # wheel
+    expected = {}
     for (project, matrix) in wheel_projects[branch]:
-        expected = [
+        expected[project] = [
             get_expected_wheel_basename(project, version, cpython, arch)
             for (cpython, arch) in matrix
         ]
-        actual = get_basenames(project, version)
-        verify(project, expected, actual)
+
+    if any([x in version for x in ('a', 'b', 'rc')]):
+        # Pre-release, verify assets on GitHub release
+        verify(
+            'GitHub Release',
+            itertools.chain(*expected.values()),
+            get_basenames_github(version))
+    else:
+        # Stable release, find from PyPI
+        for project, _ in wheel_projects[branch]:
+            actual = get_basenames(project, version)
+            verify(project, expected[project], actual)
 
     return 0
 
