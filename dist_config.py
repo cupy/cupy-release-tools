@@ -128,12 +128,12 @@ WHEEL_LINUX_CONFIGS = {
     '11.5': {
         'name': 'cupy-cuda115',
         'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.1-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
         # TODO(kmaehashi): use NVIDIA docker image after released
-        'verify_image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
+        'verify_image': 'cupy/cupy-release-tools:cuda-runfile-11.5.1-centos7',
         'verify_systems': ['default'],
         'system_packages': '',
     },
