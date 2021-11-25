@@ -2,16 +2,22 @@
 
 set -uex
 
-PYTHON=$1
-CUDA=$2
-BRANCH=$3
+CUDA=$1
+PYTHON=$2
+BRANCH=${3:-}
 JOB_GROUP=${4:-}
 
 gcloud auth configure-docker || echo "Failed to configure access to GCR"
 
+if [ -z "${BRANCH}" ]; then
+    BRANCH="$(cat ./.pfnci/BRANCH)"
+fi
+
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 
-./build.sh "${CUDA}" "${PYTHON}"
+for PY in $(echo ${PYTHON} | tr ',' ' '); do
+    ./build.sh "${CUDA}" "${PY}"
+done
 
 if [ -z "${JOB_GROUP}" ]; then
     echo "Upload skipped as JOB_GROUP is not specified"

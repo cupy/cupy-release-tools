@@ -5,6 +5,10 @@ set -uex
 CUDA="$1"
 
 case ${CUDA} in
+  10.2 )
+    CUDA_VERSION="10.2.89"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_440.33.01_linux.run"
+    ;;
   11.0 )
     CUDA_VERSION="11.0.2"
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.0.2/local_installers/cuda_11.0.2_450.51.05_linux.run"
