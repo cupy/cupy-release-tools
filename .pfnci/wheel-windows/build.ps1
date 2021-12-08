@@ -88,6 +88,12 @@ Get-ChildItem
 UninstallCuDNN $cuda_path
 UninstallCuTENSOR $cuda_path
 
+# Install dependency for cuDNN 8.3+
+echo ">> Installing zlib"
+RunOrDie curl.exe -LO http://www.winimage.com/zLibDll/zlib123dllx64.zip
+RunOrDie 7z x "zlib123dllx64.zip"
+Copy-Item -Path "dll_x64\zlibwapi.dll" -Destination "C:\Windows\System32"
+
 # Verify
 echo ">> Starting verification..."
 RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
