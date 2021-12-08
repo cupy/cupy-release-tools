@@ -92,7 +92,7 @@ UninstallCuTENSOR $cuda_path
 echo ">> Installing zlib"
 RunOrDie curl.exe -LO http://www.winimage.com/zLibDll/zlib123dllx64.zip
 RunOrDie 7z x "zlib123dllx64.zip"
-$Env:PATH = "$(Get-Location)\dll_x64;" + $Env:PATH
+Copy-Item -Path "dll_x64\zlibwapi.dll" -Destination "C:\Windows\System32"
 
 # Verify
 echo ">> Starting verification..."
