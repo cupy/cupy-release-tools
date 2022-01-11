@@ -63,6 +63,8 @@ echo ">> Using Branch: $branch"
 RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
 
 # Install dependencies
+echo ">> Updating packaging utilities..."
+RunOrDie python -m pip install -U setuptools pip
 echo ">> Installing dependences for wheel build..."
 RunOrDie python -m pip install -U wheel Cython pytest
 echo ">> Packages installed:"
