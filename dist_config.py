@@ -132,9 +132,8 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
-        # TODO(kmaehashi): use NVIDIA docker image after released
-        'verify_image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
-        'verify_systems': ['default'],
+        'verify_image': 'nvidia/cuda:11.5.0-runtime-{system}',
+        'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
     'rocm-4.0': {
