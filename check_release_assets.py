@@ -20,16 +20,35 @@ WINDOWS = 'win_amd64'
 
 sdist_project = 'cupy'
 
+_v11_cuda_matrix = list(itertools.product(
+    (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
+_v11_rocm_matrix = list(itertools.product(
+    (CP37, CP38, CP39, CP310), (LINUX,)))
 _v10_cuda_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
 _v10_rocm_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310), (LINUX,)))
-_v9_cuda_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39), (LINUX, WINDOWS)))
-_v9_rocm_matrix = list(itertools.product(
-    (CP36, CP37, CP38, CP39), (LINUX,)))
 
 wheel_projects = {
+    # v11.x
+    '11': [
+        ('cupy-cuda102',  _v11_cuda_matrix + [
+            (CP37, LINUX_AARCH64),
+            (CP38, LINUX_AARCH64),
+            (CP39, LINUX_AARCH64),
+            (CP310, LINUX_AARCH64),
+        ]),
+        ('cupy-cuda110',  _v11_cuda_matrix),
+        ('cupy-cuda111',  _v11_cuda_matrix),
+        ('cupy-cuda112',  _v11_cuda_matrix),
+        ('cupy-cuda113',  _v11_cuda_matrix),
+        ('cupy-cuda114',  _v11_cuda_matrix),
+        ('cupy-cuda115',  _v11_cuda_matrix),
+        ('cupy-rocm-4-0', _v11_rocm_matrix),
+        ('cupy-rocm-4-2', _v11_rocm_matrix),
+        ('cupy-rocm-4-3', _v11_rocm_matrix),
+    ],
+
     # v10.x
     '10': [
         ('cupy-cuda102',  _v10_cuda_matrix + [
@@ -47,23 +66,6 @@ wheel_projects = {
         ('cupy-rocm-4-0', _v10_rocm_matrix),
         ('cupy-rocm-4-2', _v10_rocm_matrix),
         ('cupy-rocm-4-3', _v10_rocm_matrix),
-    ],
-
-    # v9.x
-    '9': [
-        ('cupy-cuda92',   _v9_cuda_matrix),
-        ('cupy-cuda100',  _v9_cuda_matrix),
-        ('cupy-cuda101',  _v9_cuda_matrix),
-        ('cupy-cuda102',  _v9_cuda_matrix),
-        ('cupy-cuda110',  _v9_cuda_matrix),
-        ('cupy-cuda111',  _v9_cuda_matrix),
-        ('cupy-cuda112',  _v9_cuda_matrix),
-        ('cupy-cuda113',  _v9_cuda_matrix),
-        ('cupy-cuda114',  _v9_cuda_matrix),
-        ('cupy-cuda115',  _v9_cuda_matrix),
-        ('cupy-rocm-4-0', _v9_rocm_matrix),
-        ('cupy-rocm-4-2', _v9_rocm_matrix),
-        ('cupy-rocm-4-3', _v9_rocm_matrix),
     ],
 }
 
