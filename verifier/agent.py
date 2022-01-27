@@ -75,7 +75,12 @@ class VerifierAgent(object):
 
         self._log('CuPy Configuration (after preloading)')
         cmdline = pycommand + [
-            '-Werror', '-c', 'import cupy; cupy.show_config()'
+            '-Werror', '-c', '; '.join([
+                'import cupy',
+                'import cupy.cuda.cudnn',
+                'cupy.show_config()',
+                'print(cupy._environment._get_preload_logs())'
+            ])
         ]
         self._run(*cmdline)
 
