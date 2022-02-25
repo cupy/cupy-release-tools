@@ -8,7 +8,7 @@ configs {
       disk: 30
     }
     time_limit {
-      seconds: 7200
+      seconds: 10800
     }
     command: "sh .pfnci/wheel-linux/main.sh 11.5 3.7"
   }
@@ -37,7 +37,7 @@ configs {
       disk: 30
     }
     time_limit {
-      seconds: 7200
+      seconds: 10800
     }
     command: "sh .pfnci/wheel-linux/main.sh rocm-4.3 3.8"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
@@ -54,7 +54,7 @@ configs {
       image: "windows"
     }
     time_limit {
-      seconds: 7200
+      seconds: 10800
     }
     command: ".pfnci\\wheel-windows\\main.bat 11.5 3.10"
   }
@@ -70,7 +70,7 @@ configs {
       image: "windows"
     }
     time_limit {
-      seconds: 7200
+      seconds: 10800
     }
   }
 }
@@ -84,7 +84,7 @@ configs {
       disk: 30
     }
     time_limit {
-      seconds: 7200
+      seconds: 10800
     }
   }
 }
