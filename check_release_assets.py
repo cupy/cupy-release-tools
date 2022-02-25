@@ -44,7 +44,6 @@ wheel_projects = {
         ('cupy-cuda113',  _v11_cuda_matrix),
         ('cupy-cuda114',  _v11_cuda_matrix),
         ('cupy-cuda115',  _v11_cuda_matrix),
-        ('cupy-rocm-4-0', _v11_rocm_matrix),
         ('cupy-rocm-4-2', _v11_rocm_matrix),
         ('cupy-rocm-4-3', _v11_rocm_matrix),
     ],
