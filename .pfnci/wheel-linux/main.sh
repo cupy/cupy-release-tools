@@ -16,7 +16,7 @@ fi
 # TODO: revert after confirming CUDA 11.6 driver work on GCP
 if [[ "${CUDA}" = "11.6" ]]; then
     export CUPY_RELEASE_SKIP_VERIFY=1
-else
+elif [[ "${CUPY_RELEASE_SKIP_VERIFY:-}" != "" ]]; then
     export CUPY_RELEASE_SKIP_VERIFY=0
 fi
 
