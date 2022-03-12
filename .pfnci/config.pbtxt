@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: "sh .pfnci/wheel-linux/main.sh 11.5 3.7"
+    command: ".pfnci/wheel-linux/main.sh 11.5 3.7"
   }
 }
 configs {
@@ -24,7 +24,7 @@ configs {
     time_limit {
       seconds: 18000
     }
-    command: "sh .pfnci/wheel-linux/main.sh 10.2-jetson 3.8"
+    command: ".pfnci/wheel-linux/main.sh 10.2-jetson 3.8"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }
@@ -39,7 +39,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: "sh .pfnci/wheel-linux/main.sh rocm-4.3 3.8"
+    command: ".pfnci/wheel-linux/main.sh rocm-4.3 3.8"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }
