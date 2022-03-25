@@ -175,11 +175,11 @@ WHEEL_LINUX_CONFIGS = {
         'name': 'cupy-rocm-5-0',
         'kind': 'rocm',
         'platform_version': '5.0',
-        'image': 'rocm/dev-centos-7:5.0.1',
+        'image': 'rocm/dev-centos-7:5.0',
         'libs': [],
         'includes': [],
         'preloads': [],
-        'verify_image': 'rocm/rocm-terminal:5.0.1',
+        'verify_image': 'rocm/rocm-terminal:5.0',
         'verify_systems': ['default'],
         'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
     },
