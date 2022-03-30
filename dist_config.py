@@ -181,7 +181,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'verify_image': 'rocm/rocm-terminal:5.0',
         'verify_systems': ['default'],
-        'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
+        'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
     },
 }
 
