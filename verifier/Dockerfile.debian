@@ -63,5 +63,8 @@ ENV HOME /tmp
 # For ROCm 4.3+ (shared libraries are not added to /etc/ld.so.conf.d)
 ENV LD_LIBRARY_PATH="/opt/rocm/lib:${LD_LIBRARY_PATH}"
 
+# Workaround for bug specific in ROCm 4.3 (https://github.com/cupy/cupy/issues/6605)
+ENV LLVM_PATH="/opt/rocm/llvm"
+
 COPY agent.py /
 ENTRYPOINT ["/agent.py"]
