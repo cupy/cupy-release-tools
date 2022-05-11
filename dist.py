@@ -179,8 +179,12 @@ class Controller(object):
         """Create a docker image to verify distributions."""
 
         # Choose Dockerfile template
-        if 'rhel' in base_image or 'centos' in base_image:
-            log('Using RHEL Dockerfile template')
+        # TODO(kmaehashi): make this dist_config option
+        if 'ubi8' in base_image:
+            log('Using EL8 Dockerfile template')
+            template = 'el8'
+        elif 'centos' in base_image:
+            log('Using RHEL (CentOS 7) Dockerfile template')
             template = 'rhel'
         elif ('ubuntu' in base_image or 'rocm' in base_image or
                 'l4t-base' in base_image):
