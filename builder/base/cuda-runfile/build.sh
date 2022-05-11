@@ -3,9 +3,8 @@
 set -uex
 
 CUDA="$1"
-DOCKERFILE="Dockerfile"
-OS="centos7"
-BASE="centos:8"
+IMAGE_SUFFIX="centos7"
+BASE_IMAGE="centos:7"
 
 case ${CUDA} in
   10.2 )
@@ -43,8 +42,8 @@ case ${CUDA} in
   11.6-aarch64 )
     CUDA_VERSION="11.6.0"
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_510.39.01_linux_sbsa.run"
-    OS="centos8"
-    DOCKERFILE="Dockerfile.centos8"
+    BASE_IMAGE="oraclelinux:8"
+    IMAGE_SUFFIX="el8"
     ;;
   * )
     echo "Unknown CUDA version: ${CUDA}"
@@ -52,7 +51,8 @@ case ${CUDA} in
     ;;
 esac
 
-docker build -t "cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${OS}" -f "${DOCKERFILE}" . \
+docker build -t "cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}" . \
+    --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg CUDA_INSTALLER_URL="${CUDA_INSTALLER_URL}"
 
-echo "Done. Run docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${OS} to push the image."
+echo "Done. Run docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX} to push the image."
