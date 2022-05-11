@@ -16,10 +16,6 @@ ARG cython_version
 COPY setup_python.sh /
 RUN /setup_python.sh "${python_versions}" "${cython_version}"
 
-# Install devtoolset (g++) for CuPy v8 build.
-COPY setup_devtoolset.sh /
-RUN /setup_devtoolset.sh
-
 # Install additional libraries for CUDA.
 COPY cuda_lib/ /cuda_lib
 COPY setup_cuda_opt_lib.py /
