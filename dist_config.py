@@ -158,7 +158,7 @@ WHEEL_LINUX_CONFIGS = {
         'preloads': [],
         'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:11.6.0-runtime-{system}',
-        'verify_systems': ['centos8'],
+        'verify_systems': ['ubi8'],
         'system_packages': '',
     },
     'rocm-4.2': {
