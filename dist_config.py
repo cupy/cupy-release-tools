@@ -156,6 +156,7 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [],
         'includes': [],
         'preloads': [],
+        'builder_dockerfile': 'Dockerfile.rhel8',
         'verify_image': 'nvidia/cuda:11.6.0-runtime-{system}',
         'verify_systems': ['centos8'],
         'system_packages': '',
