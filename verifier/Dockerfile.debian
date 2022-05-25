@@ -5,7 +5,7 @@ USER root
 RUN [ ! -d /opt/rocm ] || ( curl -qL https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - )
 
 # Update CUDA GPG key
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -y update && \
