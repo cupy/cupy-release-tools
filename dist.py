@@ -40,9 +40,13 @@ def log(msg):
     out.flush()
 
 
-def run_command(*cmd, **kwargs):
+def run_command(*cmd, extra_env=None, **kwargs):
+    env = None
+    if extra_env is not None:
+        env = os.environ.copy()
+        env.update(extra_env)
     log('Running command: {}'.format(str(cmd)))
-    subprocess.check_call(cmd, **kwargs)
+    subprocess.check_call(cmd, env=env, **kwargs)
 
 
 def run_command_output(*cmd, **kwargs):
@@ -175,11 +179,14 @@ class Controller(object):
             'docker', 'build',
             '--file', f'{docker_ctx}/{builder_dockerfile}',
             '--tag', image_tag,
+            '--cache-from', image_tag,
+            '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
             '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
+            extra_env={'DOCKER_BUILDKIT': '1'},
         )
         if push:
             run_command('docker', 'push', image_tag)
@@ -213,10 +220,13 @@ class Controller(object):
         run_command(
             'docker', 'build',
             '--tag', image_tag,
+            '--cache-from', image_tag,
+            '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
+            extra_env={'DOCKER_BUILDKIT': '1'},
         )
         if push:
             run_command('docker', 'push', image_tag)
@@ -277,7 +287,8 @@ class Controller(object):
                 '(version {}, for CUDA {} + Python {})'.format(
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
-            image_tag = f'cupy/cupy-release-tools:cupy-builder-{cuda_version}'
+            image_tag = ('cupy/cupy-release-tools:builder-' +
+                         f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
@@ -311,7 +322,8 @@ class Controller(object):
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
             action = 'sdist'
-            image_tag = 'cupy/cupy-release-tools:cupy-builder-sdist'
+            image_tag = ('cupy/cupy-release-tools:builder-' +
+                         f'sdist-v{CUPY_MAJOR_VERSION}')
             kind = 'cuda'
             arch = None
             preloads = []
@@ -585,7 +597,8 @@ class Controller(object):
 
         if target == 'sdist':
             assert cuda_version is None
-            image_tag = 'cupy/cupy-release-tools:verifier-sdist'
+            image_tag = ('cupy/cupy-release-tools:verifier-' +
+                         f'sdist-v{CUPY_MAJOR_VERSION}')
             kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
@@ -593,8 +606,8 @@ class Controller(object):
             system_packages = ''
         elif target == 'wheel-linux':
             assert cuda_version is not None
-            image_tag = ('cupy/cupy-release-tools:' +
-                         f'verifier-wheel-linux-{cuda_version}')
+            image_tag = ('cupy/cupy-release-tools:verifier-' +
+                         f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
