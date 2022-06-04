@@ -102,6 +102,14 @@ class Controller(object):
             '--python', type=str, choices=WHEEL_PYTHON_VERSIONS.keys(),
             required=True,
             help='python version')
+        parser.add_argument(
+            '--dry-run', action='store_true', default=False,
+            required=True,
+            help='only generate builder/verifier Docker images - Linux only')
+        parser.add_argument(
+            '--push', action='store_true', default=False,
+            required=True,
+            help='push builder/verifier Docker images - Linux only')
 
         # Build mode options:
         parser.add_argument(
@@ -144,7 +152,7 @@ class Controller(object):
             else:
                 self.build_linux(
                     args.target, args.cuda, args.python,
-                    args.source, args.output)
+                    args.source, args.output, args.dry_run, args.push)
         elif args.action == 'verify':
             if args.target == 'wheel-win':
                 self.verify_windows(
@@ -153,11 +161,11 @@ class Controller(object):
             else:
                 self.verify_linux(
                     args.target, args.cuda, args.python,
-                    args.dist, args.test)
+                    args.dist, args.test, args.dry_run, args.push)
 
     def _create_builder_linux(
             self, image_tag, base_image, builder_dockerfile, system_packages,
-            docker_ctx):
+            docker_ctx, push):
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(
@@ -173,9 +181,11 @@ class Controller(object):
             '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
         )
+        if push:
+            run_command('docker', 'push', image_tag)
 
     def _create_verifier_linux(
-            self, image_tag, base_image, system_packages, docker_ctx):
+            self, image_tag, base_image, system_packages, docker_ctx, push):
         """Create a docker image to verify distributions."""
 
         # Choose Dockerfile template
@@ -208,6 +218,8 @@ class Controller(object):
             '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
         )
+        if push:
+            run_command('docker', 'push', image_tag)
 
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
@@ -252,7 +264,7 @@ class Controller(object):
 
     def build_linux(
             self, target, cuda_version, python_version,
-            source, output):
+            source, output, dry_run, push):
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
@@ -265,7 +277,7 @@ class Controller(object):
                 '(version {}, for CUDA {} + Python {})'.format(
                     source, version, cuda_version, python_version))
             action = 'bdist_wheel'
-            image_tag = 'cupy-builder-{}'.format(cuda_version)
+            image_tag = f'cupy/cupy-release-tools:cupy-builder-{cuda_version}'
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
@@ -299,7 +311,7 @@ class Controller(object):
             log('Starting sdist build from {} (version {})'.format(
                 source, version))
             action = 'sdist'
-            image_tag = 'cupy-builder-sdist'
+            image_tag = 'cupy/cupy-release-tools:cupy-builder-sdist'
             kind = 'cuda'
             arch = None
             preloads = []
@@ -398,7 +410,11 @@ class Controller(object):
             # Creates a Docker image to build distribution.
             self._create_builder_linux(
                 image_tag, base_image, builder_dockerfile, system_packages,
-                docker_ctx)
+                docker_ctx, push)
+
+            if dry_run:
+                log('Dry run requested, exiting without actual build.')
+                return
 
             # Build.
             log('Starting build')
@@ -564,12 +580,12 @@ class Controller(object):
 
     def verify_linux(
             self, target, cuda_version, python_version,
-            dist, tests):
+            dist, tests, dry_run, push):
         """Verify a single distribution for Linux."""
 
         if target == 'sdist':
             assert cuda_version is None
-            image_tag = 'cupy-verifier-sdist'
+            image_tag = 'cupy/cupy-release-tools:verifier-sdist'
             kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
             systems = SDIST_CONFIG['verify_systems']
@@ -577,7 +593,8 @@ class Controller(object):
             system_packages = ''
         elif target == 'wheel-linux':
             assert cuda_version is not None
-            image_tag = 'cupy-verifier-wheel-linux-{}'.format(cuda_version)
+            image_tag = ('cupy/cupy-release-tools:' +
+                         f'verifier-wheel-linux-{cuda_version}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
             systems = WHEEL_LINUX_CONFIGS[cuda_version]['verify_systems']
@@ -595,11 +612,11 @@ class Controller(object):
             self._verify_linux(
                 image_tag_system, image, kind, dist, tests,
                 python_version,
-                cuda_version, preloads, system_packages)
+                cuda_version, preloads, system_packages, dry_run, push)
 
     def _verify_linux(
             self, image_tag, base_image, kind, dist, tests, python_version,
-            cuda_version, preloads, system_packages):
+            cuda_version, preloads, system_packages, dry_run, push):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -640,7 +657,11 @@ class Controller(object):
 
             # Creates a Docker image to verify specified distribution.
             self._create_verifier_linux(
-                image_tag, base_image, system_packages, docker_ctx)
+                image_tag, base_image, system_packages, docker_ctx, push)
+
+            if dry_run:
+                log('Dry run requested, exiting without actual verification.')
+                return
 
             # Verify.
             log('Starting verification')
