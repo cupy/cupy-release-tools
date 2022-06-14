@@ -57,7 +57,9 @@ case ${CUDA} in
     ;;
 esac
 
+export DOCKER_BUILDKIT=1
 docker build -t "cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}" . \
+    --build-arg BUILDKIT_INLINE_CACHE=1 \
     --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg CUDA_INSTALLER_URL="${CUDA_INSTALLER_URL}"
 
