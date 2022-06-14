@@ -21,7 +21,8 @@ mkdir -p _jetson-rootfs
 sudo mount -o ro "${LOOP_DEV}p1" _jetson-rootfs
 sudo tar cf _jetson-rootfs.tar -C _jetson-rootfs .
 
-sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-sudo docker build -t asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson .
+[[ $(uname -m) = aarch64 ]] || docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+export DOCKER_BUILDKIT=1
+docker build -t cupy/cupy-release-tools:cuda-10.2-jetson --build-arg BUILDKIT_INLINE_CACHE=1 .
 echo "Done. Maintainers can push the Docker image by:"
-echo "$ docker push asia.gcr.io/pfn-public-ci/cupy-release-tools:cuda-10.2-jetson"
+echo "$ docker push cupy/cupy-release-tools:cuda-10.2-jetson"
