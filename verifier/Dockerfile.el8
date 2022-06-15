@@ -4,7 +4,7 @@ FROM ${base_image}
 USER root
 RUN yum -y update --nobest && \
     yum -y install gcc gcc-c++ make patch git && \
-    yum -y install bzip2-devel openssl-devel && \
+    yum -y install bzip2-devel openssl-devel libffi-devel && \
     yum clean all
 
 # Install pyenv.
