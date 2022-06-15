@@ -108,11 +108,9 @@ class Controller(object):
             help='python version')
         parser.add_argument(
             '--dry-run', action='store_true', default=False,
-            required=True,
             help='only generate builder/verifier Docker images - Linux only')
         parser.add_argument(
             '--push', action='store_true', default=False,
-            required=True,
             help='push builder/verifier Docker images - Linux only')
 
         # Build mode options:
