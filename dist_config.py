@@ -200,6 +200,51 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubi8'],
         'system_packages': '',
     },
+    '11.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
+        'name': 'cupy-cuda11x',
+        'kind': 'cuda',
+        'platform_version': '11.2 ~ 11.x',
+        # Use the latest CUDA version for build.
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-centos7',
+        'libs': [],
+        'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '11.2.2-runtime-ubuntu18.04',
+            '11.3.1-runtime-ubuntu18.04',
+            '11.4.3-runtime-ubuntu18.04',
+            '11.5.2-runtime-ubuntu18.04',
+            '11.6.2-runtime-ubuntu18.04',
+            '11.7.0-runtime-ubuntu18.04',
+        ],
+        'system_packages': '',
+    },
+    '11.x-aarch64': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
+        'name': 'cupy-cuda11x',
+        'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '11.2 ~ 11.x',
+        # Use the latest image.
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-el8',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '11.2.1-runtime-ubi8',
+            '11.3.0-runtime-ubi8',
+            '11.4.2-runtime-ubi8',
+            '11.5.1-runtime-ubi8',
+            '11.6.1-runtime-ubi8',
+            '11.7.0-runtime-ubi8',
+        ],
+        'system_packages': '',
+    },
     'rocm-4.2': {
         'name': 'cupy-rocm-4-2',
         'kind': 'rocm',
