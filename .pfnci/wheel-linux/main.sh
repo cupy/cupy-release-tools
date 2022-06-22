@@ -13,12 +13,7 @@ if [ -z "${BRANCH}" ]; then
     BRANCH="$(cat ./.pfnci/BRANCH)"
 fi
 
-# TODO: revert after confirming CUDA 11.6 driver work on GCP
-if [[ "${CUDA}" = "11.6" ]]; then
-    export CUPY_RELEASE_SKIP_VERIFY=1
-elif [[ "${CUPY_RELEASE_SKIP_VERIFY:-}" = "" ]]; then
-    export CUPY_RELEASE_SKIP_VERIFY=0
-fi
+.pfnci/wheel-linux/update-cuda-driver.sh
 
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 

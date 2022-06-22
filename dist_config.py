@@ -175,6 +175,31 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubi8'],
         'system_packages': '',
     },
+    '11.7': {
+        'name': 'cupy-cuda117',
+        'kind': 'cuda',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-centos7',
+        'libs': [],
+        'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'verify_image': 'nvidia/cuda:11.7.0-runtime-{system}',
+        'verify_systems': ['ubuntu18.04'],
+        'system_packages': '',
+    },
+    '11.7-aarch64': {
+        'name': 'cupy-cuda117',
+        'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '11.7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-el8',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'builder_dockerfile': 'Dockerfile.el8',
+        'verify_image': 'nvidia/cuda:11.7.0-runtime-{system}',
+        'verify_systems': ['ubi8'],
+        'system_packages': '',
+    },
     'rocm-4.2': {
         'name': 'cupy-rocm-4-2',
         'kind': 'rocm',
@@ -300,6 +325,16 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11060 <= x < 11070,
     },
+    '11.7': {
+        'name': 'cupy-cuda117',
+        'kind': 'cuda',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'preloads': ['cutensor', 'cudnn'],
+        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
+        'check_version': lambda x: 11070 <= x < 11080,
+    },
 }
 
 
@@ -320,6 +355,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda117 <https://pypi.org/project/cupy-cuda117/>`_ (for CUDA 11.7)
 - `cupy-cuda116 <https://pypi.org/project/cupy-cuda116/>`_ (for CUDA 11.6)
 - `cupy-cuda115 <https://pypi.org/project/cupy-cuda115/>`_ (for CUDA 11.5)
 - `cupy-cuda114 <https://pypi.org/project/cupy-cuda114/>`_ (for CUDA 11.4)
