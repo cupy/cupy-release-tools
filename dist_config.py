@@ -411,12 +411,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
-- `cupy-cuda117 <https://pypi.org/project/cupy-cuda117/>`_ (for CUDA 11.7)
-- `cupy-cuda116 <https://pypi.org/project/cupy-cuda116/>`_ (for CUDA 11.6)
-- `cupy-cuda115 <https://pypi.org/project/cupy-cuda115/>`_ (for CUDA 11.5)
-- `cupy-cuda114 <https://pypi.org/project/cupy-cuda114/>`_ (for CUDA 11.4)
-- `cupy-cuda113 <https://pypi.org/project/cupy-cuda113/>`_ (for CUDA 11.3)
-- `cupy-cuda112 <https://pypi.org/project/cupy-cuda112/>`_ (for CUDA 11.2)
+- `cupy-cuda11x <https://pypi.org/project/cupy-cuda11x/>`_ (for CUDA 11.2 ~ 11.x)
 - `cupy-cuda111 <https://pypi.org/project/cupy-cuda111/>`_ (for CUDA 11.1)
 - `cupy-cuda110 <https://pypi.org/project/cupy-cuda110/>`_ (for CUDA 11.0)
 - `cupy-cuda102 <https://pypi.org/project/cupy-cuda102/>`_ (for CUDA 10.2)
