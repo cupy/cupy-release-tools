@@ -2,7 +2,7 @@
 
 set -ue
 
-if dpkg -s cuda-drivers-495; then
+if dpkg -s cuda-drivers-495 && ls /dev/nvidiactl ; then
     killall Xorg
     nvidia-smi -pm 0
 
