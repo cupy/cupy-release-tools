@@ -380,6 +380,17 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11070 <= x < 11080,
     },
+    '11.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
+        'name': 'cupy-cuda11x',
+        'kind': 'cuda',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        'preloads': ['cutensor', 'cudnn'],
+        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
+        'check_version': lambda x: 11070 <= x < 11080,
+    },
 }
 
 
