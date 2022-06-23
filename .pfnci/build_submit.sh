@@ -33,7 +33,7 @@ submit_job() {
 submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh sdist 3.7 ${BRANCH} ${JOB_GROUP}"
 
 # wheels (Linux)
-for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5 11.6; do
+for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5 11.6 11.7; do
   submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${CUDA} 3.7,3.8,3.9,3.10 ${BRANCH} ${JOB_GROUP}"
 done
 
@@ -43,7 +43,7 @@ for PYTHON in 3.7 3.8 3.9 3.10; do
 done
 
 # wheels (Windows)
-for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5 11.6; do
+for CUDA in 10.2 11.0 11.1 11.2 11.3 11.4 11.5 11.6 11.7; do
   for PYTHON in 3.7 3.8 3.9 3.10; do
     submit_job cupy-wheel-win ".pfnci\\wheel-windows\\main.bat ${CUDA} ${PYTHON} ${BRANCH} ${JOB_GROUP}"
   done
