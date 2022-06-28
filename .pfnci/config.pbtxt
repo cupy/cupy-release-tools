@@ -2,15 +2,15 @@ configs {
   key: "cupy-release-tools"
   value {
     requirement {
-      cpu: 8
+      cpu: 12
       gpu: 1
-      memory: 48
+      memory: 78
       disk: 30
     }
     time_limit {
       seconds: 10800
     }
-    command: ".pfnci/wheel-linux/main.sh 11.7 3.7"
+    command: ".pfnci/wheel-linux/main.sh 11.x 3.7"
   }
 }
 configs {
@@ -56,7 +56,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: ".pfnci\\wheel-windows\\main.bat 11.7 3.10"
+    command: ".pfnci\\wheel-windows\\main.bat 11.x 3.10"
   }
 }
 configs {
@@ -78,9 +78,9 @@ configs {
   key: "cupy-wheel-linux"
   value {
     requirement {
-      cpu: 8
+      cpu: 12
       gpu: 1
-      memory: 48
+      memory: 78
       disk: 30
     }
     time_limit {
