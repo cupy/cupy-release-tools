@@ -2,9 +2,9 @@ configs {
   key: "cupy-release-tools"
   value {
     requirement {
-      cpu: 8
+      cpu: 12
       gpu: 1
-      memory: 48
+      memory: 78
       disk: 30
     }
     time_limit {
@@ -78,9 +78,9 @@ configs {
   key: "cupy-wheel-linux"
   value {
     requirement {
-      cpu: 8
+      cpu: 12
       gpu: 1
-      memory: 48
+      memory: 78
       disk: 30
     }
     time_limit {
