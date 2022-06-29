@@ -5,7 +5,7 @@ USER root
 RUN [ ! -d /opt/rocm ] || ( curl -qL https://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - )
 
 # Update CUDA GPG key
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub || echo "Skip updating GPG key"
 
 # Workaround an issue in ROCm 4.0.0 docker image that apt repo is not pinned to the version
 RUN [ ! -d /opt/rocm-4.0.0 ] || ( \
