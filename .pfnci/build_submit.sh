@@ -37,11 +37,6 @@ for CUDA in 10.2 11.0 11.1 11.x; do
   submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${CUDA} 3.7,3.8,3.9,3.10 ${BRANCH} ${JOB_GROUP}"
 done
 
-# Wheel (Linux / Jetson)
-for PYTHON in 3.7 3.8 3.9 3.10; do
-  submit_job cupy-release-tools.linux.jetson ".pfnci/wheel-linux/main.sh 10.2-jetson ${PYTHON} ${BRANCH} ${JOB_GROUP}"
-done
-
 # wheels (Windows)
 for CUDA in 10.2 11.0 11.1 11.x; do
   for PYTHON in 3.7 3.8 3.9 3.10; do
