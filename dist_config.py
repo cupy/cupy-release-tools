@@ -233,6 +233,7 @@ WHEEL_LINUX_CONFIGS = {
         'libs': [],
         'includes': [],
         'preloads': [],
+        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
