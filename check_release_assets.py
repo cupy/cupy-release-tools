@@ -111,13 +111,13 @@ def verify(project, expected, actual):
     expected = set(expected)
     actual = set(actual)
     error = False
-    for project in (expected - actual):
+    for project in sorted(expected - actual):
         error = True
         print('  ❓ Missing: {}'.format(project))
-    for project in (actual - expected):
+    for project in sorted(actual - expected):
         error = True
         print('  ⚠️  Unexpected: {}'.format(project))
-    for project in (actual & expected):
+    for project in sorted(actual & expected):
         print('  👀 Found: {}'.format(project))
     if error:
         print('  ❌ Check Fail')
