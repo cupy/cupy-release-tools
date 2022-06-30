@@ -40,13 +40,12 @@ wheel_projects = {
         ]),
         ('cupy-cuda110',  _v11_cuda_matrix),
         ('cupy-cuda111',  _v11_cuda_matrix),
-        ('cupy-cuda112',  _v11_cuda_matrix),
-        ('cupy-cuda113',  _v11_cuda_matrix),
-        ('cupy-cuda114',  _v11_cuda_matrix),
-        ('cupy-cuda115',  _v11_cuda_matrix),
-        ('cupy-cuda116',  _v11_cuda_matrix),
-        ('cupy-cuda117',  _v11_cuda_matrix),
-        ('cupy-rocm-4-2', _v11_rocm_matrix),
+        ('cupy-cuda11x',  _v11_cuda_matrix + [
+            (CP37, LINUX_AARCH64),
+            (CP38, LINUX_AARCH64),
+            (CP39, LINUX_AARCH64),
+            (CP310, LINUX_AARCH64),
+        ]),
         ('cupy-rocm-4-3', _v11_rocm_matrix),
         ('cupy-rocm-5-0', _v11_rocm_matrix),
     ],
@@ -112,13 +111,13 @@ def verify(project, expected, actual):
     expected = set(expected)
     actual = set(actual)
     error = False
-    for project in (expected - actual):
+    for project in sorted(expected - actual):
         error = True
         print('  ❓ Missing: {}'.format(project))
-    for project in (actual - expected):
+    for project in sorted(actual - expected):
         error = True
         print('  ⚠️  Unexpected: {}'.format(project))
-    for project in (actual & expected):
+    for project in sorted(actual & expected):
         print('  👀 Found: {}'.format(project))
     if error:
         print('  ❌ Check Fail')
