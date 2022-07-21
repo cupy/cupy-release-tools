@@ -2,13 +2,15 @@
 
 import json
 import os
+import re
+import subprocess
 import sys
 import urllib.request
 
 
 def _call_api(api, request, *, base='https://ci.preferred.jp/a', token=None):
     if token is None:
-        token = os.environ['FLEXCI_TOKEN']
+        token = _get_token()
     req = urllib.request.Request(
         f'{base}/{api}',
         data=json.dumps({'request': request}).encode('utf-8'),
@@ -23,6 +25,22 @@ def _call_api(api, request, *, base='https://ci.preferred.jp/a', token=None):
     if response['response'] is None:
         raise RuntimeError(response)
     return response['response']
+
+
+def _get_token():
+    if 'FLEXCI_TOKEN' in os.environ:
+        return os.environ['FLEXCI_TOKEN']
+
+    proc = subprocess.run(
+        ['imosci', 'config', '-format', 'pbtxt'],
+        capture_output=True, text=True)
+    assert proc.returncode == 0, 'failed to execute imosci config command'
+    for line in proc.stdout.splitlines():
+        m = re.fullmatch(r'\s+uuid:\s+"(.+)"', line)
+        if m is None:
+            continue
+        return m.group(1)
+    assert False, 'FlexCI token unavailable'
 
 
 def get_jobs(job_ids):
