@@ -70,7 +70,7 @@ configs {
       image: "windows"
     }
     time_limit {
-      seconds: 10800
+      seconds: 14400
     }
   }
 }
@@ -84,7 +84,7 @@ configs {
       disk: 30
     }
     time_limit {
-      seconds: 10800
+      seconds: 14400
     }
   }
 }
