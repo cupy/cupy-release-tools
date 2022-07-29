@@ -75,11 +75,13 @@ wheel_projects = {
 
 
 def get_basenames(project, version):
-    locator = distlib.locators.PyPIJSONLocator('https://pypi.org/pypi')
-    proj = locator.get_project(project)
+    # List all wheels including unsupported ones by the current Python
+    distlib.locators.is_compatible = lambda *args: True
+    locator = distlib.locators.SimpleScrapingLocator('https://pypi.org/simple/')
+    proj = locator.get_project(project)['urls']
     if version not in proj:
         return []
-    return [os.path.basename(url) for url in proj[version].download_urls]
+    return [os.path.basename(url) for url in proj[version]]
 
 
 def get_basenames_github(version):
