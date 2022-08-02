@@ -22,54 +22,32 @@ sdist_project = 'cupy'
 
 _v11_cuda_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
+_v11_aarch64_matrix = list(itertools.product(
+    (CP37, CP38, CP39, CP310), (LINUX_AARCH64,)))
 _v11_rocm_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310), (LINUX,)))
-_v10_cuda_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
-_v10_rocm_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX,)))
 
-wheel_projects = {
+pypi_wheel_projects = {
     # v11.x
     '11': [
-        ('cupy-cuda102',  _v11_cuda_matrix + [
-            (CP37, LINUX_AARCH64),
-            (CP38, LINUX_AARCH64),
-            (CP39, LINUX_AARCH64),
-            (CP310, LINUX_AARCH64),
-        ]),
+        ('cupy-cuda102',  _v11_cuda_matrix),
         ('cupy-cuda110',  _v11_cuda_matrix),
         ('cupy-cuda111',  _v11_cuda_matrix),
-        ('cupy-cuda11x',  _v11_cuda_matrix + [
-            (CP37, LINUX_AARCH64),
-            (CP38, LINUX_AARCH64),
-            (CP39, LINUX_AARCH64),
-            (CP310, LINUX_AARCH64),
-        ]),
+        ('cupy-cuda11x',  _v11_cuda_matrix),
         ('cupy-rocm-4-3', _v11_rocm_matrix),
         ('cupy-rocm-5-0', _v11_rocm_matrix),
     ],
+}
 
-    # v10.x
-    '10': [
-        ('cupy-cuda102',  _v10_cuda_matrix + [
-            (CP37, LINUX_AARCH64),
-            (CP38, LINUX_AARCH64),
-            (CP39, LINUX_AARCH64),
-            (CP310, LINUX_AARCH64),
-        ]),
-        ('cupy-cuda110',  _v10_cuda_matrix),
-        ('cupy-cuda111',  _v10_cuda_matrix),
-        ('cupy-cuda112',  _v10_cuda_matrix),
-        ('cupy-cuda113',  _v10_cuda_matrix),
-        ('cupy-cuda114',  _v10_cuda_matrix),
-        ('cupy-cuda115',  _v10_cuda_matrix),
-        ('cupy-cuda116',  _v10_cuda_matrix),
-        ('cupy-cuda117',  _v10_cuda_matrix),
-        ('cupy-rocm-4-0', _v10_rocm_matrix),
-        ('cupy-rocm-4-2', _v10_rocm_matrix),
-        ('cupy-rocm-4-3', _v10_rocm_matrix),
-        ('cupy-rocm-5-0', _v10_rocm_matrix),
+github_wheel_projects = {
+    # v11.x
+    '11': [
+        ('cupy-cuda102',  _v11_cuda_matrix + _v11_aarch64_matrix),
+        ('cupy-cuda110',  _v11_cuda_matrix),
+        ('cupy-cuda111',  _v11_cuda_matrix),
+        ('cupy-cuda11x',  _v11_cuda_matrix + _v11_aarch64_matrix),
+        ('cupy-rocm-4-3', _v11_rocm_matrix),
+        ('cupy-rocm-5-0', _v11_rocm_matrix),
     ],
 }
 
@@ -126,6 +104,17 @@ def verify(project, expected, actual):
     print()
 
 
+def get_expected_wheels(wheel_projects, version):
+    branch = str(version.split('.')[0])
+    return {
+        project: [
+            get_expected_wheel_basename(project, version, cpython, arch)
+            for (cpython, arch) in matrix
+        ]
+        for (project, matrix) in wheel_projects[branch]
+    }
+
+
 def main(argv):
     if len(argv) != 2:
         print(f'Usage: {argv[0]} VERSION')
@@ -139,23 +128,17 @@ def main(argv):
     actual = get_basenames(sdist_project, version)
     verify(sdist_project, expected, actual)
 
-    # wheel
-    expected = {}
-    for (project, matrix) in wheel_projects[branch]:
-        expected[project] = [
-            get_expected_wheel_basename(project, version, cpython, arch)
-            for (cpython, arch) in matrix
-        ]
+    # Verify assets on GitHub release
+    expected = get_expected_wheels(github_wheel_projects, version)
+    verify(
+        'GitHub Release',
+        itertools.chain(*expected.values()),
+        get_basenames_github(version))
 
-    if any([x in version for x in ('a', 'b', 'rc')]):
-        # Pre-release, verify assets on GitHub release
-        verify(
-            'GitHub Release',
-            itertools.chain(*expected.values()),
-            get_basenames_github(version))
-    else:
+    if not any([x in version for x in ('a', 'b', 'rc')]):
         # Stable release, find from PyPI
-        for project, _ in wheel_projects[branch]:
+        expected = get_expected_wheels(pypi_wheel_projects, version)
+        for project, _ in pypi_wheel_projects[branch]:
             actual = get_basenames(project, version)
             verify(project, expected[project], actual)
 
