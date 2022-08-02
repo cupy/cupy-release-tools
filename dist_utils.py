@@ -11,12 +11,7 @@ from dist_config import WHEEL_PYTHON_VERSIONS
 def wheel_linux_platform_tag(cpu: str, manylinux: bool) -> str:
     assert cpu in ('aarch64', 'x86_64')
     if manylinux:
-        if cpu == 'aarch64':
-            tag = 'manylinux2014'
-        elif cpu == 'x86_64':
-            tag = 'manylinux1'
-        else:
-            assert False
+        tag = 'manylinux2014'
     else:
         tag = 'linux'
     return f'{tag}_{cpu}'

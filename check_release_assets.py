@@ -13,7 +13,7 @@ CP37 = 'cp37-cp37m'
 CP38 = 'cp38-cp38'
 CP39 = 'cp39-cp39'
 CP310 = 'cp310-cp310'
-LINUX = 'manylinux1_x86_64'
+LINUX = 'manylinux2014_x86_64'
 LINUX_AARCH64 = 'manylinux2014_aarch64'
 WINDOWS = 'win_amd64'
 
