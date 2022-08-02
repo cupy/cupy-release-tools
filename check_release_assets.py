@@ -77,7 +77,8 @@ wheel_projects = {
 def get_basenames(project, version):
     # List all wheels including unsupported ones by the current Python
     distlib.locators.is_compatible = lambda *args: True
-    locator = distlib.locators.SimpleScrapingLocator('https://pypi.org/simple/')
+    locator = distlib.locators.SimpleScrapingLocator(
+        'https://pypi.org/simple/')
     proj = locator.get_project(project)['urls']
     if version not in proj:
         return []
