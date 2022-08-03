@@ -102,7 +102,7 @@ def get_expected_wheel_basename(project, version, abi, arch):
 
 
 def verify(project, expected, actual):
-    print('🔵 PyPI: {}'.format(project))
+    print('🔵 Project: {}'.format(project))
     expected = set(expected)
     actual = set(actual)
     error = False
