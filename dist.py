@@ -22,6 +22,7 @@ from dist_config import (
     WHEEL_PYTHON_VERSIONS,
     WHEEL_LONG_DESCRIPTION_CUDA,
     WHEEL_LONG_DESCRIPTION_ROCM,
+    WHEEL_LONG_DESCRIPTION_STUB,
 )  # NOQA
 
 from dist_utils import (
@@ -232,7 +233,7 @@ class Controller(object):
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
             require_runtime=True, docker_opts=None):
-        assert kind in ('cuda', 'rocm')
+        assert kind in ('cuda', 'rocm', 'stub')
 
         log('Running docker container with image: {} ({})'.format(
             image_tag, kind))
@@ -300,13 +301,15 @@ class Controller(object):
                 WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
 
             if kind == 'cuda':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_CUDA
+                long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
+                    version=platform_version)
             elif kind == 'rocm':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
+                long_description = WHEEL_LONG_DESCRIPTION_ROCM.format(
+                    version=platform_version)
+            elif kind == 'stub':
+                long_description = WHEEL_LONG_DESCRIPTION_STUB
             else:
                 assert False
-            long_description = long_description_tmpl.format(
-                version=platform_version)
 
             # Rename wheels to manylinux.
             asset_name = wheel_name(
@@ -350,7 +353,7 @@ class Controller(object):
             '--cupy-package-name', package_name,
             '--cupy-long-description', '../description.rst',
         ]
-        if target == 'wheel-linux':
+        if target == 'wheel-linux' and kind != 'stub':
             setup_args += [
                 '--cupy-no-rpath',
                 '--cupy-wheel-metadata', '../_wheel.json',
@@ -361,7 +364,7 @@ class Controller(object):
                     WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
                 spec = '{}:{}'.format(include_path, include_relpath)
                 setup_args += ['--cupy-wheel-include', spec]
-        elif target == 'sdist':
+        elif target == 'sdist' or kind == 'stub':
             setup_args += [
                 '--cupy-no-cuda',
             ]
@@ -518,6 +521,11 @@ class Controller(object):
                 raise RuntimeError(
                     'Library {} could not be found in PATH'.format(lib))
             setup_args += ['--cupy-wheel-lib', libpath]
+
+        # Build as stub.
+        if kind == 'stub':
+            setup_args += ['--cupy-no-cuda']
+
         agent_args += setup_args
 
         # Create a working directory.

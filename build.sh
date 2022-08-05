@@ -30,6 +30,10 @@ case ${CUDA} in
     # ROCm (wheel)
     VERIFY_ARGS="${VERIFY_ARGS}"
     ;;
+  stub* )
+    # Stub (wheel)
+    VERIFY_ARGS="--test release-tests/pkg_wheel_stub"
+    ;;
   * )
     # CUDA (wheel)
     VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl --test release-tests/pkg_wheel"

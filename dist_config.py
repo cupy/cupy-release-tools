@@ -280,6 +280,29 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
     },
+    'stub': {
+        'name': 'cupy-stub',
+        'kind': 'stub',
+        'image': 'centos:7',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'ubuntu:22.04',
+        'verify_systems': ['default'],
+        'system_packages': '',
+    },
+    'stub-aarch64': {
+        'name': 'cupy-stub',
+        'kind': 'stub',
+        'arch': 'aarch64',
+        'image': 'centos:7',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'ubuntu:22.04',
+        'verify_systems': ['default'],
+        'system_packages': '',
+    },
 }
 
 # Key-value of CUDA version and its corresponding build settings for Windows.
@@ -439,6 +462,11 @@ This is a CuPy wheel (precompiled binary) package for AMD ROCm {version}.
 You need to install `ROCm {version} <https://rocmdocs.amd.com/en/latest/Installation_Guide/Installation-Guide.html>`_ to use these packages.
 
 If you have another version of ROCm, or want to build from source, refer to the `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for instructions.
+'''  # NOQA
+
+# Long description of the stub wheel package in reST syntax.
+WHEEL_LONG_DESCRIPTION_STUB = '''\
+This is a CuPy stub package.
 '''  # NOQA
 
 
