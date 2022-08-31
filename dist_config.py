@@ -71,7 +71,7 @@ WHEEL_LINUX_CONFIGS = {
         'includes': [
         ],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.0-runtime-{system}',
+        'verify_image': 'nvidia/cuda:11.0.3-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
@@ -84,7 +84,7 @@ WHEEL_LINUX_CONFIGS = {
         'includes': [
         ],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.1-runtime-{system}',
+        'verify_image': 'nvidia/cuda:11.1.1-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
