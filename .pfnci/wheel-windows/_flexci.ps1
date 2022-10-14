@@ -49,7 +49,7 @@ function ActivateCUDA($version) {
     } elseif ($version -eq "11.7") {
         $Env:CUDA_PATH = $Env:CUDA_PATH_V11_7
     } elseif ($version -eq "11.x") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V11_7
+        $Env:CUDA_PATH = $Env:CUDA_PATH_V11_8
     } else {
         throw "Unsupported CUDA version: $version"
     }
