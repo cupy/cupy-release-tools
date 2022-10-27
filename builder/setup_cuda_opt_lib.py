@@ -96,7 +96,7 @@ def main():
         _install_library(
             'cudnn', src_dir, dst_dir, {
                 'bin': 'bin',
-                'lib': 'lib/x64',
+                'lib': 'lib',
                 'include': 'include',
             })
     else:
