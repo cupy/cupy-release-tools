@@ -13,6 +13,7 @@ CP37 = 'cp37-cp37m'
 CP38 = 'cp38-cp38'
 CP39 = 'cp39-cp39'
 CP310 = 'cp310-cp310'
+CP311 = 'cp311-cp311'
 LINUX = 'manylinux2014_x86_64'
 LINUX_V11 = 'manylinux1_x86_64'
 LINUX_AARCH64 = 'manylinux2014_aarch64'
@@ -22,18 +23,18 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _v12_cuda_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX, WINDOWS)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX, WINDOWS)))
 _v12_aarch64_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX_AARCH64,)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX_AARCH64,)))
 _v12_rocm_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX,)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX,)))
 
 _v11_cuda_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX_V11, WINDOWS)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX_V11, WINDOWS)))
 _v11_aarch64_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX_AARCH64,)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX_AARCH64,)))
 _v11_rocm_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310), (LINUX_V11,)))
+    (CP37, CP38, CP39, CP310, CP311), (LINUX_V11,)))
 
 pypi_wheel_projects = {
     # v11.x

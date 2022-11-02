@@ -4,7 +4,7 @@ PYTHON_VERSIONS=$1
 CYTHON_VERSION=$2
 
 if [[ "$(rpm --eval '%{rhel}')" == "7" ]]; then
-    # CentOS 7: Use OpenSSL 1.1 for Python 3.10.
+    # CentOS 7: Use OpenSSL 1.1 for Python 3.10+.
     export CFLAGS="-I/usr/include/openssl11"
     export CPPFLAGS="-I/usr/include/openssl11"
     export LDFLAGS="-L/usr/lib64/openssl11"
