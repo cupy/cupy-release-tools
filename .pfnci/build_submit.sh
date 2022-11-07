@@ -39,7 +39,7 @@ done
 
 # wheels (Windows)
 for CUDA in 10.2 11.0 11.1 11.x; do
-  for PYTHON in 3.7 3.8 3.9 3.10; do
+  for PYTHON in 3.7 3.8 3.9 3.10 3.11; do
     submit_job cupy-wheel-win ".pfnci\\wheel-windows\\main.bat ${CUDA} ${PYTHON} ${BRANCH} ${JOB_GROUP}"
   done
 done
