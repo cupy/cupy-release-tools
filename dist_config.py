@@ -204,7 +204,7 @@ WHEEL_LINUX_CONFIGS = {
         'kind': 'cuda',
         'platform_version': '11.2 ~ 11.x',
         # Use the latest CUDA version for build.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
@@ -217,6 +217,7 @@ WHEEL_LINUX_CONFIGS = {
             '11.5.2-runtime-ubuntu18.04',
             '11.6.2-runtime-ubuntu18.04',
             '11.7.0-runtime-ubuntu18.04',
+            '11.8.0-runtime-ubuntu18.04',
         ],
         'system_packages': '',
     },
@@ -227,7 +228,7 @@ WHEEL_LINUX_CONFIGS = {
         'arch': 'aarch64',
         'platform_version': '11.2 ~ 11.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-el8',
         'libs': [],
         'includes': [],
         'preloads': [],
@@ -241,6 +242,7 @@ WHEEL_LINUX_CONFIGS = {
             '11.5.1-runtime-ubi8',
             '11.6.1-runtime-ubi8',
             '11.7.0-runtime-ubi8',
+            '11.8.0-runtime-ubi8',
         ],
         'system_packages': '',
     },
@@ -388,7 +390,7 @@ WHEEL_WINDOWS_CONFIGS = {
         ],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11070 <= x < 11080,
+        'check_version': lambda x: 11080 <= x < 11090,
     },
 }
 
