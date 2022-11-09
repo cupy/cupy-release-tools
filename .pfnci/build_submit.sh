@@ -34,7 +34,7 @@ submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh sdist 3.7 ${BRANCH} ${JO
 
 # wheels (Linux)
 for CUDA in 10.2 11.0 11.1 11.x; do
-  submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${CUDA} 3.7,3.8,3.9,3.10 ${BRANCH} ${JOB_GROUP}"
+  submit_job cupy-wheel-linux ".pfnci/wheel-linux/main.sh ${CUDA} 3.7,3.8,3.9,3.10,3.11 ${BRANCH} ${JOB_GROUP}"
 done
 
 # wheels (Windows)
