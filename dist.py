@@ -112,6 +112,9 @@ class Controller(object):
         parser.add_argument(
             '--push', action='store_true', default=False,
             help='push builder/verifier Docker images - Linux only')
+        parser.add_argument(
+            '--rmi', action='store_true', default=False,
+            help='remove builder/verifier Docker images after build - Linux only')
 
         # Build mode options:
         parser.add_argument(
@@ -154,7 +157,8 @@ class Controller(object):
             else:
                 self.build_linux(
                     args.target, args.cuda, args.python,
-                    args.source, args.output, args.dry_run, args.push)
+                    args.source, args.output, args.dry_run, args.push,
+                    args.rmi)
         elif args.action == 'verify':
             if args.target == 'wheel-win':
                 self.verify_windows(
@@ -163,7 +167,7 @@ class Controller(object):
             else:
                 self.verify_linux(
                     args.target, args.cuda, args.python,
-                    args.dist, args.test, args.dry_run, args.push)
+                    args.dist, args.test, args.dry_run, args.push, args.rmi)
 
     def _create_builder_linux(
             self, image_tag, base_image, builder_dockerfile, system_packages,
@@ -229,6 +233,9 @@ class Controller(object):
         if push:
             run_command('docker', 'push', image_tag)
 
+    def _remove_container_image(self, image_tag):
+        run_command('docker', 'rmi', image_tag)
+
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
             require_runtime=True, docker_opts=None):
@@ -272,7 +279,7 @@ class Controller(object):
 
     def build_linux(
             self, target, cuda_version, python_version,
-            source, output, dry_run, push):
+            source, output, dry_run, push, rmi):
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
@@ -439,6 +446,11 @@ class Controller(object):
             log('Copying asset from {} to {}'.format(asset_path, output_path))
             shutil.copy2(asset_path, output_path)
 
+            # Remove Docker image.
+            if rmi:
+                log('Removing builder Docker image')
+                self._remove_container_image(image_tag)
+
         finally:
             log('Removing working directory: {}'.format(workdir))
             shutil.rmtree(workdir)
@@ -590,7 +602,7 @@ class Controller(object):
 
     def verify_linux(
             self, target, cuda_version, python_version,
-            dist, tests, dry_run, push):
+            dist, tests, dry_run, push, rmi):
         """Verify a single distribution for Linux."""
 
         if target == 'sdist':
@@ -623,11 +635,11 @@ class Controller(object):
             self._verify_linux(
                 image_tag_system, image, kind, dist, tests,
                 python_version,
-                cuda_version, preloads, system_packages, dry_run, push)
+                cuda_version, preloads, system_packages, dry_run, push, rmi)
 
     def _verify_linux(
             self, image_tag, base_image, kind, dist, tests, python_version,
-            cuda_version, preloads, system_packages, dry_run, push):
+            cuda_version, preloads, system_packages, dry_run, push, rmi):
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
@@ -678,6 +690,11 @@ class Controller(object):
             log('Starting verification')
             self._run_container(image_tag, kind, workdir, agent_args)
             log('Finished verification')
+
+            # Remove Docker image.
+            if rmi:
+                log('Removing verifier Docker image')
+                self._remove_container_image(image_tag)
 
         finally:
             log('Removing working directory: {}'.format(workdir))
