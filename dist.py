@@ -114,7 +114,8 @@ class Controller(object):
             help='push builder/verifier Docker images - Linux only')
         parser.add_argument(
             '--rmi', action='store_true', default=False,
-            help='remove builder/verifier Docker images after build - Linux only')
+            help='remove builder/verifier Docker images after build '
+                 '- Linux only')
 
         # Build mode options:
         parser.add_argument(
