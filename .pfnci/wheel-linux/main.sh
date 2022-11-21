@@ -18,7 +18,7 @@ fi
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
 
 for PY in $(echo ${PYTHON} | tr ',' ' '); do
-    ./build.sh "${CUDA}" "${PY}"
+    CUPY_RELEASE_VERIFY_REMOVE_IMAGE=1 ./build.sh "${CUDA}" "${PY}"
 done
 
 if [ -z "${JOB_GROUP}" ]; then
