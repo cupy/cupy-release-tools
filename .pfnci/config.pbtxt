@@ -78,9 +78,9 @@ configs {
   key: "cupy-wheel-linux"
   value {
     requirement {
-      cpu: 8
+      cpu: 16
       gpu: 1
-      memory: 64
+      memory: 104
       disk: 30
     }
     time_limit {
