@@ -154,7 +154,7 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'system_packages': '',
     },
-    '11.x-aarch64': {
+    '12.x-aarch64': {
         # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
         'name': 'cupy-cuda12x',
         'kind': 'cuda',
