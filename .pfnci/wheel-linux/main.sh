@@ -13,9 +13,9 @@ if [ -z "${BRANCH}" ]; then
     BRANCH="$(cat ./.pfnci/BRANCH)"
 fi
 
-.pfnci/wheel-linux/update-cuda-driver.sh
-
 git clone --recursive --branch "${BRANCH}" --depth 1 https://github.com/cupy/cupy.git cupy
+
+cupy/.pfnci/linux/update-cuda-driver.sh
 
 for PY in $(echo ${PYTHON} | tr ',' ' '); do
     CUPY_RELEASE_VERIFY_REMOVE_IMAGE=1 ./build.sh "${CUDA}" "${PY}"
