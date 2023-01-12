@@ -146,7 +146,9 @@ WHEEL_LINUX_CONFIGS = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-12.0.0-centos7',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        # TODO(kmaehashi): cuDNN for CUDA 12 not available yet.
+        # 'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': ['cutensor', 'nccl'],
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
