@@ -20,19 +20,7 @@ function ActivatePython($version) {
 }
 
 function ActivateCUDA($version) {
-    if ($version -eq "8.0") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V8_0
-    } elseif ($version -eq "9.0") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V9_0
-    } elseif ($version -eq "9.1") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V9_1
-    } elseif ($version -eq "9.2") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V9_2
-    } elseif ($version -eq "10.0") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V10_0
-    } elseif ($version -eq "10.1") {
-        $Env:CUDA_PATH = $Env:CUDA_PATH_V10_1
-    } elseif ($version -eq "10.2") {
+    if ($version -eq "10.2") {
         $Env:CUDA_PATH = $Env:CUDA_PATH_V10_2
     } elseif ($version -eq "11.0") {
         $Env:CUDA_PATH = $Env:CUDA_PATH_V11_0
@@ -61,7 +49,36 @@ function ActivateCUDA($version) {
     } else {
         throw "Unsupported CUDA version: $version"
     }
-    $Env:PATH = "$Env:CUDA_PATH\bin;$Env:ProgramFiles\NVIDIA Corporation\NvToolsExt\bin\x64;" + $Env:PATH
+    $Env:PATH = "$Env:CUDA_PATH\bin;" + $Env:PATH
+}
+
+function ActivateCuDNN($cudnn_version, $cuda_version) {
+    if ($cudnn_version -eq "8.6") {
+        $cudnn = "v8.6.0"
+    } else {
+        throw "Unsupported cuDNN version: $cudnn_version"
+    }
+
+    if ($cuda_version -eq "10.2") {
+        $cuda = "10"
+    } elseif ($cuda_version.startswith("11.")) {
+        $cuda = "11"
+    } else {
+        throw "Unsupported CUDA version: $cuda_version"
+    }
+
+    $base = "C:\Development\cuDNN\$cudnn\cuda$cuda"
+    $Env:CL = "-I$base\include " + $Env:CL
+    $Env:LINK = "/LIBPATH:$base\lib\x64 " + $Env:LINK
+    $Env:PATH = "$base\bin;" + $Env:PATH
+}
+
+function ActivateNVTX1() {
+    $base = "C:\Development\NvToolsExt"
+    $Env:NVTOOLSEXT_PATH = "C:\Development\NvToolsExt"
+    $Env:CL = "-I$base\include " + $Env:CL
+    $Env:LINK = "/LIBPATH:$base\lib\x64 " + $Env:LINK
+    $Env:PATH = "$base\bin\x64;" + $Env:PATH
 }
 
 function IsPullRequestTest() {
