@@ -71,6 +71,16 @@ case ${CUDA} in
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
     ;;
+  12.0 )
+    CUDA_VERSION="12.0.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda_12.0.0_525.60.13_linux.run"
+    ;;
+  12.0-aarch64 )
+    CUDA_VERSION="12.0.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda_12.0.0_525.60.13_linux_sbsa.run"
+    BASE_IMAGE="oraclelinux:8"
+    IMAGE_SUFFIX="el8"
+    ;;
   * )
     echo "Unknown CUDA version: ${CUDA}"
     exit 1
