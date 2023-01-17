@@ -32,17 +32,10 @@ function UninstallCuTENSOR($cuda_path) {
     }
 }
 
-# Uninstall existing cuDNN for the default CUDA
-$cuda_path = $Env:CUDA_PATH
-UninstallCuDNN $cuda_path
-
 # Activate target CUDA and uninstall existing cuDNN for the target CUDA
 ActivateCUDA $cuda
 ActivateNVTX1
 $cuda_path = $Env:CUDA_PATH
-UninstallCuDNN $cuda_path
-
-# Note: cuTENSOR is not installed by default, so no need to remove it.
 
 # Activate target Python
 ActivatePython $python
@@ -99,7 +92,12 @@ Copy-Item -Path "dll_x64\zlibwapi.dll" -Destination "C:\Windows\System32"
 
 # Verify
 echo ">> Starting verification..."
-RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
+if ($cuda -eq "12.x") {
+    # TODO(kmaehashi): cuDNN for CUDA 12 not available yet
+    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
+} else {
+    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
+}
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
