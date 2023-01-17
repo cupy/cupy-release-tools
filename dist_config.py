@@ -256,7 +256,8 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [
             'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
         ],
-        'preloads': ['cutensor', 'cudnn'],
+        # TODO(kmaehashi): cuDNN for CUDA 12 not available yet.
+        'preloads': ['cutensor'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
         'check_version': lambda x: 12000 <= x < 12010,  # CUDA 12.0
     }
