@@ -88,116 +88,6 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
-    '11.2': {
-        'name': 'cupy-cuda112',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.2.0-centos7',
-        'libs': [
-        ],
-        'includes': [
-        ],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.2.1-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.3': {
-        'name': 'cupy-cuda113',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.3.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.3.0-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.4': {
-        'name': 'cupy-cuda114',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.4.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.4.0-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.5': {
-        'name': 'cupy-cuda115',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.5.0-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.5-aarch64': {
-        'name': 'cupy-cuda115',
-        'kind': 'cuda',
-        'arch': 'aarch64',
-        'platform_version': '11.5',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.5.0-el8-aarch64',
-        'libs': [],
-        'includes': [],
-        'preloads': [],
-        'builder_dockerfile': 'Dockerfile.el8',
-        'verify_image': 'nvidia/cuda:11.5.0-runtime-{system}',
-        'verify_systems': ['ubi8'],
-        'system_packages': '',
-    },
-    '11.6': {
-        'name': 'cupy-cuda116',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.6.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.6.0-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.6-aarch64': {
-        'name': 'cupy-cuda116',
-        'kind': 'cuda',
-        'arch': 'aarch64',
-        'platform_version': '11.6',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.6.0-el8-aarch64',
-        'libs': [],
-        'includes': [],
-        'preloads': [],
-        'builder_dockerfile': 'Dockerfile.el8',
-        'verify_image': 'nvidia/cuda:11.6.0-runtime-{system}',
-        'verify_systems': ['ubi8'],
-        'system_packages': '',
-    },
-    '11.7': {
-        'name': 'cupy-cuda117',
-        'kind': 'cuda',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:11.7.0-runtime-{system}',
-        'verify_systems': ['ubuntu18.04'],
-        'system_packages': '',
-    },
-    '11.7-aarch64': {
-        'name': 'cupy-cuda117',
-        'kind': 'cuda',
-        'arch': 'aarch64',
-        'platform_version': '11.7',
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.7.0-el8',
-        'libs': [],
-        'includes': [],
-        'preloads': [],
-        'builder_dockerfile': 'Dockerfile.el8',
-        'verify_image': 'nvidia/cuda:11.7.0-runtime-{system}',
-        'verify_systems': ['ubi8'],
-        'system_packages': '',
-    },
     '11.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
@@ -246,17 +136,44 @@ WHEEL_LINUX_CONFIGS = {
         ],
         'system_packages': '',
     },
-    'rocm-4.2': {
-        'name': 'cupy-rocm-4-2',
-        'kind': 'rocm',
-        'platform_version': '4.2',
-        'image': 'rocm/dev-centos-7:4.2',
+    '12.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda12x',
+        'kind': 'cuda',
+        'platform_version': '12.x',
+        # Use the latest CUDA version for build.
+        # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.0.0-centos7',
+        'libs': [],
+        'includes': [],
+        # TODO(kmaehashi): cuDNN for CUDA 12 not available yet.
+        # 'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': ['cutensor', 'nccl'],
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '12.0.0-runtime-ubuntu18.04',
+        ],
+        'system_packages': '',
+    },
+    '12.x-aarch64': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda12x',
+        'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '12.x',
+        # Use the latest image.
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.0.0-el8',
         'libs': [],
         'includes': [],
         'preloads': [],
-        'verify_image': 'rocm/rocm-terminal:4.2',
-        'verify_systems': ['default'],
-        'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
+        'builder_dockerfile': 'Dockerfile.el8',
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '12.0.0-runtime-ubi8',
+        ],
+        'system_packages': '',
     },
     'rocm-4.3': {
         'name': 'cupy-rocm-4-3',
@@ -321,66 +238,6 @@ WHEEL_WINDOWS_CONFIGS = {
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11010 <= x < 11020,
     },
-    '11.2': {
-        'name': 'cupy-cuda112',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11020 <= x < 11030,
-    },
-    '11.3': {
-        'name': 'cupy-cuda113',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11030 <= x < 11040,
-    },
-    '11.4': {
-        'name': 'cupy-cuda114',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11040 <= x < 11050,
-    },
-    '11.5': {
-        'name': 'cupy-cuda115',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11050 <= x < 11060,
-    },
-    '11.6': {
-        'name': 'cupy-cuda116',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11060 <= x < 11070,
-    },
-    '11.7': {
-        'name': 'cupy-cuda117',
-        'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
-        'preloads': ['cutensor', 'cudnn'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11070 <= x < 11080,
-    },
     '11.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
@@ -390,8 +247,20 @@ WHEEL_WINDOWS_CONFIGS = {
         ],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11080 <= x < 11090,
+        'check_version': lambda x: 11080 <= x < 11090,  # CUDA 11.8
     },
+    '12.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda12x',
+        'kind': 'cuda',
+        'libs': [
+            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
+        ],
+        # TODO(kmaehashi): cuDNN for CUDA 12 not available yet.
+        'preloads': ['cutensor'],
+        'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
+        'check_version': lambda x: 12000 <= x < 12010,  # CUDA 12.0
+    }
 }
 
 
@@ -412,6 +281,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for CUDA 12.x)
 - `cupy-cuda11x <https://pypi.org/project/cupy-cuda11x/>`_ (for CUDA 11.2 ~ 11.x)
 - `cupy-cuda111 <https://pypi.org/project/cupy-cuda111/>`_ (for CUDA 11.1)
 - `cupy-cuda110 <https://pypi.org/project/cupy-cuda110/>`_ (for CUDA 11.0)

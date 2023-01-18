@@ -15,6 +15,10 @@ class TestPreload(unittest.TestCase):
         return config
 
     def test_cudnn(self):
+        if cupy.cuda.runtime.runtimeGetVersion() == 12000:
+            # TODO(kmaehashi): cuDNN not yet available for CUDA 12.0
+            assert 'cudnn' not in self._get_config()
+            return
         preload_version = self._get_config()['cudnn']['version']
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
         expected_version = major * 1000 + minor * 100 + patchlevel

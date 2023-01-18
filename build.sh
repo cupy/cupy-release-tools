@@ -26,6 +26,10 @@ case ${CUDA} in
     # CUDA Jetson (wheel)
     VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn"
     ;;
+  12.x )
+    # CUDA 12.0 (wheel) -- cuDNN not available yet
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/nccl --test release-tests/pkg_wheel"
+    ;;
   rocm-* )
     # ROCm (wheel)
     VERIFY_ARGS="${VERIFY_ARGS}"
