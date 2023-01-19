@@ -84,7 +84,7 @@ configs {
       disk: 30
     }
     time_limit {
-      seconds: 14400
+      seconds: 18000
     }
   }
 }
