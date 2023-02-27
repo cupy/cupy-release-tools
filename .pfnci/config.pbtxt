@@ -10,7 +10,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: ".pfnci/wheel-linux/main.sh 12.x 3.7"
+    command: ".pfnci/wheel-linux/main.sh 12.x 3.8"
   }
 }
 configs {
