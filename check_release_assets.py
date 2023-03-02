@@ -23,11 +23,11 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _v12_cuda_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310, CP311), (LINUX, WINDOWS)))
+    (CP38, CP39, CP310, CP311), (LINUX, WINDOWS)))
 _v12_aarch64_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310, CP311), (LINUX_AARCH64,)))
+    (CP38, CP39, CP310, CP311), (LINUX_AARCH64,)))
 _v12_rocm_matrix = list(itertools.product(
-    (CP37, CP38, CP39, CP310, CP311), (LINUX,)))
+    (CP38, CP39, CP310, CP311), (LINUX,)))
 
 _v11_cuda_matrix = list(itertools.product(
     (CP37, CP38, CP39, CP310, CP311), (LINUX_V11, WINDOWS)))
