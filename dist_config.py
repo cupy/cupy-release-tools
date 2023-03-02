@@ -265,7 +265,7 @@ WHEEL_WINDOWS_CONFIGS = {
 
 
 _long_description_header = '''\
-.. image:: https://raw.githubusercontent.com/cupy/cupy/master/docs/image/cupy_logo_1000px.png
+.. image:: https://raw.githubusercontent.com/cupy/cupy/main/docs/image/cupy_logo_1000px.png
    :width: 400
 
 CuPy : NumPy & SciPy for GPU
