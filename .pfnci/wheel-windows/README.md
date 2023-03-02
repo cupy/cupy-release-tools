@@ -2,4 +2,4 @@
 
 FlexCI helper scripts are borrowed from CuPy:
 
-https://github.com/cupy/cupy/tree/master/.pfnci/windows
+https://github.com/cupy/cupy/tree/main/.pfnci/windows
