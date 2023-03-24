@@ -55,6 +55,8 @@ function ActivateCUDA($version) {
 function ActivateCuDNN($cudnn_version, $cuda_version) {
     if ($cudnn_version -eq "8.6") {
         $cudnn = "v8.6.0"
+    } elseif ($cudnn_version -eq "8.8") {
+        $cudnn = "v8.8.1"
     } else {
         throw "Unsupported cuDNN version: $cudnn_version"
     }
@@ -63,6 +65,8 @@ function ActivateCuDNN($cudnn_version, $cuda_version) {
         $cuda = "10"
     } elseif ($cuda_version.startswith("11.")) {
         $cuda = "11"
+    } elseif ($cuda_version.startswith("12.")) {
+        $cuda = "12"
     } else {
         throw "Unsupported CUDA version: $cuda_version"
     }
