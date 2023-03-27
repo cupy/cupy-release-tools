@@ -92,12 +92,7 @@ Copy-Item -Path "dll_x64\zlibwapi.dll" -Destination "C:\Windows\System32"
 
 # Verify
 echo ">> Starting verification..."
-if ($cuda -eq "12.x") {
-    # TODO(kmaehashi): cuDNN for CUDA 12 not available yet
-    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
-} else {
-    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
-}
+RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
