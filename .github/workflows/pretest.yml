@@ -4,19 +4,17 @@ on: [push, pull_request]
 
 jobs:
   pretest:
-    runs-on: ubuntu-18.04
-    env:
-      CUPY_CI: GitHub
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.6'
+        python-version: '3.10'
 
     - name: install
       run: |

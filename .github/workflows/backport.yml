@@ -12,17 +12,15 @@ jobs:
         github.repository_owner == 'cupy' &&
         github.event.pull_request.merged == true &&
         contains(github.event.pull_request.labels.*.name, 'to-be-backported')
-    runs-on: ubuntu-18.04
-    env:
-      CUPY_CI: GitHub
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -33,7 +31,7 @@ jobs:
         git config --global user.email "33715081+chainer-ci@users.noreply.github.com"
         git clone https://github.com/cupy/backport.git
 
-    - name: run_backport
+    - name: run backport
       env:
         BACKPORT_GITHUB_TOKEN: ${{secrets.BACKPORT_TOKEN}}
       run: |
