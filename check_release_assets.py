@@ -23,11 +23,11 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _v13_cuda_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311), (LINUX, WINDOWS)))
+    (CP39, CP310, CP311), (LINUX, WINDOWS)))
 _v13_aarch64_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311), (LINUX_AARCH64,)))
+    (CP39, CP310, CP311), (LINUX_AARCH64,)))
 _v13_rocm_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311), (LINUX,)))
+    (CP39, CP310, CP311), (LINUX,)))
 
 _v12_cuda_matrix = list(itertools.product(
     (CP38, CP39, CP310, CP311), (LINUX, WINDOWS)))
@@ -60,7 +60,7 @@ github_wheel_projects = {
         ('cupy-rocm-4-3', _v13_rocm_matrix),
         ('cupy-rocm-5-0', _v13_rocm_matrix),
     ],
-    # v11.x
+    # v12.x
     '12': [
         ('cupy-cuda102',  _v12_cuda_matrix + _v12_aarch64_matrix),
         ('cupy-cuda110',  _v12_cuda_matrix),
