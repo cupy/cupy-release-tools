@@ -3,8 +3,9 @@
 # CuPy major version supported by this tool.
 CUPY_MAJOR_VERSION = '12'
 
-# Cython version to cythonize the code.
-CYTHON_VERSION = '0.29.32'
+# Tools to be used for build.
+CYTHON_VERSION = '0.29.34'
+FASTRLOCK_VERSION = '0.8.1'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.

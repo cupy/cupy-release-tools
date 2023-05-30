@@ -15,6 +15,7 @@ import time
 from dist_config import (
     CUPY_MAJOR_VERSION,
     CYTHON_VERSION,
+    FASTRLOCK_VERSION,
     SDIST_CONFIG,
     SDIST_LONG_DESCRIPTION,
     WHEEL_LINUX_CONFIGS,
@@ -187,6 +188,7 @@ class Controller(object):
             '--build-arg', 'base_image={}'.format(base_image),
             '--build-arg', 'python_versions={}'.format(python_versions),
             '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
+            '--build-arg', 'fastrlock_version={}'.format(FASTRLOCK_VERSION),
             '--build-arg', 'system_packages={}'.format(system_packages),
             docker_ctx,
             extra_env={'DOCKER_BUILDKIT': '1'},
