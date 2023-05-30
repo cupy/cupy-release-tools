@@ -2,6 +2,7 @@
 
 PYTHON_VERSIONS=$1
 CYTHON_VERSION=$2
+FASTRLOCK_VERSION=$3
 
 if [[ "$(rpm --eval '%{rhel}')" == "7" ]]; then
     # CentOS 7: Use OpenSSL 1.1 for Python 3.10+.
@@ -21,7 +22,7 @@ for VERSION in ${PYTHON_VERSIONS}; do \
     echo "Installing libraries on Python ${VERSION}..."
     pyenv global ${VERSION}
     pip install -U pip setuptools
-    pip install "Cython==${CYTHON_VERSION}" wheel auditwheel
+    pip install "Cython==${CYTHON_VERSION}" "fastrlock==${FASTRLOCK_VERSION}" wheel auditwheel
 done
 
 # The last version installed will be used to run the builder agent.
