@@ -212,9 +212,7 @@ WHEEL_WINDOWS_CONFIGS = {
     '10.2': {
         'name': 'cupy-cuda102',
         'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
+        'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_102',
         'check_version': lambda x: 10020 <= x < 10030,
@@ -222,9 +220,7 @@ WHEEL_WINDOWS_CONFIGS = {
     '11.0': {
         'name': 'cupy-cuda110',
         'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
+        'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',
         'check_version': lambda x: 11000 <= x < 11010,
@@ -232,9 +228,7 @@ WHEEL_WINDOWS_CONFIGS = {
     '11.1': {
         'name': 'cupy-cuda111',
         'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
+        'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11010 <= x < 11020,
@@ -243,9 +237,7 @@ WHEEL_WINDOWS_CONFIGS = {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
         'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
+        'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11080 <= x < 11090,  # CUDA 11.8
@@ -254,9 +246,7 @@ WHEEL_WINDOWS_CONFIGS = {
         # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
         'name': 'cupy-cuda12x',
         'kind': 'cuda',
-        'libs': [
-            'nvToolsExt64_1.dll',  # NVIDIA Tools Extension Library
-        ],
+        'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
         'check_version': lambda x: 12010 <= x < 12020,  # CUDA 12.1
