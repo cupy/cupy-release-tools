@@ -311,11 +311,6 @@ If you have another version of ROCm, or want to build from source, refer to the 
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
 WHEEL_PYTHON_VERSIONS = {
-    '3.8': {
-        'pyenv': '3.8.11',
-        'python_tag': 'cp38',
-        'abi_tag': 'cp38',
-    },
     '3.9': {
         'pyenv': '3.9.0',
         'python_tag': 'cp39',
