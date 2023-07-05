@@ -97,7 +97,7 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': [
             # Test on all supported CUDA version variants.
             '12.0.1-runtime-ubuntu18.04',
-            '12.1.1-runtime-ubuntu18.04',
+            '12.1.1-runtime-ubuntu22.04',
         ],
         'system_packages': '',
     },
