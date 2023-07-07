@@ -12,7 +12,7 @@ FASTRLOCK_VERSION = '0.8.1'
 SDIST_CONFIG = {
     'image': 'nvidia/cuda:11.2.2-devel-centos7',
     # This image contains cuDNN and NCCL.
-    'verify_image': 'nvidia/cuda:11.4.2-cudnn8-devel-{system}',
+    'verify_image': 'nvidia/cuda:11.4.3-cudnn8-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
 
@@ -52,7 +52,7 @@ WHEEL_LINUX_CONFIGS = {
             '11.4.3-runtime-ubuntu18.04',
             '11.5.2-runtime-ubuntu18.04',
             '11.6.2-runtime-ubuntu18.04',
-            '11.7.0-runtime-ubuntu18.04',
+            '11.7.1-runtime-ubuntu18.04',
             '11.8.0-runtime-ubuntu18.04',
         ],
         'system_packages': '',
@@ -72,12 +72,12 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
-            '11.2.1-runtime-ubi8',
-            '11.3.0-runtime-ubi8',
-            '11.4.2-runtime-ubi8',
-            '11.5.1-runtime-ubi8',
-            '11.6.1-runtime-ubi8',
-            '11.7.0-runtime-ubi8',
+            '11.2.2-runtime-ubi8',
+            '11.3.1-runtime-ubi8',
+            '11.4.3-runtime-ubi8',
+            '11.5.2-runtime-ubi8',
+            '11.6.2-runtime-ubi8',
+            '11.7.1-runtime-ubi8',
             '11.8.0-runtime-ubi8',
         ],
         'system_packages': '',
@@ -96,8 +96,8 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
-            '12.0.0-runtime-ubuntu18.04',
-            '12.1.0-runtime-ubuntu18.04',
+            '12.0.1-runtime-ubuntu18.04',
+            '12.1.1-runtime-ubuntu22.04',
         ],
         'system_packages': '',
     },
@@ -116,8 +116,8 @@ WHEEL_LINUX_CONFIGS = {
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
-            '12.0.0-runtime-ubi8',
-            '12.1.0-runtime-ubi8',
+            '12.0.1-runtime-ubi8',
+            '12.1.1-runtime-ubi8',
         ],
         'system_packages': '',
     },
