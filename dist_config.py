@@ -172,7 +172,7 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
-        'check_version': lambda x: 12010 <= x < 12020,  # CUDA 12.1
+        'check_version': lambda x: 12020 <= x < 12030,  # CUDA 12.2
     }
 }
 
