@@ -56,11 +56,14 @@ echo ">> Using Branch: $branch"
 # Clone CuPy and checkout the target branch
 RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
 
+# Get Cython version from configuration.
+$cython_version = @(python -c "import dist_config; print(dist_config.CYTHON_VERSION)")
+
 # Install dependencies
 echo ">> Updating packaging utilities..."
 RunOrDie python -m pip install -U setuptools pip
 echo ">> Installing dependences for wheel build..."
-RunOrDie python -m pip install -U wheel Cython pytest
+RunOrDie python -m pip install -U wheel Cython==${cython_version} pytest
 echo ">> Packages installed:"
 RunOrDie python -m pip list
 
