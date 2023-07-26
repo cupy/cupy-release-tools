@@ -10,7 +10,7 @@ FASTRLOCK_VERSION = '0.8.1'
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG = {
-    'image': 'nvidia/cuda:10.2-devel-centos7',
+    'image': 'cupy/nvidia-cuda:10.2-devel-centos7',
     # This image contains cuDNN and NCCL.
     'verify_image': 'nvidia/cuda:11.4.3-cudnn8-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
@@ -43,7 +43,7 @@ WHEEL_LINUX_CONFIGS = {
         'includes': [
         ],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
-        'verify_image': 'nvidia/cuda:10.2-runtime-{system}',
+        'verify_image': 'cupy/nvidia-cuda:10.2-runtime-{system}',
         'verify_systems': ['ubuntu18.04'],
         'system_packages': '',
     },
