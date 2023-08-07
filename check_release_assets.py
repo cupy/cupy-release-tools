@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import itertools
 import os
 import subprocess
@@ -108,7 +109,7 @@ def get_expected_wheel_basename(project, version, abi, arch):
     )
 
 
-def verify(project, expected, actual):
+def verify(project, expected, actual) -> bool:
     print('🔵 Project: {}'.format(project))
     expected = set(expected)
     actual = set(actual)
@@ -126,6 +127,7 @@ def verify(project, expected, actual):
     else:
         print('  ✅ Check Pass')
     print()
+    return not error
 
 
 def get_expected_wheels(wheel_projects, version):
@@ -139,33 +141,47 @@ def get_expected_wheels(wheel_projects, version):
     }
 
 
-def main(argv):
-    if len(argv) != 2:
-        print(f'Usage: {argv[0]} VERSION')
-        return 1
+def parse_args(argv) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--version')
+    parser.add_argument('--github', action='store_true', default=False)
+    parser.add_argument('--pypi-sdist', action='store_true', default=False)
+    parser.add_argument('--pypi-wheel', action='store_true', default=False)
+    return parser.parse_args(argv[1:])
 
-    version = argv[1]
+
+def main(argv):
+    options = parse_args(argv)
+
+    version = options.version
     branch = str(version.split('.')[0])
 
-    # sdist
-    expected = [get_expected_sdist_basename(sdist_project, version)]
-    actual = get_basenames(sdist_project, version)
-    verify(sdist_project, expected, actual)
+    success = True
 
     # Verify assets on GitHub release
-    expected = get_expected_wheels(github_wheel_projects, version)
-    verify(
-        'GitHub Release',
-        itertools.chain(*expected.values()),
-        get_basenames_github(version))
+    if options.github:
+        expected = (
+            list(itertools.chain(*get_expected_wheels(
+                github_wheel_projects, version).values())) +
+            [get_expected_sdist_basename(sdist_project, version)])
+        success = verify(
+            'GitHub Release',
+            expected,
+            get_basenames_github(version)) and success
 
-    if not any([x in version for x in ('a', 'b', 'rc')]):
-        # Stable release, find from PyPI
+    if options.pypi_sdist:
+        expected = [get_expected_sdist_basename(sdist_project, version)]
+        actual = get_basenames(sdist_project, version)
+        success = verify(sdist_project, expected, actual) and success
+
+    if options.pypi_wheel:
         expected = get_expected_wheels(pypi_wheel_projects, version)
         for project, _ in pypi_wheel_projects[branch]:
             actual = get_basenames(project, version)
-            verify(project, expected[project], actual)
+            success = verify(project, expected[project], actual) and success
 
+    if not success:
+        return 1
     return 0
 
 
