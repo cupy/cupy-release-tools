@@ -154,6 +154,8 @@ def main(argv):
     options = parse_args(argv)
 
     version = options.version
+    if version.startswith('v'):
+        version = version[1:]
     branch = str(version.split('.')[0])
 
     success = True
