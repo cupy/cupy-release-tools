@@ -53,9 +53,6 @@ pypi_wheel_projects = {
 github_wheel_projects = {
     # v13.x
     '13': [
-        ('cupy-cuda102',  _v13_cuda_matrix + _v13_aarch64_matrix),
-        ('cupy-cuda110',  _v13_cuda_matrix),
-        ('cupy-cuda111',  _v13_cuda_matrix),
         ('cupy-cuda11x',  _v13_cuda_matrix + _v13_aarch64_matrix),
         ('cupy-cuda12x',  _v13_cuda_matrix + _v13_aarch64_matrix),
         ('cupy-rocm-4-3', _v13_rocm_matrix),
