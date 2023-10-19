@@ -249,4 +249,9 @@ WHEEL_PYTHON_VERSIONS = {
         'python_tag': 'cp311',
         'abi_tag': 'cp311',
     },
+    '3.12': {
+        'pyenv': '3.12.0',
+        'python_tag': 'cp312',
+        'abi_tag': 'cp312',
+    },
 }
