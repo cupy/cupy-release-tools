@@ -11,6 +11,7 @@ $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\_flexci.ps1"
 
 PrioritizeFlexCIDaemon
+EnableLongPaths
 
 function UninstallCuDNN($cuda_path) {
     echo "Uninstalling cuDNN installation from ${cuda_path}"
@@ -55,6 +56,8 @@ echo ">> Using Branch: $branch"
 
 # Clone CuPy and checkout the target branch
 RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
+RunOrDie git -C cupy config core.symlinks true
+RunOrDie git -C cupy reset --hard
 
 # Get Cython version from configuration.
 $cython_version = @(python -c "import dist_config; print(dist_config.CYTHON_VERSION)")
