@@ -386,7 +386,7 @@ class Controller(object):
 
             # Copy source tree to working directory.
             log('Copying source tree from: {}'.format(source))
-            shutil.copytree(source, '{}/cupy'.format(workdir))
+            shutil.copytree(source, '{}/cupy'.format(workdir), symlinks=True)
 
             # Add long description file.
             with open('{}/description.rst'.format(workdir), 'w') as f:
@@ -541,7 +541,7 @@ class Controller(object):
         try:
             log('Using working directory: {}'.format(workdir))
 
-            # Copy source tree and NCCL to working directory.
+            # Copy source tree to working directory.
             log('Copying source tree from: {}'.format(source))
             shutil.copytree(source, '{}/cupy'.format(workdir))
 
