@@ -2,7 +2,6 @@
 
 import ctypes
 import ctypes.util
-import imp
 import os
 
 from dist_config import WHEEL_PYTHON_VERSIONS
@@ -39,7 +38,9 @@ def wheel_name(pkg_name, version, python_version, platform_tag):
 
 def get_version_from_source_tree(source_tree):
     version_file_path = '{}/cupy/_version.py'.format(source_tree)
-    return imp.load_source('_version', version_file_path).__version__
+    with open(version_file_path) as f:
+        exec(f.read())
+    return __version__
 
 
 def get_system_cuda_version(cudart_name='cudart'):
