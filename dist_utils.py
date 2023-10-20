@@ -40,7 +40,7 @@ def get_version_from_source_tree(source_tree):
     version_file_path = '{}/cupy/_version.py'.format(source_tree)
     with open(version_file_path) as f:
         exec(f.read())
-    return __version__
+    return __version__  # noqa
 
 
 def get_system_cuda_version(cudart_name='cudart'):
