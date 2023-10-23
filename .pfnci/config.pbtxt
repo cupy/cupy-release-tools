@@ -56,7 +56,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: ".pfnci\\wheel-windows\\main.bat 12.x 3.11"
+    command: ".pfnci\\wheel-windows\\main.bat 12.x 3.12"
   }
 }
 configs {
