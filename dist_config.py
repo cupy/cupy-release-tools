@@ -5,7 +5,7 @@ CUPY_MAJOR_VERSION = '12'
 
 # Tools to be used for build.
 CYTHON_VERSION = '0.29.36'
-FASTRLOCK_VERSION = '0.8.1'
+FASTRLOCK_VERSION = '0.8.2'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
@@ -332,5 +332,10 @@ WHEEL_PYTHON_VERSIONS = {
         'pyenv': '3.11.0',
         'python_tag': 'cp311',
         'abi_tag': 'cp311',
+    },
+    '3.12': {
+        'pyenv': '3.12.0',
+        'python_tag': 'cp312',
+        'abi_tag': 'cp312',
     },
 }
