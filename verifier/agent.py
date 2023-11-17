@@ -17,7 +17,9 @@ class VerifierAgent(object):
 
     def _run(self, *cmd):
         self._log('Running command: {0}'.format(str(cmd)))
-        subprocess.check_call(cmd)
+        env = dict(os.environ)
+        env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
+        subprocess.check_call(cmd, env=env)
 
     def parse_args(self):
         parser = argparse.ArgumentParser()
@@ -79,7 +81,6 @@ class VerifierAgent(object):
                 'import cupy',
                 'import cupy.cuda.cudnn',
                 'cupy.show_config()',
-                'print(cupy._environment._get_preload_logs())'
             ])
         ]
         self._run(*cmdline)
