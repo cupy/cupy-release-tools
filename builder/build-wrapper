@@ -18,4 +18,6 @@ fi
 export CUPY_NUM_BUILD_JOBS=4
 export CUPY_NUM_NVCC_THREADS=4
 
+export LDFLAGS="-Wl,--as-needed ${LDFLAGS}"
+
 "$@"
