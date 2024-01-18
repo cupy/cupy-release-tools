@@ -40,14 +40,11 @@ _v12_rocm_matrix = list(itertools.product(
 
 pypi_wheel_projects = {
     # v12.x
-    '12': [
-        ('cupy-cuda102',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda110',  _v12_cuda_matrix),
-        ('cupy-cuda111',  _v12_cuda_matrix),
-        ('cupy-cuda11x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda12x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-rocm-4-3', _v12_rocm_matrix),
-        ('cupy-rocm-5-0', _v12_rocm_matrix),
+    '13': [
+        ('cupy-cuda11x',  _v13_cuda_matrix + _v13_aarch64_matrix),
+        ('cupy-cuda12x',  _v13_cuda_matrix + _v13_aarch64_matrix),
+        ('cupy-rocm-4-3', _v13_rocm_matrix),
+        ('cupy-rocm-5-0', _v13_rocm_matrix),
     ],
 }
 
