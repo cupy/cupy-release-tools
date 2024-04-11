@@ -5,6 +5,7 @@ set -uex
 CUDA="$1"
 IMAGE_SUFFIX="centos7"
 BASE_IMAGE="centos:7"
+PLATFORM="linux/amd64"
 
 case ${CUDA} in
   10.2 )
@@ -40,6 +41,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.5.0/local_installers/cuda_11.5.0_495.29.05_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8-aarch64"
+    PLATFORM="linux/arm64"
     ;;
   11.6 )
     CUDA_VERSION="11.6.0"
@@ -50,6 +52,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.6.0/local_installers/cuda_11.6.0_510.39.01_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8-aarch64"
+    PLATFORM="linux/arm64"
     ;;
   11.7 )
     CUDA_VERSION="11.7.0"
@@ -60,6 +63,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
     ;;
   11.8 )
     CUDA_VERSION="11.8.0"
@@ -70,6 +74,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
     ;;
   12.0 )
     CUDA_VERSION="12.0.0"
@@ -80,6 +85,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.0.0/local_installers/cuda_12.0.0_525.60.13_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
     ;;
   12.1 )
     CUDA_VERSION="12.1.0"
@@ -90,6 +96,7 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda_12.1.0_530.30.02_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
     ;;
   12.2 )
     CUDA_VERSION="12.2.0"
@@ -100,6 +107,29 @@ case ${CUDA} in
     CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda_12.2.0_535.54.03_linux_sbsa.run"
     BASE_IMAGE="oraclelinux:8"
     IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
+    ;;
+  12.3 )
+    CUDA_VERSION="12.3.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.3.0/local_installers/cuda_12.3.0_545.23.06_linux.run"
+    ;;
+  12.3-aarch64 )
+    CUDA_VERSION="12.3.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.3.0/local_installers/cuda_12.3.0_545.23.06_linux_sbsa.run"
+    BASE_IMAGE="oraclelinux:8"
+    IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
+    ;;
+  12.4 )
+    CUDA_VERSION="12.4.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux.run"
+    ;;
+  12.4-aarch64 )
+    CUDA_VERSION="12.4.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux_sbsa.run"
+    BASE_IMAGE="oraclelinux:8"
+    IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
     ;;
 
   * )
@@ -109,9 +139,18 @@ case ${CUDA} in
 esac
 
 export DOCKER_BUILDKIT=1
-docker build -t "cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}" . \
+docker buildx build --platform "${PLATFORM}" -t "cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}" . \
     --build-arg BUILDKIT_INLINE_CACHE=1 \
     --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg CUDA_INSTALLER_URL="${CUDA_INSTALLER_URL}"
 
-echo "Done. Run docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX} to push the image."
+PUSH_COMMAND="docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}"
+
+echo "Done."
+
+if [[ ${AUTO_PUSH:-0} == 1 ]]; then
+  echo "Pushing: ${PUSH_COMMAND}"
+  eval "${PUSH_COMMAND}"
+else
+  echo "Run ${PUSH_COMMAND} to push the image."
+fi
