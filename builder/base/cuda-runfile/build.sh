@@ -144,4 +144,13 @@ docker buildx build --platform "${PLATFORM}" -t "cupy/cupy-release-tools:cuda-ru
     --build-arg BASE_IMAGE="${BASE_IMAGE}" \
     --build-arg CUDA_INSTALLER_URL="${CUDA_INSTALLER_URL}"
 
-echo "Done. Run docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX} to push the image."
+PUSH_COMMAND="docker push cupy/cupy-release-tools:cuda-runfile-${CUDA_VERSION}-${IMAGE_SUFFIX}"
+
+echo "Done."
+
+if [[ ${AUTO_PUSH:-0} == 1 ]]; then
+  echo "Pushing: ${PUSH_COMMAND}"
+  eval "${PUSH_COMMAND}"
+else
+  echo "Run ${PUSH_COMMAND} to push the image."
+fi
