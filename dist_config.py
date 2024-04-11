@@ -89,7 +89,7 @@ WHEEL_LINUX_CONFIGS = {
         'platform_version': '12.x',
         # Use the latest CUDA version for build.
         # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.2.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.4.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
@@ -99,6 +99,8 @@ WHEEL_LINUX_CONFIGS = {
             '12.0.1-runtime-ubuntu18.04',
             '12.1.1-runtime-ubuntu22.04',
             '12.2.0-runtime-ubuntu22.04',
+            '12.3.0-runtime-ubuntu22.04',
+            '12.4.0-runtime-ubuntu22.04',
         ],
         'system_packages': '',
     },
@@ -109,7 +111,7 @@ WHEEL_LINUX_CONFIGS = {
         'arch': 'aarch64',
         'platform_version': '12.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.2.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.4.0-el8',
         'libs': [],
         'includes': [],
         'preloads': [],
@@ -120,6 +122,8 @@ WHEEL_LINUX_CONFIGS = {
             '12.0.1-runtime-ubi8',
             '12.1.1-runtime-ubi8',
             '12.2.0-runtime-ubi8',
+            '12.3.0-runtime-ubi8',
+            '12.4.0-runtime-ubi8',
         ],
         'system_packages': '',
     },
@@ -172,7 +176,7 @@ WHEEL_WINDOWS_CONFIGS = {
         'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
-        'check_version': lambda x: 12020 <= x < 12030,  # CUDA 12.2
+        'check_version': lambda x: 12040 <= x < 12050,  # CUDA 12.4
     }
 }
 
