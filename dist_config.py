@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # CuPy major version supported by this tool.
-CUPY_MAJOR_VERSION = '13'
+CUPY_MAJOR_VERSION = '14'
 
 # Tools to be used for build.
 CYTHON_VERSION = '0.29.36'
