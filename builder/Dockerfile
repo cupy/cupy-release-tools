@@ -1,10 +1,15 @@
 ARG base_image
 FROM ${base_image}
 
-RUN yum -y install gcc gcc-c++ make patch git curl && \
+COPY setup_yum_centos7.sh /
+
+# Run twice for EPEL.
+RUN /setup_yum_centos7.sh && \
+    yum -y install gcc gcc-c++ make patch git curl && \
     yum -y install bzip2-devel openssl-devel readline-devel libffi-devel && \
     yum -y install epel-release && \
     yum-config-manager --disable epel && \
+    /setup_yum_centos7.sh && \
     yum -y install --enablerepo=epel openssl11-devel && \
     yum clean all
 
@@ -19,8 +24,10 @@ COPY setup_python.sh /
 RUN /setup_python.sh "${python_versions}" "${cython_version}" "${fastrlock_version}"
 
 # Install devtoolset (g++) for CuPy v8 build.
-COPY setup_devtoolset.sh /
-RUN /setup_devtoolset.sh
+RUN yum install -y centos-release-scl && \
+    /setup_yum_centos7.sh && \
+    yum install -y devtoolset-7-gcc-c++ && \
+    yum clean all
 
 # Install additional libraries for CUDA.
 COPY cuda_lib/ /cuda_lib
