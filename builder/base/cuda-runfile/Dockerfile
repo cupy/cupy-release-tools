@@ -1,7 +1,10 @@
 ARG BASE_IMAGE=centos:7
 FROM ${BASE_IMAGE}
 
-RUN yum -y install "@Core" "@Development Tools" && yum clean all
+COPY setup_yum_centos7.sh /
+
+RUN /setup_yum_centos7.sh && \
+    yum -y install "@Core" "@Development Tools" && yum clean all
 
 ARG CUDA_INSTALLER_URL
 RUN curl -sL -o /tmp/cuda_installer "${CUDA_INSTALLER_URL}" && \
