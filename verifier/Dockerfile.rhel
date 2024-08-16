@@ -29,4 +29,5 @@ RUN [ -z "${system_packages}" ] || ( \
 ENV HOME /tmp
 
 COPY agent.py /
+COPY setup_cuda_runtime_headers.py /
 ENTRYPOINT ["/agent.py"]

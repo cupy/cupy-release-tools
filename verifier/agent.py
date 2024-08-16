@@ -58,6 +58,10 @@ class VerifierAgent(object):
         ]
         self._run(*cmdline)
 
+        self._log('Installing CUDA Runtime headers (if necessary)...')
+        cmdline = pycommand + ['/setup_cuda_runtime_headers.py']
+        self._run(*cmdline)
+
         # Importing CuPy should not be emit warnings,
         # Raise on warning to to catch bugs of preload warnings, e.g.:
         # https://github.com/cupy/cupy/pull/4933
