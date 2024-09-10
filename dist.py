@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 import argparse
+from contextlib import contextmanager
 import json
 import os
 import platform
@@ -10,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Generator
 
 
 from dist_config import (
@@ -39,6 +43,16 @@ def log(msg):
     out = sys.stdout
     out.write('[{}]: {}\n'.format(time.asctime(), msg))
     out.flush()
+
+
+@contextmanager
+def log_group(title: str) -> Generator:
+    """
+    Emits a log group (for GitHub Actions).
+    """
+    print(f'::group::{title}')
+    yield
+    print('::endgroup::')
 
 
 def run_command(*cmd, extra_env=None, **kwargs):
@@ -152,24 +166,28 @@ class Controller(object):
         args = self.parse_args()
 
         if args.action == 'build':
-            if args.target == 'wheel-win':
-                self.build_windows(
-                    args.target, args.cuda, args.python,
-                    args.source, args.output)
-            else:
-                self.build_linux(
-                    args.target, args.cuda, args.python,
-                    args.source, args.output, args.dry_run, args.push,
-                    args.rmi)
+            with log_group('Build'):
+                if args.target == 'wheel-win':
+                    self.build_windows(
+                        args.target, args.cuda, args.python,
+                        args.source, args.output)
+                else:
+                    self.build_linux(
+                        args.target, args.cuda, args.python,
+                        args.source, args.output, args.dry_run, args.push,
+                        args.rmi)
         elif args.action == 'verify':
             if args.target == 'wheel-win':
-                self.verify_windows(
-                    args.target, args.cuda, args.python,
-                    args.dist, args.test)
+                with log_group('Verify'):
+                    self.verify_windows(
+                        args.target, args.cuda, args.python,
+                        args.dist, args.test)
             else:
+                # Log group will be emit for each verification run.
                 self.verify_linux(
                     args.target, args.cuda, args.python,
-                    args.dist, args.test, args.dry_run, args.push, args.rmi)
+                    args.dist, args.test, args.dry_run, args.push,
+                    args.rmi)
 
     def _create_builder_linux(
             self, image_tag, base_image, builder_dockerfile, system_packages,
@@ -631,14 +649,16 @@ class Controller(object):
             raise RuntimeError('unknown target')
 
         for system in systems:
-            image = base_image.format(system=system)
-            image_tag_system = '{}-{}'.format(image_tag, system)
-            log('Starting verification for {} on {} with Python {}'.format(
-                dist, image, python_version))
-            self._verify_linux(
-                image_tag_system, image, kind, dist, tests,
-                python_version,
-                cuda_version, preloads, system_packages, dry_run, push, rmi)
+            with log_group(f'Verify: {dist} ({system} / Py {python_version})'):
+                image = base_image.format(system=system)
+                image_tag_system = '{}-{}'.format(image_tag, system)
+                log('Starting verification for {} on {} with Python {}'.format(
+                    dist, image, python_version))
+                self._verify_linux(
+                    image_tag_system, image, kind, dist, tests,
+                    python_version,
+                    cuda_version, preloads, system_packages, dry_run, push,
+                    rmi)
 
     def _verify_linux(
             self, image_tag, base_image, kind, dist, tests, python_version,
