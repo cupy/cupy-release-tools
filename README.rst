@@ -79,7 +79,6 @@ This example builds wheel of CuPy with CUDA 10.0 for Python 3.8.
   ./dist.py --action build --target wheel-linux --python 3.8 --cuda 10.0 --source path/to/cupy_repo
 
 Use ``--target wheel-win`` for Windows build.
-Use ``--cuda 10.2-jetson`` for JetPack (Tegra / CUDA 10.2 aarch64) build.
 Use ``--cuda rocm-5.0`` for ROCm (AMD GPU) build.
 
 The resulting asset (sdist/wheel) will be generated to the current directory.
