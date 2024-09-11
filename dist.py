@@ -69,7 +69,7 @@ def run_command_output(*cmd, **kwargs):
     return subprocess.check_output(cmd, **kwargs)
 
 
-def prepare_cuda_opt_library(library, cuda_version, prefix):
+def prepare_cuda_opt_library(library, cuda_version, prefix, *, workdir):
     """Extracts the library to the prefix, and returns preloading metadata."""
 
     target_system = platform.system()
@@ -83,7 +83,8 @@ def prepare_cuda_opt_library(library, cuda_version, prefix):
         '--prefix', prefix,
     ]
     records = json.loads(
-        run_command_output(*command, '--action', 'dump').decode('utf-8'))
+        run_command_output(
+            *command, '--action', 'dump', cwd=workdir).decode('utf-8'))
     for record in records:
         if record['cuda'] == cuda_version:
             metadata = {
@@ -95,7 +96,7 @@ def prepare_cuda_opt_library(library, cuda_version, prefix):
         raise RuntimeError('Combination not supported by install_library tool')
 
     log('Extracting the library to {}'.format(prefix))
-    run_command(*command, '--action', 'install')
+    run_command(*command, '--action', 'install', cwd=workdir)
 
     return metadata
 
@@ -430,7 +431,7 @@ class Controller(object):
 
                 for p in preloads:
                     wheel_metadata[p] = prepare_cuda_opt_library(
-                        p, cuda_version, optlib_workdir)
+                        p, cuda_version, optlib_workdir, workdir=workdir)
                 log('Writing wheel metadata')
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
@@ -580,7 +581,7 @@ class Controller(object):
             os.mkdir(optlib_workdir)
             for p in preloads:
                 wheel_metadata[p] = prepare_cuda_opt_library(
-                    p, cuda_version, optlib_workdir)
+                    p, cuda_version, optlib_workdir, workdir=workdir)
 
             # Create a wheel metadata file for preload.
             log('Writing wheel metadata')
