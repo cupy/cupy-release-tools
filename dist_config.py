@@ -155,6 +155,18 @@ WHEEL_LINUX_CONFIGS = {
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
     },
+    'rocm-6.2': {
+        'name': 'cupy-rocm-6-2',
+        'kind': 'rocm',
+        'platform_version': '6.2',
+        'image': 'rocm/dev-centos-7:6.2',
+        'libs': [],
+        'includes': [],
+        'preloads': [],
+        'verify_image': 'rocm/rocm-terminal:6.2',
+        'verify_systems': ['default'],
+        'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
+    },
 }
 
 # Key-value of CUDA version and its corresponding build settings for Windows.
@@ -205,8 +217,7 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for CUDA 12.x)
 - `cupy-cuda11x <https://pypi.org/project/cupy-cuda11x/>`_ (for CUDA 11.2 ~ 11.x)
 
-- `cupy-rocm-5-0 <https://pypi.org/project/cupy-rocm-5-0/>`_ (for ROCm 5.0)
-- `cupy-rocm-4-3 <https://pypi.org/project/cupy-rocm-4-3/>`_ (for ROCm 4.3)
+- `cupy-rocm-6-2 <https://pypi.org/project/cupy-rocm-6-2/>`_ (for ROCm 6.2)
 
 Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
 '''  # NOQA
