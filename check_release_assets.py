@@ -22,14 +22,17 @@ WINDOWS = 'win_amd64'
 sdist_project = 'cupy'
 
 _main_cuda_x86_matrix = list(itertools.product(
-    (CP39, CP310, CP311, CP312), (LINUX, WINDOWS)))
+    (CP310, CP311, CP312), (LINUX, WINDOWS)))
 _main_cuda_aarch64_matrix = list(itertools.product(
-    (CP39, CP310, CP311, CP312), (LINUX_AARCH64,)))
+    (CP310, CP311, CP312), (LINUX_AARCH64,)))
 _main_rocm_matrix = list(itertools.product(
+    (CP310, CP311, CP312), (LINUX,)))
+_v13_cuda_x86_matrix = list(itertools.product(
+    (CP39, CP310, CP311, CP312), (LINUX, WINDOWS)))
+_v13_cuda_aarch64_matrix = list(itertools.product(
+    (CP39, CP310, CP311, CP312), (LINUX_AARCH64,)))
+_v13_rocm_matrix = list(itertools.product(
     (CP39, CP310, CP311, CP312), (LINUX,)))
-_v13_cuda_x86_matrix = _main_cuda_x86_matrix
-_v13_cuda_aarch64_matrix = _main_cuda_aarch64_matrix
-_v13_rocm_matrix = _main_rocm_matrix
 
 pypi_wheel_projects = {
     # v14.x
@@ -121,7 +124,7 @@ def get_expected_wheels(wheel_projects, version):
 
 def parse_args(argv) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version')
+    parser.add_argument('--version', required=True)
     parser.add_argument('--github', action='store_true', default=False)
     parser.add_argument('--pypi-sdist', action='store_true', default=False)
     parser.add_argument('--pypi-wheel', action='store_true', default=False)
