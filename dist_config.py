@@ -5,7 +5,7 @@ CUPY_MAJOR_VERSION = '14'
 
 # Tools to be used for build.
 CYTHON_VERSION = '0.29.36'
-FASTRLOCK_VERSION = '0.8.2'
+FASTRLOCK_VERSION = '0.8.3'
 
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
