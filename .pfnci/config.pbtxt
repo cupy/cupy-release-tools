@@ -2,9 +2,9 @@ configs {
   key: "cupy-release-tools"
   value {
     requirement {
-      cpu: 12
+      cpu: 16
       gpu: 1
-      memory: 78
+      memory: 104
       disk: 30
     }
     time_limit {
