@@ -38,7 +38,7 @@ WHEEL_LINUX_CONFIGS = {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
         'kind': 'cuda',
-        'platform_version': '11.2 ~ 11.x',
+        'platform_version': '11.2 - 11.8',
         # Use the latest CUDA version for build.
         'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-centos7',
         'libs': [],
@@ -62,7 +62,7 @@ WHEEL_LINUX_CONFIGS = {
         'name': 'cupy-cuda11x',
         'kind': 'cuda',
         'arch': 'aarch64',
-        'platform_version': '11.2 ~ 11.x',
+        'platform_version': '11.2 - 11.8',
         # Use the latest image.
         'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-el8',
         'libs': [],
