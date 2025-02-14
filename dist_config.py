@@ -4,7 +4,7 @@
 CUPY_MAJOR_VERSION = '14'
 
 # Tools to be used for build.
-CYTHON_VERSION = '0.29.36'
+CYTHON_VERSION = '3.0.12'
 FASTRLOCK_VERSION = '0.8.3'
 
 # Key-value of sdist build settings.
