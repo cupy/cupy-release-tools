@@ -9,9 +9,6 @@ import sys
 import distlib.locators
 
 
-CP36 = 'cp36-cp36m'
-CP37 = 'cp37-cp37m'
-CP38 = 'cp38-cp38'
 CP39 = 'cp39-cp39'
 CP310 = 'cp310-cp310'
 CP311 = 'cp311-cp311'
@@ -24,60 +21,38 @@ WINDOWS = 'win_amd64'
 
 sdist_project = 'cupy'
 
-_v13_cuda_matrix = list(itertools.product(
+_main_cuda_x86_matrix = list(itertools.product(
+    (CP310, CP311, CP312), (LINUX, WINDOWS)))
+_main_cuda_aarch64_matrix = list(itertools.product(
+    (CP310, CP311, CP312), (LINUX_AARCH64,)))
+_main_rocm_matrix = list(itertools.product(
+    (CP310, CP311, CP312), (LINUX,)))
+_v13_cuda_x86_matrix = list(itertools.product(
     (CP39, CP310, CP311, CP312), (LINUX, WINDOWS)))
-_v13_aarch64_matrix = list(itertools.product(
+_v13_cuda_aarch64_matrix = list(itertools.product(
     (CP39, CP310, CP311, CP312), (LINUX_AARCH64,)))
 _v13_rocm_matrix = list(itertools.product(
     (CP39, CP310, CP311, CP312), (LINUX,)))
 
-_v12_cuda_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311, CP312), (LINUX, WINDOWS)))
-_v12_aarch64_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311, CP312), (LINUX_AARCH64,)))
-_v12_rocm_matrix = list(itertools.product(
-    (CP38, CP39, CP310, CP311, CP312), (LINUX,)))
-
 pypi_wheel_projects = {
-    # v13.x
-    '13': [
-        ('cupy-cuda11x',  _v13_cuda_matrix + _v13_aarch64_matrix),
-        ('cupy-cuda12x',  _v13_cuda_matrix + _v13_aarch64_matrix),
-        ('cupy-rocm-4-3', _v13_rocm_matrix),
-        ('cupy-rocm-5-0', _v13_rocm_matrix),
+    # v14.x
+    '14': [
+        ('cupy-cuda11x',  _main_cuda_x86_matrix + _main_cuda_aarch64_matrix),
+        ('cupy-cuda12x',  _main_cuda_x86_matrix + _main_cuda_aarch64_matrix),
+        # ('cupy-rocm-6-2', _main_rocm_matrix),
     ],
 
-    # v12.x
-    '12': [
-        ('cupy-cuda102',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda110',  _v12_cuda_matrix),
-        ('cupy-cuda111',  _v12_cuda_matrix),
-        ('cupy-cuda11x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda12x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-rocm-4-3', _v12_rocm_matrix),
-        ('cupy-rocm-5-0', _v12_rocm_matrix),
+    # v13.x
+    '13': [
+        ('cupy-cuda11x',  _v13_cuda_x86_matrix + _v13_cuda_aarch64_matrix),
+        ('cupy-cuda12x',  _v13_cuda_x86_matrix + _v13_cuda_aarch64_matrix),
+        # ('cupy-rocm-4-3', _v13_rocm_matrix),
+        # ('cupy-rocm-5-0', _v13_rocm_matrix),
+        # ('cupy-rocm-6-2', _v13_rocm_matrix),
     ],
 }
 
-github_wheel_projects = {
-    # v13.x
-    '13': [
-        ('cupy-cuda11x',  _v13_cuda_matrix + _v13_aarch64_matrix),
-        ('cupy-cuda12x',  _v13_cuda_matrix + _v13_aarch64_matrix),
-        ('cupy-rocm-4-3', _v13_rocm_matrix),
-        ('cupy-rocm-5-0', _v13_rocm_matrix),
-    ],
-    # v12.x
-    '12': [
-        ('cupy-cuda102',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda110',  _v12_cuda_matrix),
-        ('cupy-cuda111',  _v12_cuda_matrix),
-        ('cupy-cuda11x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-cuda12x',  _v12_cuda_matrix + _v12_aarch64_matrix),
-        ('cupy-rocm-4-3', _v12_rocm_matrix),
-        ('cupy-rocm-5-0', _v12_rocm_matrix),
-    ],
-}
+github_wheel_projects = pypi_wheel_projects
 
 
 def get_basenames(project, version):
@@ -149,7 +124,7 @@ def get_expected_wheels(wheel_projects, version):
 
 def parse_args(argv) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version')
+    parser.add_argument('--version', required=True)
     parser.add_argument('--github', action='store_true', default=False)
     parser.add_argument('--pypi-sdist', action='store_true', default=False)
     parser.add_argument('--pypi-wheel', action='store_true', default=False)
