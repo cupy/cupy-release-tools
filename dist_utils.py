@@ -38,9 +38,10 @@ def wheel_name(pkg_name, version, python_version, platform_tag):
 
 def get_version_from_source_tree(source_tree):
     version_file_path = '{}/cupy/_version.py'.format(source_tree)
+    exec_locals = {}
     with open(version_file_path) as f:
-        exec(f.read())
-    return locals()['__version__']
+        exec(f.read(), None, exec_locals)
+    return exec_locals['__version__']
 
 
 def get_system_cuda_version(cudart_name='cudart'):
