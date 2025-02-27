@@ -48,16 +48,21 @@ echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
 RunOrDie python -V
 
-# Branch to be built.
-if ($branch -eq "") {
-    $branch = Get-Content "./.pfnci/BRANCH"
-}
-echo ">> Using Branch: $branch"
-
 # Clone CuPy and checkout the target branch
-RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
-RunOrDie git -C cupy config core.symlinks true
-RunOrDie git -C cupy reset --hard
+if ($Env:CUPY_RELEASE_NO_CLONE -eq "1") {
+    echo ">> CUPY_RELEASE_NO_CLONE=1 is set. Using CuPy source tree in the current directory"
+} else {
+    echo ">> Cloning CuPy..."
+    if ($branch -eq "") {
+        $branch = Get-Content "./.pfnci/BRANCH"
+        echo ">> Using CuPy branch that matches with the current cupy-release-tools: $branch"
+    } else {
+        echo ">> Using specified CuPy branch: $branch"
+    }
+    RunOrDie git clone --recursive --branch $branch --depth 1 https://github.com/cupy/cupy.git cupy
+    RunOrDie git -C cupy config core.symlinks true
+    RunOrDie git -C cupy reset --hard
+}
 
 # Get Cython version from configuration.
 $cython_version = @(python -c "import dist_config; print(dist_config.CYTHON_VERSION)")
