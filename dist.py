@@ -256,7 +256,7 @@ class Controller(object):
             run_command('docker', 'push', image_tag)
 
     def _remove_container_image(self, image_tag):
-        run_command('docker', 'rmi', image_tag)
+        run_command('docker', 'rmi', '-f', image_tag)
 
     def _run_container(
             self, image_tag, kind, workdir, agent_args, *,
