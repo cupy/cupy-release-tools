@@ -267,7 +267,7 @@ class Controller(object):
             image_tag, kind))
         docker_run = ['docker', 'run']
         if kind == 'cuda' and require_runtime:
-            docker_run = ['nvidia-docker', 'run']
+            docker_run += ['--gpus=all']
         elif kind == 'rocm':
             targets = os.environ.get('HCC_AMDGPU_TARGET', None)
             if targets is None:
