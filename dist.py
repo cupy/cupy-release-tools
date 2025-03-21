@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from typing import Any
 from collections.abc import Generator
 
 
@@ -69,12 +70,28 @@ def run_command_output(*cmd, **kwargs):
     return subprocess.check_output(cmd, **kwargs)
 
 
-def prepare_cuda_opt_library(library, cuda_version, prefix, *, workdir):
-    """Extracts the library to the prefix, and returns preloading metadata."""
-
+def generate_wheel_metadata(
+        libraries: list[str], cuda_version: str,
+) -> dict[str, Any]:
     target_system = platform.system()
-    log('Retrieving preloading metadata for {} / CUDA {} / {}'.format(
-        library, cuda_version, target_system))
+    log('Generating preloading metadata for CUDA {} / {}'.format(
+        cuda_version, target_system))
+    command = [
+        sys.executable,
+        'cupy/cupyx/tools/_generate_wheel_metadata.py',
+        '--cuda', cuda_version,
+        '--target', target_system,
+    ]
+    for library in libraries:
+        command += ['--library', library]
+
+    return json.loads(run_command_output(*command).decode('utf-8'))
+
+
+def install_cuda_opt_library(
+        library: str, cuda_version: str, prefix: str, *, workdir: str
+) -> None:
+    """Installs the library to the prefix."""
     command = [
         sys.executable,
         'cupy/cupyx/tools/install_library.py',
@@ -82,26 +99,11 @@ def prepare_cuda_opt_library(library, cuda_version, prefix, *, workdir):
         '--cuda', cuda_version,
         '--prefix', prefix,
     ]
-    records = json.loads(
-        run_command_output(
-            *command, '--action', 'dump', cwd=workdir).decode('utf-8'))
-    for record in records:
-        if record['cuda'] == cuda_version:
-            metadata = {
-                'version': record[library],
-                'filenames': record['assets'][target_system]['filenames'],
-            }
-            break
-    else:
-        raise RuntimeError('Combination not supported by install_library tool')
-
     log('Extracting the library to {}'.format(prefix))
     run_command(*command, '--action', 'install', cwd=workdir)
 
-    return metadata
 
-
-class Controller(object):
+class Controller:
 
     def parse_args(self):
         parser = argparse.ArgumentParser()
@@ -421,17 +423,14 @@ class Controller(object):
             log('Creating CUDA optional lib directory under '
                 'builder directory: {}'.format(optlib_workdir))
             os.mkdir(optlib_workdir)
+            for p in preloads:
+                install_cuda_opt_library(
+                    p, cuda_version, optlib_workdir, workdir=workdir)
 
-            # Install CUDA optional libraries and generate a wheel metadata.
+            # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
-                wheel_metadata = {
-                    'cuda': cuda_version,
-                    'packaging': 'pip',
-                }
-
-                for p in preloads:
-                    wheel_metadata[p] = prepare_cuda_opt_library(
-                        p, cuda_version, optlib_workdir, workdir=workdir)
+                wheel_metadata = generate_wheel_metadata(
+                    preloads, cuda_version)
                 log('Writing wheel metadata')
                 with open('{}/_wheel.json'.format(workdir), 'w') as f:
                     json.dump(wheel_metadata, f)
@@ -568,22 +567,18 @@ class Controller(object):
             with open('{}/description.rst'.format(workdir), 'w') as f:
                 f.write(long_description)
 
-            # Create a wheel metadata file for preload.
-            wheel_metadata = {
-                'cuda': cuda_version,
-                'packaging': 'pip',
-            }
-
             # Extract optional CUDA libraries.
             optlib_workdir = '{}/cuda_lib'.format(workdir)
             log('Creating CUDA optional lib directory under '
                 'working directory: {}'.format(optlib_workdir))
             os.mkdir(optlib_workdir)
             for p in preloads:
-                wheel_metadata[p] = prepare_cuda_opt_library(
+                install_cuda_opt_library(
                     p, cuda_version, optlib_workdir, workdir=workdir)
 
             # Create a wheel metadata file for preload.
+            log('Creating wheel metadata')
+            wheel_metadata = generate_wheel_metadata(preloads, cuda_version)
             log('Writing wheel metadata')
             with open('{}/_wheel.json'.format(workdir), 'w') as f:
                 json.dump(wheel_metadata, f)
