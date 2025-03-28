@@ -16,8 +16,8 @@ Requirements
 Linux
 ~~~~~
 
-* For ``sdist`` and CUDA (x86_64) wheel build, run the tool on Linux (x86_64). ``nvidia-docker`` and NVIDIA GPU are required for Verify step.
-* For CUDA (JetPack (aarch64)) wheel build, run the tool on Linux (x86_64 with QEMU (aarch64) or Tegra). ``nvidia-docker`` is required for Verify step.
+* For ``sdist`` and CUDA (x86_64) wheel build, run the tool on Linux (x86_64). NVIDIA GPU + NVIDIA Container Toolkit are required for Verify step.
+* For CUDA (aarch64) wheel build, run the tool on Linux (x86_64 with QEMU (aarch64), aarch64, or Tegra). NVIDIA GPU + NVIDIA Container Toolkit is required for Verify step.
 * For ROCm wheel build, run the tool on Linux (x86_64). AMD GPU is required for Verify step.
 
 Notes:
