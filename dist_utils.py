@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import ctypes
 import ctypes.util
@@ -8,22 +8,18 @@ from dist_config import WHEEL_PYTHON_VERSIONS
 
 
 def wheel_linux_platform_tag(cpu: str, manylinux: bool) -> str:
-    assert cpu in ('aarch64', 'x86_64')
-    if manylinux:
-        tag = 'manylinux2014'
-    else:
-        tag = 'linux'
+    assert cpu in {'aarch64', 'x86_64'}
+    tag = 'manylinux2014' if manylinux else 'linux'
     return f'{tag}_{cpu}'
 
 
-def sdist_name(package_name, version):
-    return '{package_name}-{version}.tar.gz'.format(
-        package_name=package_name,
-        version=version,
-    )
+def sdist_name(package_name: str, version: str) -> str:
+    return f'{package_name}-{version}.tar.gz'
 
 
-def wheel_name(pkg_name, version, python_version, platform_tag):
+def wheel_name(
+    pkg_name: str, version: str, python_version: str, platform_tag: str
+) -> str:
     # https://www.python.org/dev/peps/pep-0491/#file-name-convention
     return (
         '{distribution}-{version}-{python_tag}-{abi_tag}-'
@@ -36,15 +32,15 @@ def wheel_name(pkg_name, version, python_version, platform_tag):
     )
 
 
-def get_version_from_source_tree(source_tree):
-    version_file_path = '{}/cupy/_version.py'.format(source_tree)
-    exec_locals = {}
-    with open(version_file_path) as f:
+def get_version_from_source_tree(source_tree: str) -> str:
+    version_file_path = f'{source_tree}/cupy/_version.py'
+    exec_locals: dict[str, str] = {}
+    with open(version_file_path, encoding='UTF-8') as f:
         exec(f.read(), None, exec_locals)
     return exec_locals['__version__']
 
 
-def get_system_cuda_version(cudart_name='cudart'):
+def get_system_cuda_version(cudart_name: str = 'cudart') -> int | None:
     filename = ctypes.util.find_library(cudart_name)
     if filename is None:
         return None
@@ -54,7 +50,7 @@ def get_system_cuda_version(cudart_name='cudart'):
     return version.value
 
 
-def find_file_in_path(executable, path=None):
+def find_file_in_path(executable: str, path: str | None = None) -> str | None:
     """Tries to find `executable` in the directories listed in `path`.
 
     A string listing directories separated by 'os.pathsep'; defaults to
@@ -70,5 +66,4 @@ def find_file_in_path(executable, path=None):
             if os.path.isfile(f):
                 return f
         return None
-    else:
-        return executable
+    return executable
