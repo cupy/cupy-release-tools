@@ -1,25 +1,33 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import argparse
+from typing import Literal
 
 from dist_config import (
     WHEEL_LINUX_CONFIGS,
-    WHEEL_WINDOWS_CONFIGS,
     WHEEL_PYTHON_VERSIONS,
+    WHEEL_WINDOWS_CONFIGS,
 )  # NOQA
-
 from dist_utils import (
-    wheel_linux_platform_tag,
-    sdist_name,
-    wheel_name,
     get_version_from_source_tree,
+    sdist_name,
+    wheel_linux_platform_tag,
+    wheel_name,
 )  # NOQA
 
 
-class DistInfoPrinter(object):
+class _CustomNameSpace(argparse.Namespace):
+    target: Literal['sdist', 'wheel-linux', 'wheel-win']
+    source: str
+    cuda: str
+    python: str
 
-    def parse_args(self):
+
+class DistInfoPrinter:
+
+    @staticmethod
+    def parse_args() -> _CustomNameSpace:
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
@@ -38,9 +46,9 @@ class DistInfoPrinter(object):
             '--python', type=str, choices=WHEEL_PYTHON_VERSIONS.keys(),
             help='python version to build wheel with')
 
-        return parser.parse_args()
+        return parser.parse_args(namespace=_CustomNameSpace())
 
-    def main(self):
+    def main(self) -> None:
         args = self.parse_args()
         version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
@@ -55,8 +63,10 @@ class DistInfoPrinter(object):
         elif args.target == 'sdist':
             pkg_name = 'cupy'
             filename = sdist_name(pkg_name, version)
-        print('DIST_FILE_NAME="{}"'.format(filename))
-        print('DIST_PACKAGE_NAME="{}"'.format(pkg_name))
+        else:
+            raise RuntimeError('Unreachable')
+        print(f'DIST_FILE_NAME="{filename}"')
+        print(f'DIST_PACKAGE_NAME="{pkg_name}"')
 
 
 if __name__ == '__main__':
