@@ -448,7 +448,7 @@ class Controller:
             asset_name = sdist_name('cupy', version)
             asset_dest_name = asset_name
         else:
-            raise AssertionError('unknown target')
+            raise RuntimeError('unknown target')
 
         # Arguments for the agent.
         agent_args = [
