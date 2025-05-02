@@ -64,7 +64,7 @@ class DistInfoPrinter:
             pkg_name = 'cupy'
             filename = sdist_name(pkg_name, version)
         else:
-            raise RuntimeError('Unreachable')
+            raise AssertionError('Unreachable')
         print(f'DIST_FILE_NAME="{filename}"')
         print(f'DIST_PACKAGE_NAME="{pkg_name}"')
 

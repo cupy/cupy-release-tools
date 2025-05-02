@@ -116,7 +116,7 @@ def main() -> None:
                 'include': 'include',
             })
     else:
-        raise RuntimeError(f'Unsupported platform: {sys.platform}.')
+        raise AssertionError(f'Unsupported platform: {sys.platform}.')
 
 
 if __name__ == '__main__':

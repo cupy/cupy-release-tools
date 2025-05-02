@@ -209,7 +209,7 @@ class Controller:
             return _CustomNameSpaceBuild.downcast(args)
         if args.action == 'verify':
             return _CustomNameSpaceVerify.downcast(args)
-        raise RuntimeError('action unknown')
+        raise AssertionError('action unknown')
 
     def main(self) -> None:
         args = self.parse_args()
@@ -418,7 +418,7 @@ class Controller:
             elif kind == 'rocm':
                 long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
             else:
-                raise RuntimeError('Unreachable')
+                raise AssertionError('Unreachable')
             long_description = long_description_tmpl.format(
                 version=platform_version)
 
@@ -448,7 +448,7 @@ class Controller:
             asset_name = sdist_name('cupy', version)
             asset_dest_name = asset_name
         else:
-            raise RuntimeError('unknown target')
+            raise AssertionError('unknown target')
 
         # Arguments for the agent.
         agent_args = [
