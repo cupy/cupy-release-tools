@@ -22,7 +22,7 @@ def main() -> None:
         if minor < 2:
             return
     else:
-        raise RuntimeError(f'Unsupported CUDA version: {major}.{minor}')
+        raise AssertionError(f'Unsupported CUDA version: {major}.{minor}')
 
     cmdline = [
         sys.executable, '-m', 'pip', 'install', '--user',
