@@ -108,52 +108,23 @@ def install_cuda_opt_library(
     run_command(*command, '--action', 'install', cwd=workdir)
 
 
-class _CustomNameSpaceBase(argparse.Namespace):
+class _CustomNameSpace(argparse.Namespace):
+    action: Literal['build', 'verify']
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
+    cuda: str | None
     python: str
     dry_run: bool
     push: bool
     rmi: bool
-    output: str
-    test: list[str]
-
-
-class _CustomNameSpace(_CustomNameSpaceBase):
-    action: Literal['build', 'verify']
-    cuda: str | None
     source: str | None
+    output: str
     dist: str | None
-
-
-class _CustomNameSpaceBuild(_CustomNameSpaceBase):
-    action: Literal['build']
-    cuda: str
-    source: str
-
-    @staticmethod
-    def downcast(ns: _CustomNameSpaceBase) -> _CustomNameSpaceBuild:
-        assert ns.action == 'build'
-        assert ns.cuda is not None
-        assert ns.source is not None
-        return typing.cast('_CustomNameSpaceBuild', ns)
-
-
-class _CustomNameSpaceVerify(_CustomNameSpaceBase):
-    action: Literal['verify']
-    cuda: str
-    dist: str
-
-    @staticmethod
-    def downcast(ns: _CustomNameSpaceBase) -> _CustomNameSpaceVerify:
-        assert ns.action == 'verify'
-        assert ns.cuda is not None
-        assert ns.dist is not None
-        return typing.cast('_CustomNameSpaceVerify', ns)
+    test: list[str]
 
 
 class Controller:
     @staticmethod
-    def parse_args() -> _CustomNameSpaceBuild | _CustomNameSpaceVerify:
+    def parse_args() -> _CustomNameSpace:
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
@@ -202,19 +173,14 @@ class Controller:
             help='[verify] path to the directory containing CuPy unit tests '
                  '(can be specified for multiple times)')
 
-        args = parser.parse_args(namespace=_CustomNameSpace())
-
-        assert args.cuda is not None
-        if args.action == 'build':
-            return _CustomNameSpaceBuild.downcast(args)
-        if args.action == 'verify':
-            return _CustomNameSpaceVerify.downcast(args)
-        raise AssertionError('action unknown')
+        return parser.parse_args(namespace=_CustomNameSpace())
 
     def main(self) -> None:
         args = self.parse_args()
+        assert args.cuda is not None
 
         if args.action == 'build':
+            assert args.source is not None
             with log_group('Build'):
                 if args.target == 'wheel-win':
                     self.build_windows(
@@ -226,6 +192,7 @@ class Controller:
                         args.source, args.output, args.dry_run, args.push,
                         args.rmi)
         elif args.action == 'verify':
+            assert args.dist is not None
             if args.target == 'wheel-win':
                 with log_group('Verify'):
                     self.verify_windows(
