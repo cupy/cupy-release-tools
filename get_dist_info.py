@@ -17,7 +17,7 @@ from dist_utils import (
 )  # NOQA
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _DistInfoArgs(argparse.Namespace):
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
     source: str
     cuda: str
@@ -27,7 +27,7 @@ class _CustomNameSpace(argparse.Namespace):
 class DistInfoPrinter:
 
     @staticmethod
-    def parse_args() -> _CustomNameSpace:
+    def parse_args() -> _DistInfoArgs:
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
@@ -46,7 +46,7 @@ class DistInfoPrinter:
             '--python', type=str, choices=WHEEL_PYTHON_VERSIONS.keys(),
             help='python version to build wheel with')
 
-        return parser.parse_args(namespace=_CustomNameSpace())
+        return parser.parse_args(namespace=_DistInfoArgs())
 
     def main(self) -> None:
         args = self.parse_args()

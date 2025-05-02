@@ -128,20 +128,20 @@ def get_expected_wheels(
     }
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _LibAssetsArgs(argparse.Namespace):
     version: str
     github: bool
     pypi_sdist: bool
     pypi_wheel: bool
 
 
-def parse_args(argv: Sequence[str]) -> _CustomNameSpace:
+def parse_args(argv: Sequence[str]) -> _LibAssetsArgs:
     parser = argparse.ArgumentParser()
     parser.add_argument('--version', required=True)
     parser.add_argument('--github', action='store_true', default=False)
     parser.add_argument('--pypi-sdist', action='store_true', default=False)
     parser.add_argument('--pypi-wheel', action='store_true', default=False)
-    return parser.parse_args(argv[1:], namespace=_CustomNameSpace())
+    return parser.parse_args(argv[1:], namespace=_LibAssetsArgs())
 
 
 def main(argv: Sequence[str]) -> int:

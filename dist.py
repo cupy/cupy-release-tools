@@ -108,7 +108,7 @@ def install_cuda_opt_library(
     run_command(*command, '--action', 'install', cwd=workdir)
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _ControllerArgs(argparse.Namespace):
     action: Literal['build', 'verify']
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
     cuda: str | None
@@ -124,7 +124,7 @@ class _CustomNameSpace(argparse.Namespace):
 
 class Controller:
     @staticmethod
-    def parse_args() -> _CustomNameSpace:
+    def parse_args() -> _ControllerArgs:
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
@@ -173,7 +173,7 @@ class Controller:
             help='[verify] path to the directory containing CuPy unit tests '
                  '(can be specified for multiple times)')
 
-        return parser.parse_args(namespace=_CustomNameSpace())
+        return parser.parse_args(namespace=_ControllerArgs())
 
     def main(self) -> None:
         args = self.parse_args()

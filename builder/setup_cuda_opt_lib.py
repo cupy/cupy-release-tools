@@ -69,7 +69,7 @@ def _install_library(
             shutil.copy2(child, dstfile)
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _OptLibArgs(argparse.Namespace):
     src: str
     dst: str
 
@@ -78,7 +78,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--src', type=str, required=True)
     parser.add_argument('--dst', type=str, required=True)
-    args = parser.parse_args(namespace=_CustomNameSpace())
+    args = parser.parse_args(namespace=_OptLibArgs())
 
     src_dir = Path(args.src)
     dst_dir = Path(args.dst)

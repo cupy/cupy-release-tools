@@ -9,7 +9,7 @@ import sys
 import time
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _BuilderAgentArgs(argparse.Namespace):
     action: str
     source: str
     python: str | None
@@ -28,7 +28,7 @@ class BuilderAgent:
         subprocess.check_call(cmd)
 
     @staticmethod
-    def parse_args() -> tuple[_CustomNameSpace, list[str]]:
+    def parse_args() -> tuple[_BuilderAgentArgs, list[str]]:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             '--action', type=str, required=True,
@@ -46,7 +46,7 @@ class BuilderAgent:
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
 
-        return parser.parse_known_args(namespace=_CustomNameSpace())
+        return parser.parse_known_args(namespace=_BuilderAgentArgs())
 
     def main(self) -> None:
         args, setup_args = self.parse_args()

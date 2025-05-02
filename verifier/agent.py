@@ -8,7 +8,7 @@ import sys
 import time
 
 
-class _CustomNameSpace(argparse.Namespace):
+class _VerifierAgentArgs(argparse.Namespace):
     dist: str | None
     python: str | None
     cuda: str | None
@@ -29,7 +29,7 @@ class VerifierAgent:
         subprocess.check_call(cmd, env=env)
 
     @staticmethod
-    def parse_args() -> tuple[_CustomNameSpace, list[str]]:
+    def parse_args() -> tuple[_VerifierAgentArgs, list[str]]:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             '--dist', type=str,
@@ -47,7 +47,7 @@ class VerifierAgent:
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
 
-        return parser.parse_known_args(namespace=_CustomNameSpace())
+        return parser.parse_known_args(namespace=_VerifierAgentArgs())
 
     def main(self) -> None:
         args, pytest_args = self.parse_args()
