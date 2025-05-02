@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
 import json
 import os
 import platform
@@ -13,9 +11,9 @@ import subprocess
 import sys
 import tempfile
 import time
-from typing import Any
-from collections.abc import Generator
-
+import typing
+from contextlib import contextmanager
+from typing import Any, Literal
 
 from dist_config import (
     CUPY_MAJOR_VERSION,
@@ -24,30 +22,30 @@ from dist_config import (
     SDIST_CONFIG,
     SDIST_LONG_DESCRIPTION,
     WHEEL_LINUX_CONFIGS,
-    WHEEL_WINDOWS_CONFIGS,
-    WHEEL_PYTHON_VERSIONS,
     WHEEL_LONG_DESCRIPTION_CUDA,
     WHEEL_LONG_DESCRIPTION_ROCM,
+    WHEEL_PYTHON_VERSIONS,
+    WHEEL_WINDOWS_CONFIGS,
 )  # NOQA
-
 from dist_utils import (
-    wheel_linux_platform_tag,
-    sdist_name,
-    wheel_name,
-    get_version_from_source_tree,
-    get_system_cuda_version,
     find_file_in_path,
+    get_system_cuda_version,
+    get_version_from_source_tree,
+    sdist_name,
+    wheel_linux_platform_tag,
+    wheel_name,
 )  # NOQA
 
+if typing.TYPE_CHECKING:
+    from collections.abc import Collection, Iterable, Iterator, Mapping
 
-def log(msg):
-    out = sys.stdout
-    out.write('[{}]: {}\n'.format(time.asctime(), msg))
-    out.flush()
+
+def log(msg: str) -> None:
+    print(f'[{time.asctime()}]: {msg}', flush=True)
 
 
 @contextmanager
-def log_group(title: str) -> Generator:
+def log_group(title: str) -> Iterator[None]:
     """
     Emits a log group (for GitHub Actions).
     """
@@ -56,26 +54,32 @@ def log_group(title: str) -> Generator:
     print('::endgroup::')
 
 
-def run_command(*cmd, extra_env=None, **kwargs):
+def run_command(
+    *cmd: str,
+    extra_env: Mapping[str, str] | None = None,
+    cwd: str | None = None,
+) -> None:
     env = None
     if extra_env is not None:
         env = os.environ.copy()
         env.update(extra_env)
-    log('Running command: {}'.format(str(cmd)))
-    subprocess.check_call(cmd, env=env, **kwargs)
+    log(f'Running command: {cmd}')
+    subprocess.check_call(cmd, env=env, cwd=cwd, encoding='UTF-8')
 
 
-def run_command_output(*cmd, **kwargs):
-    log('Running command: {}'.format(str(cmd)))
-    return subprocess.check_output(cmd, **kwargs)
+def run_command_output(*cmd: str, cwd: str | None = None) -> str:
+    log(f'Running command: {cmd}')
+    return subprocess.check_output(cmd, cwd=cwd, encoding='UTF-8')
 
 
 def generate_wheel_metadata(
-        libraries: list[str], cuda_version: str,
+    libraries: list[str], cuda_version: str,
 ) -> dict[str, Any]:
     target_system = platform.system()
-    log('Generating preloading metadata for CUDA {} / {}'.format(
-        cuda_version, target_system))
+    log(
+        f'Generating preloading metadata for CUDA '
+        f'{cuda_version} / {target_system}'
+    )
     command = [
         sys.executable,
         'cupy/cupyx/tools/_generate_wheel_metadata.py',
@@ -85,11 +89,12 @@ def generate_wheel_metadata(
     for library in libraries:
         command += ['--library', library]
 
-    return json.loads(run_command_output(*command).decode('utf-8'))
+    ret: dict[str, Any] = json.loads(run_command_output(*command))
+    return ret
 
 
 def install_cuda_opt_library(
-        library: str, cuda_version: str, prefix: str, *, workdir: str
+    library: str, cuda_version: str, prefix: str, *, workdir: str
 ) -> None:
     """Installs the library to the prefix."""
     command = [
@@ -99,13 +104,56 @@ def install_cuda_opt_library(
         '--cuda', cuda_version,
         '--prefix', prefix,
     ]
-    log('Extracting the library to {}'.format(prefix))
+    log(f'Extracting the library to {prefix}')
     run_command(*command, '--action', 'install', cwd=workdir)
 
 
-class Controller:
+class _CustomNameSpaceBase(argparse.Namespace):
+    target: Literal['sdist', 'wheel-linux', 'wheel-win']
+    python: str
+    dry_run: bool
+    push: bool
+    rmi: bool
+    output: str
+    test: list[str]
 
-    def parse_args(self):
+
+class _CustomNameSpace(_CustomNameSpaceBase):
+    action: Literal['build', 'verify']
+    cuda: str | None
+    source: str | None
+    dist: str | None
+
+
+class _CustomNameSpaceBuild(_CustomNameSpaceBase):
+    action: Literal['build']
+    cuda: str
+    source: str
+
+    @staticmethod
+    def downcast(ns: _CustomNameSpaceBase) -> _CustomNameSpaceBuild:
+        assert ns.action == 'build'
+        assert ns.cuda is not None
+        assert ns.source is not None
+        return typing.cast('_CustomNameSpaceBuild', ns)
+
+
+class _CustomNameSpaceVerify(_CustomNameSpaceBase):
+    action: Literal['verify']
+    cuda: str
+    dist: str
+
+    @staticmethod
+    def downcast(ns: _CustomNameSpaceBase) -> _CustomNameSpaceVerify:
+        assert ns.action == 'verify'
+        assert ns.cuda is not None
+        assert ns.dist is not None
+        return typing.cast('_CustomNameSpaceVerify', ns)
+
+
+class Controller:
+    @staticmethod
+    def parse_args() -> _CustomNameSpaceBuild | _CustomNameSpaceVerify:
         parser = argparse.ArgumentParser()
 
         parser.add_argument(
@@ -154,18 +202,16 @@ class Controller:
             help='[verify] path to the directory containing CuPy unit tests '
                  '(can be specified for multiple times)')
 
-        args = parser.parse_args()
+        args = parser.parse_args(namespace=_CustomNameSpace())
 
+        assert args.cuda is not None
         if args.action == 'build':
-            assert args.source
-            assert args.output
-        elif args.action == 'verify':
-            assert args.dist
-            assert args.test
+            return _CustomNameSpaceBuild.downcast(args)
+        if args.action == 'verify':
+            return _CustomNameSpaceVerify.downcast(args)
+        raise RuntimeError('action unknown')
 
-        return args
-
-    def main(self):
+    def main(self) -> None:
         args = self.parse_args()
 
         if args.action == 'build':
@@ -192,33 +238,45 @@ class Controller:
                     args.dist, args.test, args.dry_run, args.push,
                     args.rmi)
 
+    @staticmethod
     def _create_builder_linux(
-            self, image_tag, base_image, builder_dockerfile, system_packages,
-            docker_ctx, push):
+        image_tag: str,
+        base_image: str,
+        builder_dockerfile: str,
+        system_packages: str,
+        docker_ctx: str,
+        push: bool,
+    ) -> None:
         """Create a docker image to build distributions."""
 
         python_versions = ' '.join(
             [x['pyenv'] for x in WHEEL_PYTHON_VERSIONS.values()])
-        log('Building Docker image: {}'.format(image_tag))
+        log(f'Building Docker image: {image_tag}')
         run_command(
             'docker', 'build',
             '--file', f'{docker_ctx}/{builder_dockerfile}',
             '--tag', image_tag,
             '--cache-from', image_tag,
             '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
-            '--build-arg', 'base_image={}'.format(base_image),
-            '--build-arg', 'python_versions={}'.format(python_versions),
-            '--build-arg', 'cython_version={}'.format(CYTHON_VERSION),
-            '--build-arg', 'fastrlock_version={}'.format(FASTRLOCK_VERSION),
-            '--build-arg', 'system_packages={}'.format(system_packages),
+            '--build-arg', f'base_image={base_image}',
+            '--build-arg', f'python_versions={python_versions}',
+            '--build-arg', f'cython_version={CYTHON_VERSION}',
+            '--build-arg', f'fastrlock_version={FASTRLOCK_VERSION}',
+            '--build-arg', f'system_packages={system_packages}',
             docker_ctx,
             extra_env={'DOCKER_BUILDKIT': '1'},
         )
         if push:
             run_command('docker', 'push', image_tag)
 
+    @staticmethod
     def _create_verifier_linux(
-            self, image_tag, base_image, system_packages, docker_ctx, push):
+        image_tag: str,
+        base_image: str,
+        system_packages: str,
+        docker_ctx: str,
+        push: bool,
+    ) -> None:
         """Create a docker image to verify distributions."""
 
         # Choose Dockerfile template
@@ -235,38 +293,45 @@ class Controller:
             template = 'debian'
         else:
             raise RuntimeError(
-                'cannot detect OS from image name: {}'.format(base_image))
+                f'cannot detect OS from image name: {base_image}')
         shutil.copy2(
-            '{}/Dockerfile.{}'.format(docker_ctx, template),
-            '{}/Dockerfile'.format(docker_ctx))
+            f'{docker_ctx}/Dockerfile.{template}',
+            f'{docker_ctx}/Dockerfile')
 
         python_versions = ' '.join(
             [x['pyenv'] for x in WHEEL_PYTHON_VERSIONS.values()])
-        log('Building Docker image: {}'.format(image_tag))
+        log(f'Building Docker image: {image_tag}')
         run_command(
             'docker', 'build',
             '--tag', image_tag,
             '--cache-from', image_tag,
             '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
-            '--build-arg', 'base_image={}'.format(base_image),
-            '--build-arg', 'python_versions={}'.format(python_versions),
-            '--build-arg', 'system_packages={}'.format(system_packages),
+            '--build-arg', f'base_image={base_image}',
+            '--build-arg', f'python_versions={python_versions}',
+            '--build-arg', f'system_packages={system_packages}',
             docker_ctx,
             extra_env={'DOCKER_BUILDKIT': '1'},
         )
         if push:
             run_command('docker', 'push', image_tag)
 
-    def _remove_container_image(self, image_tag):
+    @staticmethod
+    def _remove_container_image(image_tag: str) -> None:
         run_command('docker', 'rmi', '-f', image_tag)
 
+    @staticmethod
     def _run_container(
-            self, image_tag, kind, workdir, agent_args, *,
-            require_runtime=True, docker_opts=None):
-        assert kind in ('cuda', 'rocm')
+        image_tag: str,
+        kind: Literal['cuda', 'rocm'],
+        workdir: str,
+        agent_args: list[str],
+        *,
+        require_runtime: bool = True,
+        docker_opts: list[str] | None = None,
+    ) -> None:
+        assert kind in {'cuda', 'rocm'}
 
-        log('Running docker container with image: {} ({})'.format(
-            image_tag, kind))
+        log(f'Running docker container with image: {image_tag} ({kind})')
         docker_run = ['docker', 'run']
         if kind == 'cuda' and require_runtime:
             docker_run += ['--gpus=all']
@@ -274,9 +339,9 @@ class Controller:
             targets = os.environ.get('HCC_AMDGPU_TARGET', None)
             if targets is None:
                 raise RuntimeError('HCC_AMDGPU_TARGET is not set')
-            log('HCC_AMDGPU_TARGET = {}'.format(targets))
+            log(f'HCC_AMDGPU_TARGET = {targets}')
             docker_run += [
-                '--env', 'HCC_AMDGPU_TARGET={}'.format(targets),
+                '--env', f'HCC_AMDGPU_TARGET={targets}',
             ]
             if require_runtime:
                 video_group = os.environ.get(
@@ -286,24 +351,41 @@ class Controller:
                 ]
                 if video_group != '':
                     docker_run += ['--group-add', video_group]
-        command = docker_run + (docker_opts if docker_opts else []) + [
-            '--rm',
-            '--volume', '{}:/work'.format(workdir),
-            '--workdir', '/work',
-            image_tag,
-        ] + agent_args
+        command = (
+            docker_run
+            + (docker_opts if docker_opts is not None else [])
+            + [
+                '--rm',
+                '--volume',
+                f'{workdir}:/work',
+                '--workdir',
+                '/work',
+                image_tag,
+            ]
+            + agent_args
+        )
         run_command(*command)
 
-    def _ensure_compatible_branch(self, version):
+    @staticmethod
+    def _ensure_compatible_branch(version: str) -> None:
         if version.split('.')[0] != CUPY_MAJOR_VERSION:
             raise RuntimeError(
-                'Version mismatch. cupy-release-tools is for CuPy v{} '
-                'but your source tree is CuPy v{}.'.format(
-                    CUPY_MAJOR_VERSION, version))
+                'Version mismatch. '
+                f'cupy-release-tools is for CuPy v{CUPY_MAJOR_VERSION} '
+                f'but your source tree is CuPy v{version}.'
+            )
 
     def build_linux(
-            self, target, cuda_version, python_version,
-            source, output, dry_run, push, rmi):
+        self,
+        target: str,
+        cuda_version: str,
+        python_version: str,
+        source: str,
+        output: str,
+        dry_run: bool,
+        push: bool,
+        rmi: bool,
+    ) -> None:
         """Build a single wheel distribution for Linux."""
 
         version = get_version_from_source_tree(source)
@@ -312,11 +394,12 @@ class Controller:
         if target == 'wheel-linux':
             assert cuda_version is not None
             log(
-                'Starting wheel-linux build from {} '
-                '(version {}, for CUDA {} + Python {})'.format(
-                    source, version, cuda_version, python_version))
+                f'Starting wheel-linux build from {source} '
+                f'(version {version}, for CUDA {cuda_version} '
+                f'+ Python {python_version})'
+            )
             action = 'bdist_wheel'
-            image_tag = ('cupy/cupy-release-tools:builder-' +
+            image_tag = ('cupy/cupy-release-tools:builder-'
                          f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
@@ -335,7 +418,7 @@ class Controller:
             elif kind == 'rocm':
                 long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
             else:
-                assert False
+                raise RuntimeError('Unreachable')
             long_description = long_description_tmpl.format(
                 version=platform_version)
 
@@ -348,10 +431,9 @@ class Controller:
                 wheel_linux_platform_tag(arch, True))
         elif target == 'sdist':
             assert cuda_version is None
-            log('Starting sdist build from {} (version {})'.format(
-                source, version))
+            log(f'Starting sdist build from {source} (version {version})')
             action = 'sdist'
-            image_tag = ('cupy/cupy-release-tools:builder-' +
+            image_tag = ('cupy/cupy-release-tools:builder-'
                          f'sdist-v{CUPY_MAJOR_VERSION}')
             kind = 'cuda'
             arch = None
@@ -373,7 +455,7 @@ class Controller:
             '--action', action,
             '--source', 'cupy',
             '--python', WHEEL_PYTHON_VERSIONS[python_version]['pyenv'],
-            '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
+            '--chown', f'{os.getuid()}:{os.getgid()}',
         ]
 
         # Add arguments to pass to setup.py.
@@ -390,7 +472,7 @@ class Controller:
                 setup_args += ['--cupy-wheel-lib', lib]
             for include_path, include_relpath in (
                     WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
-                spec = '{}:{}'.format(include_path, include_relpath)
+                spec = f'{include_path}:{include_relpath}'
                 setup_args += ['--cupy-wheel-include', spec]
         elif target == 'sdist':
             setup_args += [
@@ -403,25 +485,27 @@ class Controller:
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
 
         try:
-            log('Using working directory: {}'.format(workdir))
+            log(f'Using working directory: {workdir}')
 
             # Copy source tree to working directory.
-            log('Copying source tree from: {}'.format(source))
-            shutil.copytree(source, '{}/cupy'.format(workdir), symlinks=True)
+            log(f'Copying source tree from: {source}')
+            shutil.copytree(source, f'{workdir}/cupy', symlinks=True)
 
             # Add long description file.
-            with open('{}/description.rst'.format(workdir), 'w') as f:
+            with open(
+                f'{workdir}/description.rst', 'w', encoding='UTF-8'
+            ) as f:
                 f.write(long_description)
 
             # Copy builder directory to working directory.
-            docker_ctx = '{}/builder'.format(workdir)
-            log('Copying builder directory to: {}'.format(docker_ctx))
+            docker_ctx = f'{workdir}/builder'
+            log(f'Copying builder directory to: {docker_ctx}')
             shutil.copytree('builder/', docker_ctx)
 
             # Extract optional CUDA libraries.
-            optlib_workdir = '{}/cuda_lib'.format(docker_ctx)
+            optlib_workdir = f'{docker_ctx}/cuda_lib'
             log('Creating CUDA optional lib directory under '
-                'builder directory: {}'.format(optlib_workdir))
+                f'builder directory: {optlib_workdir}')
             os.mkdir(optlib_workdir)
             for p in preloads:
                 install_cuda_opt_library(
@@ -432,7 +516,9 @@ class Controller:
                 wheel_metadata = generate_wheel_metadata(
                     preloads, cuda_version)
                 log('Writing wheel metadata')
-                with open('{}/_wheel.json'.format(workdir), 'w') as f:
+                with open(
+                    f'{workdir}/_wheel.json', 'w', encoding='UTF-8'
+                ) as f:
                     json.dump(wheel_metadata, f)
 
             # Enable QEMU for cross-compilation.
@@ -462,9 +548,9 @@ class Controller:
             log('Finished build')
 
             # Copy assets.
-            asset_path = '{}/cupy/dist/{}'.format(workdir, asset_name)
-            output_path = '{}/{}'.format(output, asset_dest_name)
-            log('Copying asset from {} to {}'.format(asset_path, output_path))
+            asset_path = f'{workdir}/cupy/dist/{asset_name}'
+            output_path = f'{output}/{asset_dest_name}'
+            log(f'Copying asset from {asset_path} to {output_path}')
             shutil.copy2(asset_path, output_path)
 
             # Remove Docker image.
@@ -473,21 +559,24 @@ class Controller:
                 self._remove_container_image(image_tag)
 
         finally:
-            log('Removing working directory: {}'.format(workdir))
+            log(f'Removing working directory: {workdir}')
             shutil.rmtree(workdir)
 
-    def _check_windows_environment(self, cuda_version, python_version):
+    @staticmethod
+    def _check_windows_environment(
+        cuda_version: str, python_version: str
+    ) -> None:
         # Check if this script is running on Windows.
         if not sys.platform.startswith('win32'):
             raise RuntimeError(
-                'you are on non-Windows system: {}'.format(sys.platform))
+                f'you are on non-Windows system: {sys.platform}')
 
         # Check Python version.
         current_python_version = '.'.join(map(str, sys.version_info[0:2]))
         if python_version != current_python_version:
             raise RuntimeError(
-                'Cannot build a wheel for Python {} using Python {}'.format(
-                    python_version, current_python_version))
+                f'Cannot build a wheel for Python {python_version} '
+                f'using Python {current_python_version}')
 
         # Check CUDA runtime version.
         config = WHEEL_WINDOWS_CONFIGS[cuda_version]
@@ -496,14 +585,19 @@ class Controller:
         if current_cuda_version is None:
             raise RuntimeError(
                 'Cannot build wheel without CUDA Runtime installed')
-        elif not cuda_check_version(current_cuda_version):
+        if not cuda_check_version(current_cuda_version):
             raise RuntimeError(
-                'Cannot build wheel for CUDA {} using CUDA {}'.format(
-                    cuda_version, current_cuda_version))
+                f'Cannot build wheel for CUDA {cuda_version} '
+                f'using CUDA {current_cuda_version}')
 
     def build_windows(
-            self, target, cuda_version, python_version,
-            source, output):
+        self,
+        target: str,
+        cuda_version: str,
+        python_version: str,
+        source: str,
+        output: str,
+    ) -> None:
         """Build a single wheel distribution for Windows.
 
         Note that Windows build is not isolated.
@@ -519,9 +613,9 @@ class Controller:
         self._ensure_compatible_branch(version)
 
         log(
-            'Starting wheel-win build from {} '
-            '(version {}, for CUDA {} + Python {})'.format(
-                source, version, cuda_version, python_version))
+            f'Starting wheel-win build from {source} '
+            f'(version {version}, for CUDA {cuda_version} '
+            f'+ Python {python_version})')
 
         action = 'bdist_wheel'
         preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
@@ -549,7 +643,7 @@ class Controller:
             libpath = find_file_in_path(lib)
             if libpath is None:
                 raise RuntimeError(
-                    'Library {} could not be found in PATH'.format(lib))
+                    f'Library {lib} could not be found in PATH')
             setup_args += ['--cupy-wheel-lib', libpath]
         agent_args += setup_args
 
@@ -557,20 +651,22 @@ class Controller:
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
 
         try:
-            log('Using working directory: {}'.format(workdir))
+            log(f'Using working directory: {workdir}')
 
             # Copy source tree to working directory.
-            log('Copying source tree from: {}'.format(source))
-            shutil.copytree(source, '{}/cupy'.format(workdir))
+            log(f'Copying source tree from: {source}')
+            shutil.copytree(source, f'{workdir}/cupy')
 
             # Add long description file.
-            with open('{}/description.rst'.format(workdir), 'w') as f:
+            with open(
+                f'{workdir}/description.rst', 'w', encoding='UTF-8'
+            ) as f:
                 f.write(long_description)
 
             # Extract optional CUDA libraries.
-            optlib_workdir = '{}/cuda_lib'.format(workdir)
+            optlib_workdir = f'{workdir}/cuda_lib'
             log('Creating CUDA optional lib directory under '
-                'working directory: {}'.format(optlib_workdir))
+                f'working directory: {optlib_workdir}')
             os.mkdir(optlib_workdir)
             for p in preloads:
                 install_cuda_opt_library(
@@ -580,14 +676,14 @@ class Controller:
             log('Creating wheel metadata')
             wheel_metadata = generate_wheel_metadata(preloads, cuda_version)
             log('Writing wheel metadata')
-            with open('{}/_wheel.json'.format(workdir), 'w') as f:
+            with open(f'{workdir}/_wheel.json', 'w', encoding='UTF-8') as f:
                 json.dump(wheel_metadata, f)
 
             # Install optional CUDA libraries.
             log('Installing CUDA optional libraries')
             run_command(
                 sys.executable,
-                '{}/builder/setup_cuda_opt_lib.py'.format(os.getcwd()),
+                f'{os.getcwd()}/builder/setup_cuda_opt_lib.py',
                 '--src', optlib_workdir,
                 '--dst', os.environ['CUDA_PATH'],
                 cwd=workdir)
@@ -595,36 +691,43 @@ class Controller:
             # Build.
             log('Starting build')
             run_command(
-                sys.executable, '{}/builder/agent.py'.format(os.getcwd()),
+                sys.executable, f'{os.getcwd()}/builder/agent.py',
                 *agent_args, cwd=workdir)
             log('Finished build')
 
             # Copy assets.
-            asset_path = '{}/cupy/dist/{}'.format(workdir, asset_name)
-            output_path = '{}/{}'.format(output, asset_dest_name)
-            log('Copying asset from {} to {}'.format(asset_path, output_path))
+            asset_path = f'{workdir}/cupy/dist/{asset_name}'
+            output_path = f'{output}/{asset_dest_name}'
+            log(f'Copying asset from {asset_path} to {output_path}')
             shutil.copy2(asset_path, output_path)
 
         finally:
-            log('Removing working directory: {}'.format(workdir))
+            log(f'Removing working directory: {workdir}')
             try:
                 shutil.rmtree(workdir)
             except OSError as e:
                 # TODO(kmaehashi): On Windows, removal of `.git` directory may
                 # fail with PermissionError (on Python 3) or OSError (on
                 # Python 2). Note that PermissionError inherits OSError.
-                log('Failed to clean-up working directory: {}\n\n'
-                    'Please remove the working directory manually: {}'.format(
-                        e, workdir))
+                log(f'Failed to clean-up working directory: {e}\n\n'
+                    f'Please remove the working directory manually: {workdir}')
 
     def verify_linux(
-            self, target, cuda_version, python_version,
-            dist, tests, dry_run, push, rmi):
+        self,
+        target: Literal['sdist', 'wheel-linux'],
+        cuda_version: str,
+        python_version: str,
+        dist: str,
+        tests: Iterable[str],
+        dry_run: bool,
+        push: bool,
+        rmi: bool,
+    ) -> None:
         """Verify a single distribution for Linux."""
 
         if target == 'sdist':
             assert cuda_version is None
-            image_tag = ('cupy/cupy-release-tools:verifier-' +
+            image_tag = ('cupy/cupy-release-tools:verifier-'
                          f'sdist-v{CUPY_MAJOR_VERSION}')
             kind = 'cuda'
             base_image = SDIST_CONFIG['verify_image']
@@ -633,7 +736,7 @@ class Controller:
             system_packages = ''
         elif target == 'wheel-linux':
             assert cuda_version is not None
-            image_tag = ('cupy/cupy-release-tools:verifier-' +
+            image_tag = ('cupy/cupy-release-tools:verifier-'
                          f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['verify_image']
@@ -647,9 +750,9 @@ class Controller:
         for system in systems:
             with log_group(f'Verify: {dist} ({system} / Py {python_version})'):
                 image = base_image.format(system=system)
-                image_tag_system = '{}-{}'.format(image_tag, system)
-                log('Starting verification for {} on {} with Python {}'.format(
-                    dist, image, python_version))
+                image_tag_system = f'{image_tag}-{system}'
+                log(f'Starting verification for {dist} on {image} '
+                    f'with Python {python_version}')
                 self._verify_linux(
                     image_tag_system, image, kind, dist, tests,
                     python_version,
@@ -657,15 +760,27 @@ class Controller:
                     rmi)
 
     def _verify_linux(
-            self, image_tag, base_image, kind, dist, tests, python_version,
-            cuda_version, preloads, system_packages, dry_run, push, rmi):
+        self,
+        image_tag: str,
+        base_image: str,
+        kind: Literal['cuda', 'rocm'],
+        dist: str,
+        tests: Iterable[str],
+        python_version: str,
+        cuda_version: str,
+        preloads: Collection[str],
+        system_packages: str,
+        dry_run: bool,
+        push: bool,
+        rmi: bool,
+    ) -> None:
         dist_basename = os.path.basename(dist)
 
         # Arguments for the agent.
         agent_args = [
             '--python', WHEEL_PYTHON_VERSIONS[python_version]['pyenv'],
             '--dist', dist_basename,
-            '--chown', '{}:{}'.format(os.getuid(), os.getgid()),
+            '--chown', f'{os.getuid()}:{os.getgid()}',
         ]
         if 0 < len(preloads):
             agent_args += ['--cuda', cuda_version]
@@ -679,22 +794,22 @@ class Controller:
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
 
         try:
-            log('Using working directory: {}'.format(workdir))
+            log(f'Using working directory: {workdir}')
 
             # Copy dist and tests to working directory.
-            log('Copying distribution from: {}'.format(dist))
-            shutil.copy2(dist, '{}/{}'.format(workdir, dist_basename))
-            tests_dir = '{}/tests'.format(workdir)
+            log(f'Copying distribution from: {dist}')
+            shutil.copy2(dist, f'{workdir}/{dist_basename}')
+            tests_dir = f'{workdir}/tests'
             os.mkdir(tests_dir)
             for test in tests:
-                log('Copying tests from: {}'.format(test))
+                log(f'Copying tests from: {test}')
                 shutil.copytree(
                     test,
-                    '{}/{}'.format(tests_dir, os.path.basename(test)))
+                    f'{tests_dir}/{os.path.basename(test)}')
 
             # Copy verifier directory to working directory.
-            docker_ctx = '{}/verifier'.format(workdir)
-            log('Copying verifier directory to: {}'.format(docker_ctx))
+            docker_ctx = f'{workdir}/verifier'
+            log(f'Copying verifier directory to: {docker_ctx}')
             shutil.copytree('verifier/', docker_ctx)
 
             # Creates a Docker image to verify specified distribution.
@@ -716,12 +831,17 @@ class Controller:
                 self._remove_container_image(image_tag)
 
         finally:
-            log('Removing working directory: {}'.format(workdir))
+            log(f'Removing working directory: {workdir}')
             shutil.rmtree(workdir)
 
     def verify_windows(
-            self, target, cuda_version, python_version,
-            dist, tests):
+        self,
+        target: str,
+        cuda_version: str,
+        python_version: str,
+        dist: str,
+        tests: Iterable[str],
+    ) -> None:
         """Verify a single distribution for Windows."""
 
         # Perform additional check as Windows environment is not isoalted.
@@ -731,8 +851,7 @@ class Controller:
             raise ValueError('unknown target')
 
         preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
-        log('Starting verification for {} with Python {}'.format(
-            dist, python_version))
+        log(f'Starting verification for {dist} with Python {python_version}')
 
         dist_basename = os.path.basename(dist)
 
@@ -752,28 +871,28 @@ class Controller:
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
 
         try:
-            log('Using working directory: {}'.format(workdir))
+            log(f'Using working directory: {workdir}')
 
             # Copy dist and tests to working directory.
-            log('Copying distribution from: {}'.format(dist))
-            shutil.copy2(dist, '{}/{}'.format(workdir, dist_basename))
-            tests_dir = '{}/tests'.format(workdir)
+            log(f'Copying distribution from: {dist}')
+            shutil.copy2(dist, f'{workdir}/{dist_basename}')
+            tests_dir = f'{workdir}/tests'
             os.mkdir(tests_dir)
             for test in tests:
-                log('Copying tests from: {}'.format(test))
+                log(f'Copying tests from: {test}')
                 shutil.copytree(
                     test,
-                    '{}/{}'.format(tests_dir, os.path.basename(test)))
+                    f'{tests_dir}/{os.path.basename(test)}')
 
             # Verify.
             log('Starting verification')
             run_command(
-                sys.executable, '{}/verifier/agent.py'.format(os.getcwd()),
+                sys.executable, f'{os.getcwd()}/verifier/agent.py',
                 *agent_args, cwd=workdir)
             log('Finished verification')
 
         finally:
-            log('Removing working directory: {}'.format(workdir))
+            log(f'Removing working directory: {workdir}')
             shutil.rmtree(workdir)
 
 
