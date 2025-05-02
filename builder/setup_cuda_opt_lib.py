@@ -15,12 +15,9 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
 
-def merge_directory(src_dir: Path | str, dst_dir: Path | str) -> None:
+def merge_directory(src_dir: Path, dst_dir: Path) -> None:
     """Merge two directory trees."""
-    src_dir = Path(src_dir)
-    dst_dir = Path(dst_dir)
     for srcpath, _, files in Path.walk(src_dir):
-        srcpath = Path(srcpath)
         dstpath = dst_dir / srcpath.relative_to(src_dir)
         if not dstpath.exists():
             print(f'Creating directory: {dstpath}')
@@ -43,13 +40,12 @@ def _child(path: Path) -> Path | None:
 
 def _install_library(
     name: str,
-    src_dir: Path | str,
-    dst_dir: Path | str,
+    src_dir: Path,
+    dst_dir: Path,
     install_map: Mapping[str, str],
 ) -> None:
     src_dir_: Path | None
-    src_dir_ = Path(src_dir)
-    dst_dir = Path(dst_dir)
+    src_dir_ = src_dir
 
     # $src_dir/$CUDA_VERSION/$name/$LIB_VERSION
     src_dir_ = _child(src_dir_)  # $CUDA_VERSION
@@ -84,8 +80,8 @@ def main() -> None:
     parser.add_argument('--dst', type=str, required=True)
     args = parser.parse_args(namespace=_CustomNameSpace())
 
-    src_dir = args.src
-    dst_dir = args.dst
+    src_dir = Path(args.src)
+    dst_dir = Path(args.dst)
 
     if sys.platform == 'linux':
         _install_library(
