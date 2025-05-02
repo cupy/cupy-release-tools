@@ -12,9 +12,16 @@ CUPY_MAJOR_VERSION = '14'
 CYTHON_VERSION = '3.0.12'
 FASTRLOCK_VERSION = '0.8.3'
 
+
+class _SDistConfig(TypedDict):
+    image: str
+    verify_image: str
+    verify_systems: list[str]
+
+
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
-SDIST_CONFIG = {
+SDIST_CONFIG: _SDistConfig = {
     'image': 'nvidia/cuda:11.2.2-devel-centos7',
     # This image contains cuDNN and NCCL.
     'verify_image': 'nvidia/cuda:11.4.3-cudnn8-devel-{system}',
@@ -28,7 +35,7 @@ class _WheelLinuxConfigRequired(TypedDict):
     platform_version: str
     image: str
     libs: list[str]
-    includes: list[str]
+    includes: list[tuple[str, str]]
     preloads: list[str]
     verify_image: str
     verify_systems: list[str]
