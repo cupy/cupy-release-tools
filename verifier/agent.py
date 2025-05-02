@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import argparse
 import os
@@ -8,20 +8,28 @@ import sys
 import time
 
 
-class VerifierAgent(object):
+class _CustomNameSpace(argparse.Namespace):
+    dist: str | None
+    python: str | None
+    cuda: str | None
+    preload: list[str]
+    chown: str | None
 
-    def _log(self, msg):
-        out = sys.stdout
-        out.write('[VerifierAgent] [{0}]: {1}\n'.format(time.asctime(), msg))
-        out.flush()
 
-    def _run(self, *cmd):
-        self._log('Running command: {0}'.format(str(cmd)))
+class VerifierAgent:
+
+    @staticmethod
+    def _log(msg: str) -> None:
+        print(f'[VerifierAgent] [{time.asctime()}]: {msg}', flush=True)
+
+    def _run(self, *cmd: str) -> None:
+        self._log(f'Running command: {cmd}')
         env = dict(os.environ)
         env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
         subprocess.check_call(cmd, env=env)
 
-    def parse_args(self):
+    @staticmethod
+    def parse_args() -> tuple[_CustomNameSpace, list[str]]:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             '--dist', type=str,
@@ -39,59 +47,75 @@ class VerifierAgent(object):
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
 
-        return parser.parse_known_args()
+        return parser.parse_known_args(namespace=_CustomNameSpace())
 
-    def main(self):
+    def main(self) -> None:
         args, pytest_args = self.parse_args()
 
         pycommand = [sys.executable]
         if args.python:
             os.environ['PYENV_VERSION'] = args.python
-            self._log('Using Python {0}'.format(args.python))
+            self._log(f'Using Python {args.python}')
             pycommand = ['pyenv', 'exec', 'python']
         else:
             self._log('Using Python from system')
 
+        assert args.dist is not None
+        assert args.cuda is not None
+
         self._log('Installing distribution...')
-        cmdline = pycommand + [
-            '-m', 'pip', 'install', '-v', '--user', args.dist,
+        cmdline = [
+            *pycommand,
+            '-m',
+            'pip',
+            'install',
+            '-v',
+            '--user',
+            args.dist,
         ]
         self._run(*cmdline)
 
         self._log('Installing CUDA Runtime headers (if necessary)...')
         verifier_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
-        cmdline = pycommand + [f'{verifier_dir}/setup_cuda_runtime_headers.py']
+        cmdline = [*pycommand, f'{verifier_dir}/setup_cuda_runtime_headers.py']
         self._run(*cmdline)
 
         # Importing CuPy should not be emit warnings,
         # Raise on warning to to catch bugs of preload warnings, e.g.:
         # https://github.com/cupy/cupy/pull/4933
         self._log('CuPy Configuration (before preloading)')
-        cmdline = pycommand + [
-            '-Werror', '-c', 'import cupy; cupy.show_config()'
+        cmdline = [
+            *pycommand,
+            '-Werror',
+            '-c',
+            'import cupy; cupy.show_config()',
         ]
         self._run(*cmdline)
 
         for p in args.preload:
-            self._log('Installing preload libraries ({})...'.format(p))
-            cmdline = pycommand + [
-                '-m', 'cupyx.tools.install_library',
-                '--library', p, '--cuda', args.cuda,
+            self._log(f'Installing preload libraries ({p})...')
+            cmdline = [
+                *pycommand,
+                '-m',
+                'cupyx.tools.install_library',
+                '--library',
+                p,
+                '--cuda',
+                args.cuda,
             ]
             self._run(*cmdline)
 
         self._log('CuPy Configuration (after preloading)')
-        cmdline = pycommand + [
-            '-Werror', '-c', '; '.join([
-                'import cupy',
-                'import cupy.cuda.cudnn',
-                'cupy.show_config()',
-            ])
+        cmdline = [
+            *pycommand,
+            '-Werror',
+            '-c',
+            'import cupy; import cupy.cuda.cudnn; cupy.show_config()',
         ]
         self._run(*cmdline)
 
         try:
-            cmdline = pycommand + ['-m', 'pytest'] + pytest_args
+            cmdline = [*pycommand, '-m', 'pytest', *pytest_args]
             self._run(*cmdline)
         finally:
             if args.chown:
