@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING, Literal, TypedDict
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    # Can be imported from typing for >= 3.11
+    from typing_extensions import NotRequired
+
 # CuPy major version supported by this tool.
 CUPY_MAJOR_VERSION = '14'
 
@@ -29,22 +32,19 @@ SDIST_CONFIG: _SDistConfig = {
 }
 
 
-class _WheelLinuxConfigRequired(TypedDict):
+class _WheelLinuxConfig(TypedDict):
     name: str
     kind: Literal['cuda', 'rocm']
+    arch: NotRequired[str]
     platform_version: str
     image: str
     libs: list[str]
     includes: list[tuple[str, str]]
     preloads: list[str]
+    builder_dockerfile: NotRequired[str]
     verify_image: str
     verify_systems: list[str]
     system_packages: str
-
-
-class _WheelLinuxConfig(_WheelLinuxConfigRequired, total=False):
-    arch: str
-    builder_dockerfile: str
 
 
 # Key-value of CUDA version and its corresponding build settings for Linux.
