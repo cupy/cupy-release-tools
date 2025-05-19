@@ -110,9 +110,10 @@ def install_cuda_opt_library(
     run_command(*command, '--action', 'install', cwd=workdir)
 
 
-def rename_project(name: str) -> None:
+def rename_project(src: str, name: str) -> None:
     """Rename project.name in pyproject.toml."""
-    with open('pyproject.toml', 'wb') as f:
+    assert src.endswith('pyproject.toml')
+    with open(src, 'wb') as f:
         pp = tomli.load(f)
         pp.update({'project': {'name': name}})
         tomli_w.dump(pp, f)
@@ -445,9 +446,6 @@ class Controller:
         elif target == 'sdist':
             setup_envs['CUPY_INSTALL_USE_STUB'] = '1'
 
-        # Rename project name
-        rename_project(package_name)
-
         agent_args += ['--env-json', json.dumps(setup_envs)]
 
         # Create a working directory.
@@ -458,7 +456,11 @@ class Controller:
 
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
-            shutil.copytree(source, f'{workdir}/cupy', symlinks=True)
+            dst = f'{workdir}/cupy'
+            shutil.copytree(source, dst, symlinks=True)
+
+            # Rename project name
+            rename_project(f'{dst}/pyproject.toml', package_name)
 
             # Add long description file.
             with open(
@@ -609,9 +611,6 @@ class Controller:
         }
         agent_args += ['--env-json', json.dumps(setup_envs)]
 
-        # Rename project name
-        rename_project(package_name)
-
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
 
@@ -620,7 +619,11 @@ class Controller:
 
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
-            shutil.copytree(source, f'{workdir}/cupy')
+            dst = f'{workdir}/cupy'
+            shutil.copytree(source, dst)
+
+            # Rename project name
+            rename_project(f'{dst}/pyproject.toml', package_name)
 
             # Add long description file.
             with open(
