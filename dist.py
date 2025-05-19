@@ -425,28 +425,17 @@ class Controller:
             '--chown', f'{os.getuid()}:{os.getgid()}',
         ]
 
-        # Add arguments to pass to setup.py.
-        setup_args = [
-            '--cupy-package-name', package_name,
-            '--cupy-long-description', '../description.rst',
-        ]
+        # Environmental variables to pass to builder
+        setup_envs = {
+            'CUPY_INSTALL_LONG_DESCRIPTION_PATH': '../description.rst',
+        }
         if target == 'wheel-linux':
-            setup_args += [
-                '--cupy-no-rpath',
-                '--cupy-wheel-metadata', '../_wheel.json',
-            ]
-            for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
-                setup_args += ['--cupy-wheel-lib', lib]
-            for include_path, include_relpath in (
-                    WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
-                spec = f'{include_path}:{include_relpath}'
-                setup_args += ['--cupy-wheel-include', spec]
+            setup_envs['CUPY_INSTALL_NO_RPATH'] = '1'
+            setup_envs['CUPY_INSTALL_WHEEL_METADATA'] = '../_wheel.json'
         elif target == 'sdist':
-            setup_args += [
-                '--cupy-no-cuda',
-            ]
+            setup_envs['CUPY_INSTALL_USE_STUB'] = '1'
 
-        agent_args += setup_args
+        agent_args += ['--env-json', json.dumps(setup_envs)]
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
@@ -600,19 +589,12 @@ class Controller:
             '--source', 'cupy',
         ]
 
-        # Add arguments to pass to setup.py.
-        setup_args = [
-            '--cupy-package-name', package_name,
-            '--cupy-long-description', '../description.rst',
-        ]
-        setup_args += ['--cupy-wheel-metadata', '../_wheel.json']
-        for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
-            libpath = find_file_in_path(lib)
-            if libpath is None:
-                raise RuntimeError(
-                    f'Library {lib} could not be found in PATH')
-            setup_args += ['--cupy-wheel-lib', libpath]
-        agent_args += setup_args
+        # Environmental variables to pass to builder
+        setup_envs = {
+            'CUPY_INSTALL_LONG_DESCRIPTION_PATH': '../description.rst',
+            'CUPY_INSTALL_WHEEL_METADATA': '../_wheel.json',
+        }
+        agent_args += ['--env-json', json.dumps(setup_envs)]
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
