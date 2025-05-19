@@ -15,6 +15,9 @@ import typing
 from contextlib import contextmanager
 from typing import Any, Literal
 
+import tomli
+import tomli_w
+
 from dist_config import (
     CUPY_MAJOR_VERSION,
     CYTHON_VERSION,
@@ -28,7 +31,6 @@ from dist_config import (
     WHEEL_WINDOWS_CONFIGS,
 )  # NOQA
 from dist_utils import (
-    find_file_in_path,
     get_system_cuda_version,
     get_version_from_source_tree,
     sdist_name,
@@ -106,6 +108,14 @@ def install_cuda_opt_library(
     ]
     log(f'Extracting the library to {prefix}')
     run_command(*command, '--action', 'install', cwd=workdir)
+
+
+def rename_project(name: str) -> None:
+    """Rename project.name in pyproject.toml."""
+    with open('pyproject.toml', 'wb') as f:
+        pp = tomli.load(f)
+        pp.update({'project': {'name': name}})
+        tomli_w.dump(pp, f)
 
 
 class _ControllerArgs(argparse.Namespace):
@@ -435,6 +445,9 @@ class Controller:
         elif target == 'sdist':
             setup_envs['CUPY_INSTALL_USE_STUB'] = '1'
 
+        # Rename project name
+        rename_project(package_name)
+
         agent_args += ['--env-json', json.dumps(setup_envs)]
 
         # Create a working directory.
@@ -595,6 +608,9 @@ class Controller:
             'CUPY_INSTALL_WHEEL_METADATA': '../_wheel.json',
         }
         agent_args += ['--env-json', json.dumps(setup_envs)]
+
+        # Rename project name
+        rename_project(package_name)
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
