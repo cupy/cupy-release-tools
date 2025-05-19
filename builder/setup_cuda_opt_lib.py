@@ -44,11 +44,8 @@ def _install_library(
     dst_dir: Path,
     install_map: Mapping[str, str],
 ) -> None:
-    src_dir_: Path | None
-    src_dir_ = src_dir
-
     # $src_dir/$CUDA_VERSION/$name/$LIB_VERSION
-    src_dir_ = _child(src_dir_)  # $CUDA_VERSION
+    src_dir_ = _child(src_dir)  # $CUDA_VERSION
     if src_dir_ is None:
         print(f'Skip installing {name} (no preloading libraries)')
         return
