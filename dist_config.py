@@ -1,4 +1,12 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Literal, TypedDict
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    # Can be imported from typing for >= 3.11
+    from typing_extensions import NotRequired
 
 # CuPy major version supported by this tool.
 CUPY_MAJOR_VERSION = '14'
@@ -7,14 +15,36 @@ CUPY_MAJOR_VERSION = '14'
 CYTHON_VERSION = '3.0.12'
 FASTRLOCK_VERSION = '0.8.3'
 
+
+class _SDistConfig(TypedDict):
+    image: str
+    verify_image: str
+    verify_systems: list[str]
+
+
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
-SDIST_CONFIG = {
+SDIST_CONFIG: _SDistConfig = {
     'image': 'nvidia/cuda:11.2.2-devel-centos7',
     # This image contains cuDNN and NCCL.
     'verify_image': 'nvidia/cuda:11.4.3-cudnn8-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
+
+
+class _WheelLinuxConfig(TypedDict):
+    name: str
+    kind: Literal['cuda', 'rocm']
+    arch: NotRequired[str]
+    platform_version: str
+    image: str
+    libs: list[str]
+    includes: list[tuple[str, str]]
+    preloads: list[str]
+    builder_dockerfile: NotRequired[str]
+    verify_image: str
+    verify_systems: list[str]
+    system_packages: str
 
 
 # Key-value of CUDA version and its corresponding build settings for Linux.
@@ -33,7 +63,7 @@ SDIST_CONFIG = {
 #                     `verify_image`.
 # - `system_packages`: a string of depending library names expanded into the
 #                      package manager command.
-WHEEL_LINUX_CONFIGS = {
+WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
     '11.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
@@ -159,13 +189,23 @@ WHEEL_LINUX_CONFIGS = {
     },
 }
 
+
+class _WheelWindowsConfig(TypedDict):
+    name: str
+    kind: Literal['cuda']
+    libs: list[str]
+    preloads: list[str]
+    cudart_lib: str
+    check_version: Callable[[int], bool]
+
+
 # Key-value of CUDA version and its corresponding build settings for Windows.
 # Keys of the build settings are as follows:
 # - `name`: a package name
 # - `libs`: a list of DLLs to be bundled in wheel
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
-WHEEL_WINDOWS_CONFIGS = {
+WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
     '11.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
         'name': 'cupy-cuda11x',
@@ -234,13 +274,19 @@ If you have another version of ROCm, or want to build from source, refer to the 
 '''  # NOQA
 
 
+class _WheelPythonConfig(TypedDict):
+    pyenv: str
+    python_tag: str
+    abi_tag: str
+
+
 # Key-value of python version to use for build and its
 # corresponding configurations.
 # Keys of the configuration are as follows:
 # - `pyenv`: a full CPython version to use (only effective for Linux builds)
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
-WHEEL_PYTHON_VERSIONS = {
+WHEEL_PYTHON_VERSIONS: dict[str, _WheelPythonConfig] = {
     '3.9': {
         'pyenv': '3.9.0',
         'python_tag': 'cp39',

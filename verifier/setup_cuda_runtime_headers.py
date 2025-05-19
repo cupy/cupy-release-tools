@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import shlex
 import subprocess
 import sys
@@ -5,7 +7,10 @@ import sys
 import cupy
 
 
-def main():
+def main() -> None:
+    major: int
+    minor: int
+
     if cupy.cuda.runtime.is_hip:
         return
 
@@ -13,11 +18,11 @@ def main():
     (major, minor) = cupy.cuda.nvrtc.getVersion()
     if major == 11:
         return
-    elif major == 12:
+    if major == 12:
         if minor < 2:
             return
     else:
-        assert False, f'Unsupported CUDA version: {major}.{minor}'
+        raise AssertionError(f'Unsupported CUDA version: {major}.{minor}')
 
     cmdline = [
         sys.executable, '-m', 'pip', 'install', '--user',
