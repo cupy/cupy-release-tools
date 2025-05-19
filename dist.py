@@ -437,16 +437,17 @@ class Controller:
         ]
 
         # Environmental variables to pass to builder
-        setup_envs = {
-            'CUPY_INSTALL_LONG_DESCRIPTION_PATH': '../description.rst',
-        }
+        setup_args = ['--env', 'CUPY_LONG_DESCRIPTION_PATH=../description.rst']
         if target == 'wheel-linux':
-            setup_envs['CUPY_INSTALL_NO_RPATH'] = '1'
-            setup_envs['CUPY_INSTALL_WHEEL_METADATA'] = '../_wheel.json'
+            setup_args += [
+                '--env',
+                'CUPY_INSTALL_NO_RPATH=1',
+                '--env',
+                'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
+            ]
         elif target == 'sdist':
-            setup_envs['CUPY_INSTALL_USE_STUB'] = '1'
-
-        agent_args += ['--env-json', json.dumps(setup_envs)]
+            setup_args += ['--env', 'CUPY_INSTALL_USE_STUB=1']
+        agent_args += setup_args
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
@@ -605,11 +606,12 @@ class Controller:
         ]
 
         # Environmental variables to pass to builder
-        setup_envs = {
-            'CUPY_INSTALL_LONG_DESCRIPTION_PATH': '../description.rst',
-            'CUPY_INSTALL_WHEEL_METADATA': '../_wheel.json',
-        }
-        agent_args += ['--env-json', json.dumps(setup_envs)]
+        agent_args += [
+            '--env',
+            'CUPY_INSTALL_LONG_DESCRIPTION_PATH=../description.rst',
+            '--env',
+            'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
+        ]
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -20,7 +20,10 @@ class _BuilderAgentArgs(argparse.Namespace):
     python: str | None
     requires: list[str]
     chown: str | None
-    env_json: str | None
+    env: list[str]
+
+
+_KV_RE = re.compile(r'(.+)=(.+)')
 
 
 class BuilderAgent:
@@ -51,16 +54,30 @@ class BuilderAgent:
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
         parser.add_argument(
-            '--env-json', type=str,
-            help='Stringified JSON of environment variables')
+            '--env',
+            type=str,
+            action='append',
+            default=[],
+            help=(
+                'Environment variables to set (KEY=VALUE), '
+                'can be specified multiple times'
+            ),
+        )
 
         return parser.parse_args(namespace=_BuilderAgentArgs())
 
     def main(self) -> None:
         args = self.parse_args()
-        env: dict[str, str] = (
-            json.loads(args.env_json) if args.env_json else {}
-        )
+        env: dict[str, str] = {}
+
+        for kv in args.env:
+            m = _KV_RE.match(kv)
+            if m is None:
+                raise ValueError(f'Malformed --env argument: {kv}')
+            k = str(m.group(1))
+            if k in env:
+                raise ValueError(f'Duplicate environment variable: {k}')
+            env[k] = str(m.group(2))
 
         pycommand = [sys.executable]
         if args.python:
