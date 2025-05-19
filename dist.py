@@ -365,7 +365,7 @@ class Controller:
                 f'(version {version}, for CUDA {cuda_version} '
                 f'+ Python {python_version})'
             )
-            action = 'bdist_wheel'
+            action = 'wheel'
             image_tag = ('cupy/cupy-release-tools:builder-'
                          f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
@@ -584,7 +584,7 @@ class Controller:
             f'(version {version}, for CUDA {cuda_version} '
             f'+ Python {python_version})')
 
-        action = 'bdist_wheel'
+        action = 'wheel'
         preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
         platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
             'platform_version', cuda_version)

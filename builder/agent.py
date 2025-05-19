@@ -3,18 +3,24 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
 import time
+from typing import TYPE_CHECKING, Literal
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class _BuilderAgentArgs(argparse.Namespace):
-    action: str
+    action: Literal['sdist', 'wheel']
     source: str
     python: str | None
     requires: list[str]
     chown: str | None
+    env_json: str | None
 
 
 class BuilderAgent:
@@ -23,16 +29,15 @@ class BuilderAgent:
     def _log(msg: str) -> None:
         print(f'[BuilderAgent] [{time.asctime()}]: {msg}', flush=True)
 
-    def _run(self, *cmd: str) -> None:
+    def _run(
+        self, *cmd: str, env: Mapping[str, str] | None = None
+    ) -> None:
         self._log(f'Running command: {cmd}')
-        subprocess.check_call(cmd)
+        subprocess.check_call(cmd, env=env)
 
     @staticmethod
-    def parse_args() -> tuple[_BuilderAgentArgs, list[str]]:
+    def parse_args() -> _BuilderAgentArgs:
         parser = argparse.ArgumentParser()
-        parser.add_argument(
-            '--action', type=str, required=True,
-            help='setup.py action to invoke')
         parser.add_argument(
             '--source', type=str, required=True,
             help='Path to the CuPy source directory')
@@ -45,11 +50,17 @@ class BuilderAgent:
         parser.add_argument(
             '--chown', type=str,
             help='Reset owner of files to the specified `uid:gid`')
+        parser.add_argument(
+            '--env-json', type=str,
+            help='Stringified JSON of environment variables')
 
-        return parser.parse_known_args(namespace=_BuilderAgentArgs())
+        return parser.parse_args(namespace=_BuilderAgentArgs())
 
     def main(self) -> None:
-        args, setup_args = self.parse_args()
+        args = self.parse_args()
+        env: dict[str, str] = (
+            json.loads(args.env_json) if args.env_json else {}
+        )
 
         pycommand = [sys.executable]
         if args.python:
@@ -68,10 +79,10 @@ class BuilderAgent:
         os.chdir(args.source)
         try:
             self._log('Running CuPy setup...')
-            cmdline = [*pycommand, 'setup.py', args.action, *setup_args]
+            cmdline = [*pycommand, '-m', 'build', f'--{args.action}']
             if sys.platform.startswith('linux'):
                 cmdline = ['/build-wrapper', *cmdline]
-            self._run(*cmdline)
+            self._run(*cmdline, env=env)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
