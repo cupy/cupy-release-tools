@@ -20,3 +20,8 @@ required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "single"
+
+[tool.mypy]
+files = ["builder/*.py", "verifier/*.py", "*.py"]
+strict = true
+ignore_missing_imports = true
