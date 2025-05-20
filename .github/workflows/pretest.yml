@@ -19,7 +19,7 @@ jobs:
     - name: install
       run: |
         pip install -U pip wheel
-        pip install ruff autopep8
+        pip install ruff autopep8 mypy
 
     - name: ruff
       run: |
@@ -29,3 +29,7 @@ jobs:
       run: |
         autopep8 -r . --global-config .pep8 --diff | tee check_autopep8
         test ! -s check_autopep8
+
+    - name: mypy
+      run: |
+        mypy
