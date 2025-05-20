@@ -1,0 +1,4 @@
+[project]
+name = "cupy-release-tools"
+version = "13.4.1"
+dependencies = []
