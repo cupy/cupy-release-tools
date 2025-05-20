@@ -458,11 +458,10 @@ class Controller:
 
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
-            dst = f'{workdir}/cupy'
-            shutil.copytree(source, dst, symlinks=True)
+            shutil.copytree(source, f'{workdir}/cupy', symlinks=True)
 
             # Rename project name
-            rename_project(f'{dst}/pyproject.toml', package_name)
+            rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
 
             # Add long description file.
             with open(
@@ -622,11 +621,10 @@ class Controller:
 
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
-            dst = f'{workdir}/cupy'
-            shutil.copytree(source, dst)
+            shutil.copytree(source, f'{workdir}/cupy')
 
             # Rename project name
-            rename_project(f'{dst}/pyproject.toml', package_name)
+            rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
 
             # Add long description file.
             with open(
