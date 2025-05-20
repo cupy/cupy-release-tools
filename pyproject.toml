@@ -2,7 +2,10 @@
 name = "cupy-release-tools"
 version = "13.4.1"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["distlib", "typing-extensions"]
+
+[project.optional-dependencies]
+dev = ["autopep8", "mypy", "ruff"]
 
 [tool.ruff]
 line-length = 79
