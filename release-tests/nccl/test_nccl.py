@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import unittest
 
 import cupy.cuda.nccl as libnccl
