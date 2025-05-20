@@ -3,3 +3,16 @@ name = "cupy-release-tools"
 version = "13.4.1"
 requires-python = ">=3.10"
 dependencies = []
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+extend-select = ["I002", "Q"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
