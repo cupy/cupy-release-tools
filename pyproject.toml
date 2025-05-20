@@ -9,6 +9,7 @@ dev = ["autopep8", "mypy", "ruff"]
 
 [tool.ruff]
 line-length = 79
+extend-exclude = [".pfnci"]
 
 [tool.ruff.lint]
 extend-select = ["I002", "Q"]
