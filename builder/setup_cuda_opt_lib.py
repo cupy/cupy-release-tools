@@ -6,6 +6,7 @@ This tool copies the directory tree created by the library installer
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -17,7 +18,10 @@ if TYPE_CHECKING:
 
 def merge_directory(src_dir: Path, dst_dir: Path) -> None:
     """Merge two directory trees."""
-    for srcpath, _, files in Path.walk(src_dir):
+    # MEMO: Path.walk is only available from py3.12
+    for srcpath, files in (
+        (Path(srcpath), files) for srcpath, _, files in os.walk(src_dir)
+    ):
         dstpath = dst_dir / srcpath.relative_to(src_dir)
         if not dstpath.exists():
             print(f'Creating directory: {dstpath}')
