@@ -114,9 +114,10 @@ def rename_project(src: str, name: str) -> None:
     """Rename project.name in pyproject.toml."""
     assert src.endswith('pyproject.toml')
     log(f'Renaming project name to {name} ({src})')
-    with open(src, 'wb') as f:
+    with open(src, 'rb') as f:
         pp = tomli.load(f)
-        pp.update({'project': {'name': name}})
+    pp.update({'project': {'name': name}})
+    with open(src, 'wb') as f:
         tomli_w.dump(pp, f)
 
 
