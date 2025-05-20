@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import re
 import subprocess
 import sys
 import time
@@ -21,9 +20,6 @@ class _BuilderAgentArgs(argparse.Namespace):
     requires: list[str]
     chown: str | None
     env: list[str]
-
-
-_KV_RE = re.compile(r'(.+)=(.+)')
 
 
 class BuilderAgent:
@@ -71,13 +67,8 @@ class BuilderAgent:
         env: dict[str, str] = {}
 
         for kv in args.env:
-            m = _KV_RE.match(kv)
-            if m is None:
-                raise ValueError(f'Malformed --env argument: {kv}')
-            k = str(m.group(1))
-            if k in env:
-                raise ValueError(f'Duplicate environment variable: {k}')
-            env[k] = str(m.group(2))
+            k, v = kv.split('=')
+            env[k] = v
 
         pycommand = [sys.executable]
         if args.python:
