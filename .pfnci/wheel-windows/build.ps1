@@ -71,7 +71,7 @@ $cython_version = @(python -c "import dist_config; print(dist_config.CYTHON_VERS
 echo ">> Updating packaging utilities..."
 RunOrDie python -m pip install -U setuptools pip
 echo ">> Installing dependences for wheel build..."
-RunOrDie python -m pip install -U wheel Cython==${cython_version} pytest build tomli tomli-w
+RunOrDie python -m pip install -U -r ./requirements.txt wheel Cython==${cython_version} pytest
 echo ">> Packages installed:"
 RunOrDie python -m pip list
 
