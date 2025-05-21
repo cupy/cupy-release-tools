@@ -67,8 +67,9 @@ class BuilderAgent:
         env: dict[str, str] = {}
 
         for kv in args.env:
-            k, v = kv.split('=')
-            env[k] = v
+            pair = kv.split('=', 2)
+            assert len(pair) == 2, 'invalid --env format'
+            env[pair[0]] = pair[1]
 
         pycommand = [sys.executable]
         if args.python:
