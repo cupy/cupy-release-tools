@@ -7,25 +7,29 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: setup python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
     - name: install
       run: |
         pip install -U pip wheel
-        pip install flake8 autopep8
+        pip install ruff autopep8 mypy
 
-    - name: flake8
+    - name: ruff
       run: |
-        flake8
+        ruff check
 
     - name: autopep8
       run: |
         autopep8 -r . --global-config .pep8 --diff | tee check_autopep8
         test ! -s check_autopep8
+
+    - name: mypy
+      run: |
+        mypy
