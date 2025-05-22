@@ -91,7 +91,8 @@ class BuilderAgent:
         os.chdir(args.source)
         try:
             self._log('Running CuPy setup...')
-            cmdline = [*pycommand, '-m', 'build', '--no-isolation', f'--{args.action}']
+            cmdline = [*pycommand, '-m', 'build',
+                       '--no-isolation', f'--{args.action}']
             if sys.platform.startswith('linux'):
                 cmdline = ['/build-wrapper', *cmdline]
             self._run(*cmdline, env=env)
