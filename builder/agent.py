@@ -38,7 +38,7 @@ class BuilderAgent:
     def parse_args() -> _BuilderAgentArgs:
         parser = argparse.ArgumentParser()
         parser.add_argument(
-            '--action', type=str, required=True,
+            '--action', type=str, required=True, choices=['sdist', 'wheel'],
             help='setup.py action to invoke')
         parser.add_argument(
             '--source', type=str, required=True,
