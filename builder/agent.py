@@ -95,7 +95,7 @@ class BuilderAgent:
                        '--no-isolation', f'--{args.action}']
             if sys.platform.startswith('linux'):
                 cmdline = ['/build-wrapper', *cmdline]
-            self._run(*cmdline, env=env)
+            self._run(*cmdline, env=os.environ | env)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
