@@ -38,6 +38,9 @@ class BuilderAgent:
     def parse_args() -> _BuilderAgentArgs:
         parser = argparse.ArgumentParser()
         parser.add_argument(
+            '--action', type=str, required=True,
+            help='setup.py action to invoke')
+        parser.add_argument(
             '--source', type=str, required=True,
             help='Path to the CuPy source directory')
         parser.add_argument(
