@@ -116,7 +116,7 @@ def rename_project(src: str, name: str) -> None:
     log(f'Renaming project name to {name} ({src})')
     with open(src, 'rb') as f:
         pp = tomli.load(f)
-    pp.update({'project': {'name': name}})
+    pp['project']['name'] = name
     with open(src, 'wb') as f:
         tomli_w.dump(pp, f)
 
