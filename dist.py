@@ -15,6 +15,9 @@ import typing
 from contextlib import contextmanager
 from typing import Any, Literal
 
+import tomli
+import tomli_w
+
 from dist_config import (
     CUPY_MAJOR_VERSION,
     CYTHON_VERSION,
@@ -28,7 +31,6 @@ from dist_config import (
     WHEEL_WINDOWS_CONFIGS,
 )  # NOQA
 from dist_utils import (
-    find_file_in_path,
     get_system_cuda_version,
     get_version_from_source_tree,
     sdist_name,
@@ -106,6 +108,17 @@ def install_cuda_opt_library(
     ]
     log(f'Extracting the library to {prefix}')
     run_command(*command, '--action', 'install', cwd=workdir)
+
+
+def rename_project(src: str, name: str) -> None:
+    """Rename project.name in pyproject.toml."""
+    assert src.endswith('pyproject.toml')
+    log(f'Renaming project name to {name} ({src})')
+    with open(src, 'rb') as f:
+        pp = tomli.load(f)
+    pp['project']['name'] = name
+    with open(src, 'wb') as f:
+        tomli_w.dump(pp, f)
 
 
 class _ControllerArgs(argparse.Namespace):
@@ -365,7 +378,7 @@ class Controller:
                 f'(version {version}, for CUDA {cuda_version} '
                 f'+ Python {python_version})'
             )
-            action = 'bdist_wheel'
+            action = 'wheel'
             image_tag = ('cupy/cupy-release-tools:builder-'
                          f'{cuda_version}-v{CUPY_MAJOR_VERSION}')
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
@@ -425,27 +438,17 @@ class Controller:
             '--chown', f'{os.getuid()}:{os.getgid()}',
         ]
 
-        # Add arguments to pass to setup.py.
-        setup_args = [
-            '--cupy-package-name', package_name,
-            '--cupy-long-description', '../description.rst',
-        ]
+        # Environmental variables to pass to builder
+        setup_args = ['--env', 'CUPY_LONG_DESCRIPTION_PATH=../description.rst']
         if target == 'wheel-linux':
             setup_args += [
-                '--cupy-no-rpath',
-                '--cupy-wheel-metadata', '../_wheel.json',
+                '--env',
+                'CUPY_INSTALL_NO_RPATH=1',
+                '--env',
+                'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
             ]
-            for lib in WHEEL_LINUX_CONFIGS[cuda_version]['libs']:
-                setup_args += ['--cupy-wheel-lib', lib]
-            for include_path, include_relpath in (
-                    WHEEL_LINUX_CONFIGS[cuda_version]['includes']):
-                spec = f'{include_path}:{include_relpath}'
-                setup_args += ['--cupy-wheel-include', spec]
         elif target == 'sdist':
-            setup_args += [
-                '--cupy-no-cuda',
-            ]
-
+            setup_args += ['--env', 'CUPY_INSTALL_USE_STUB=1']
         agent_args += setup_args
 
         # Create a working directory.
@@ -457,6 +460,9 @@ class Controller:
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
             shutil.copytree(source, f'{workdir}/cupy', symlinks=True)
+
+            # Rename project name
+            rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
 
             # Add long description file.
             with open(
@@ -584,7 +590,7 @@ class Controller:
             f'(version {version}, for CUDA {cuda_version} '
             f'+ Python {python_version})')
 
-        action = 'bdist_wheel'
+        action = 'wheel'
         preloads = WHEEL_WINDOWS_CONFIGS[cuda_version]['preloads']
         platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
             'platform_version', cuda_version)
@@ -600,19 +606,13 @@ class Controller:
             '--source', 'cupy',
         ]
 
-        # Add arguments to pass to setup.py.
-        setup_args = [
-            '--cupy-package-name', package_name,
-            '--cupy-long-description', '../description.rst',
+        # Environmental variables to pass to builder
+        agent_args += [
+            '--env',
+            'CUPY_INSTALL_LONG_DESCRIPTION_PATH=../description.rst',
+            '--env',
+            'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
         ]
-        setup_args += ['--cupy-wheel-metadata', '../_wheel.json']
-        for lib in WHEEL_WINDOWS_CONFIGS[cuda_version]['libs']:
-            libpath = find_file_in_path(lib)
-            if libpath is None:
-                raise RuntimeError(
-                    f'Library {lib} could not be found in PATH')
-            setup_args += ['--cupy-wheel-lib', libpath]
-        agent_args += setup_args
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
@@ -623,6 +623,9 @@ class Controller:
             # Copy source tree to working directory.
             log(f'Copying source tree from: {source}')
             shutil.copytree(source, f'{workdir}/cupy')
+
+            # Rename project name
+            rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
 
             # Add long description file.
             with open(

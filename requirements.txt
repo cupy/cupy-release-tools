@@ -1,2 +1,5 @@
-distlib
-typing-extensions
+build==1.2.*
+distlib==0.3.*
+tomli-w==1.2.*
+tomli==2.2.*
+typing-extensions==4.13.*
