@@ -195,16 +195,19 @@ class Controller:
             assert args.source is not None
             with log_group('Build'):
                 if args.target == 'wheel-win':
+                    assert args.cuda is not None, 'CUDA version unspecified'
                     self.build_windows(
                         args.target, args.cuda, args.python,
                         args.source, args.output)
                 else:
+                    # For sdist build, args.cuda can be None.
                     self.build_linux(
                         args.target, args.cuda, args.python,
                         args.source, args.output, args.dry_run, args.push,
                         args.rmi)
         elif args.action == 'verify':
             assert args.dist is not None
+            assert args.cuda is not None, 'CUDA version unspecified'
             if args.target == 'wheel-win':
                 with log_group('Verify'):
                     self.verify_windows(
@@ -357,7 +360,7 @@ class Controller:
     def build_linux(
         self,
         target: str,
-        cuda_version: str,
+        cuda_version: str | None,
         python_version: str,
         source: str,
         output: str,
@@ -480,11 +483,13 @@ class Controller:
                 f'builder directory: {optlib_workdir}')
             os.mkdir(optlib_workdir)
             for p in preloads:
+                assert cuda_version is not None
                 install_cuda_opt_library(
                     p, cuda_version, optlib_workdir, workdir=workdir)
 
             # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
+                assert cuda_version is not None
                 wheel_metadata = generate_wheel_metadata(
                     preloads, cuda_version)
                 log('Writing wheel metadata')
