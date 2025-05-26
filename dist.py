@@ -77,7 +77,10 @@ def run_command_output(*cmd: str, cwd: str | None = None) -> str:
 def generate_wheel_metadata(
     libraries: list[str], cuda_version: str,
 ) -> dict[str, Any]:
-    target_system = platform.system()
+    machine = platform.machine()
+    if machine == 'AMD64':  # Windows
+        machine = 'x86_64'
+    target_system = f'{platform.system()}:{machine}'
     log(
         f'Generating preloading metadata for CUDA '
         f'{cuda_version} / {target_system}'
