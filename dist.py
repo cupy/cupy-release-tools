@@ -190,7 +190,6 @@ class Controller:
 
     def main(self) -> None:
         args = self.parse_args()
-        assert args.cuda is not None
 
         if args.action == 'build':
             assert args.source is not None
