@@ -10,7 +10,6 @@ from dist_config import (
     WHEEL_WINDOWS_CONFIGS,
 )  # NOQA
 from dist_utils import (
-    get_version_from_source_tree,
     sdist_name,
     wheel_linux_platform_tag,
     wheel_name,
@@ -20,6 +19,7 @@ from dist_utils import (
 class _DistInfoArgs(argparse.Namespace):
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
     source: str
+    version: str
     cuda: str
     python: str
 
@@ -37,6 +37,9 @@ class DistInfoPrinter:
         parser.add_argument(
             '--source', type=str, required=True,
             help='path to the CuPy source tree; must be a clean checkout')
+        parser.add_argument(
+            '--version', type=str, required=True,
+            help='version of the package')
 
         # Options specific for wheels:
         parser.add_argument(
@@ -50,19 +53,18 @@ class DistInfoPrinter:
 
     def main(self) -> None:
         args = self.parse_args()
-        version = get_version_from_source_tree(args.source)
         if args.target == 'wheel-linux':
             pkg_name = WHEEL_LINUX_CONFIGS[args.cuda]['name']
             arch = WHEEL_LINUX_CONFIGS[args.cuda].get('arch', 'x86_64')
             filename = wheel_name(
-                pkg_name, version, args.python,
+                pkg_name, args.version, args.python,
                 wheel_linux_platform_tag(arch, True))
         elif args.target == 'wheel-win':
             pkg_name = WHEEL_WINDOWS_CONFIGS[args.cuda]['name']
-            filename = wheel_name(pkg_name, version, args.python, 'win_amd64')
+            filename = wheel_name(pkg_name, args.version, args.python, 'win_amd64')
         elif args.target == 'sdist':
             pkg_name = 'cupy'
-            filename = sdist_name(pkg_name, version)
+            filename = sdist_name(pkg_name, args.version)
         else:
             raise AssertionError('Unreachable')
         print(f'DIST_FILE_NAME="{filename}"')

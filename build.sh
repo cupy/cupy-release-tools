@@ -2,16 +2,17 @@
 
 CUDA="${1}"
 PYTHON="${2}"
+VERSION="${3}"
 
-# Set DIST_OPTIONS and DIST_FILE_NAME
+# Set DIST_OPTIONS (for build/verify) and DIST_FILE_NAME (for verify)
 case ${CUDA} in
   sdist )
-    DIST_OPTIONS="--target sdist --python ${PYTHON}"
-    eval $(./get_dist_info.py --target sdist --source cupy)
+    DIST_OPTIONS="--target sdist --version ${VERSION} --python ${PYTHON}"
+    eval $(./get_dist_info.py --target sdist --source cupy --version ${VERSION})
     ;;
   * )
-    DIST_OPTIONS="--target wheel-linux --python ${PYTHON} --cuda ${CUDA}"
-    eval $(./get_dist_info.py --target wheel-linux --source cupy --cuda ${CUDA} --python ${PYTHON})
+    DIST_OPTIONS="--target wheel-linux --version "${VERSION}" --python ${PYTHON} --cuda ${CUDA}"
+    eval $(./get_dist_info.py --target wheel-linux --source cupy --version ${VERSION} --cuda ${CUDA} --python ${PYTHON})
     ;;
 esac
 

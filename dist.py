@@ -32,7 +32,6 @@ from dist_config import (
 )  # NOQA
 from dist_utils import (
     get_system_cuda_version,
-    get_version_from_source_tree,
     sdist_name,
     wheel_linux_platform_tag,
     wheel_name,
@@ -124,6 +123,13 @@ def rename_project(src: str, name: str) -> None:
         tomli_w.dump(pp, f)
 
 
+def get_setuptools_scm_env_name(package_name: str) -> str:
+    """Returns the environment variable name for setuptools_scm which is used
+    to override the version of the package."""
+    norm_name = package_name.replace('-', '_').upper()
+    return f'SETUPTOOLS_SCM_PRETEND_VERSION_FOR_{norm_name}'
+
+
 class _ControllerArgs(argparse.Namespace):
     action: Literal['build', 'verify']
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
@@ -133,6 +139,7 @@ class _ControllerArgs(argparse.Namespace):
     push: bool
     rmi: bool
     source: str | None
+    version: str | None
     output: str
     dist: str | None
     test: list[str]
@@ -176,6 +183,9 @@ class Controller:
             help='[build] path to the CuPy source tree; '
                  'must be a clean checkout')
         parser.add_argument(
+            '--version', type=str,
+            help='version of the package')
+        parser.add_argument(
             '--output', type=str, default='.',
             help='[build] path to the directory to place '
                  'the built distribution')
@@ -196,16 +206,17 @@ class Controller:
 
         if args.action == 'build':
             assert args.source is not None
+            assert args.version is not None
             with log_group('Build'):
                 if args.target == 'wheel-win':
                     assert args.cuda is not None, 'CUDA version unspecified'
                     self.build_windows(
-                        args.target, args.cuda, args.python,
+                        args.target, args.version, args.cuda, args.python,
                         args.source, args.output)
                 else:
                     # For sdist build, args.cuda can be None.
                     self.build_linux(
-                        args.target, args.cuda, args.python,
+                        args.target, args.version, args.cuda, args.python,
                         args.source, args.output, args.dry_run, args.push,
                         args.rmi)
         elif args.action == 'verify':
@@ -363,6 +374,7 @@ class Controller:
     def build_linux(
         self,
         target: str,
+        version: str,
         cuda_version: str | None,
         python_version: str,
         source: str,
@@ -373,7 +385,6 @@ class Controller:
     ) -> None:
         """Build a single wheel distribution for Linux."""
 
-        version = get_version_from_source_tree(source)
         self._ensure_compatible_branch(version)
 
         if target == 'wheel-linux':
@@ -444,7 +455,12 @@ class Controller:
         ]
 
         # Environmental variables to pass to builder
-        setup_args = ['--env', 'CUPY_LONG_DESCRIPTION_PATH=../description.rst']
+        setup_args = [
+            '--env',
+            f'{get_setuptools_scm_env_name(package_name)}={version}',
+            '--env',
+            'CUPY_LONG_DESCRIPTION_PATH=../description.rst',
+        ]
         if target == 'wheel-linux':
             setup_args += [
                 '--env',
@@ -573,6 +589,7 @@ class Controller:
     def build_windows(
         self,
         target: str,
+        version: str,
         cuda_version: str,
         python_version: str,
         source: str,
@@ -589,7 +606,6 @@ class Controller:
         if target != 'wheel-win':
             raise ValueError('unknown target')
 
-        version = get_version_from_source_tree(source)
         self._ensure_compatible_branch(version)
 
         log(
@@ -615,6 +631,8 @@ class Controller:
 
         # Environmental variables to pass to builder
         agent_args += [
+            '--env',
+            f'{get_setuptools_scm_env_name(package_name)}={version}',
             '--env',
             'CUPY_INSTALL_LONG_DESCRIPTION_PATH=../description.rst',
             '--env',
