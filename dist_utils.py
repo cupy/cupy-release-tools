@@ -32,14 +32,6 @@ def wheel_name(
     )
 
 
-def get_version_from_source_tree(source_tree: str) -> str:
-    version_file_path = f'{source_tree}/cupy/_version.py'
-    exec_locals: dict[str, str] = {}
-    with open(version_file_path, encoding='UTF-8') as f:
-        exec(f.read(), None, exec_locals)
-    return exec_locals['__version__']
-
-
 def get_system_cuda_version(cudart_name: str = 'cudart') -> int | None:
     filename = ctypes.util.find_library(cudart_name)
     if filename is None:
