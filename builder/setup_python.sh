@@ -22,7 +22,7 @@ for VERSION in ${PYTHON_VERSIONS}; do \
     echo "Installing libraries on Python ${VERSION}..."
     pyenv global ${VERSION}
     pip install -U pip setuptools
-    pip install "Cython==${CYTHON_VERSION}" "fastrlock==${FASTRLOCK_VERSION}" wheel auditwheel build tomli tomli-w
+    pip install "Cython==${CYTHON_VERSION}" "fastrlock==${FASTRLOCK_VERSION}" setuptools-scm wheel auditwheel build tomli tomli-w
 done
 
 # The last version installed will be used to run the builder agent.

@@ -46,11 +46,11 @@ For Linux builds, you can use the ``build.sh`` shell script that wraps the Build
   # Prepare source tree
   git clone --recursive https://github.com/cupy/cupy.git
 
-  # Build & verify a sdist (using Python 3.10)
-  ./build.sh sdist 3.10
+  # Build & verify a sdist, using Python 3.12, version CuPy package as v14.5.0
+  ./build.sh sdist 3.12 14.5.0
 
-  # Build & verify a wheel for CUDA 11.0 + Python 3.8
-  ./build.sh 11.0 3.8
+  # Build & verify a wheel for CUDA 12.x + Python 3.11, version CuPy package as v13.3.0
+  ./build.sh 12.x 3.11 13.3.0
 
 For Windows, or if you need some more detailed configuration, see the sections below to manually run the tool.
 
