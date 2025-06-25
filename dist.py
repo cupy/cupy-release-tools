@@ -210,14 +210,15 @@ class Controller:
                         args.rmi)
         elif args.action == 'verify':
             assert args.dist is not None
-            assert args.cuda is not None, 'CUDA version unspecified'
             if args.target == 'wheel-win':
+                assert args.cuda is not None, 'CUDA version unspecified'
                 with log_group('Verify'):
                     self.verify_windows(
                         args.target, args.cuda, args.python,
                         args.dist, args.test)
             else:
                 # Log group will be emit for each verification run.
+                # For sdist verify, args.cuda can be None.
                 self.verify_linux(
                     args.target, args.cuda, args.python,
                     args.dist, args.test, args.dry_run, args.push,
@@ -692,7 +693,7 @@ class Controller:
     def verify_linux(
         self,
         target: Literal['sdist', 'wheel-linux'],
-        cuda_version: str,
+        cuda_version: str | None,
         python_version: str,
         dist: str,
         tests: Iterable[str],
@@ -702,6 +703,7 @@ class Controller:
     ) -> None:
         """Verify a single distribution for Linux."""
 
+        kind: Literal['cuda', 'rocm']
         if target == 'sdist':
             assert cuda_version is None
             image_tag = ('cupy/cupy-release-tools:verifier-'
@@ -744,7 +746,7 @@ class Controller:
         dist: str,
         tests: Iterable[str],
         python_version: str,
-        cuda_version: str,
+        cuda_version: str | None,
         preloads: Collection[str],
         system_packages: str,
         dry_run: bool,
@@ -760,6 +762,7 @@ class Controller:
             '--chown', f'{os.getuid()}:{os.getgid()}',
         ]
         if 0 < len(preloads):
+            assert cuda_version is not None
             agent_args += ['--cuda', cuda_version]
             for p in preloads:
                 agent_args += ['--preload', p]
