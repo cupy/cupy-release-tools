@@ -119,7 +119,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'platform_version': '12.x',
         # Use the latest CUDA version for build.
         # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.8.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-centos7',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl', 'cudnn'],
@@ -134,6 +134,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
             '12.5.0-runtime-ubuntu22.04',
             '12.6.0-runtime-ubuntu22.04',
             '12.8.0-runtime-ubuntu22.04',
+            '12.9.0-runtime-ubuntu22.04',
         ],
         'system_packages': '',
     },
@@ -160,6 +161,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
             '12.5.0-runtime-ubi8',
             '12.6.0-runtime-ubi8',
             '12.8.0-runtime-ubi8',
+            '12.9.0-runtime-ubi8',
         ],
         'system_packages': '',
     },
@@ -222,7 +224,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'libs': [],
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
-        'check_version': lambda x: 12080 <= x < 12090,  # CUDA 12.8
+        'check_version': lambda x: 12090 <= x < 12100,  # CUDA 12.9
     }
 }
 
