@@ -61,7 +61,6 @@ class VerifierAgent:
             self._log('Using Python from system')
 
         assert args.dist is not None
-        assert args.cuda is not None
 
         self._log('Installing distribution...')
         cmdline = [
@@ -93,6 +92,7 @@ class VerifierAgent:
         self._run(*cmdline)
 
         for p in args.preload:
+            assert args.cuda is not None
             self._log(f'Installing preload libraries ({p})...')
             cmdline = [
                 *pycommand,
