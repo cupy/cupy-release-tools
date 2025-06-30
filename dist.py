@@ -99,7 +99,7 @@ def generate_wheel_metadata(
 
 
 def install_cuda_opt_library(
-    library: str, cuda_version: str, prefix: str, *, workdir: str
+    library: str, cuda_version: str, arch: str, prefix: str, *, workdir: str
 ) -> None:
     """Installs the library to the prefix."""
     command = [
@@ -107,6 +107,7 @@ def install_cuda_opt_library(
         'cupy/cupyx/tools/install_library.py',
         '--library', library,
         '--cuda', cuda_version,
+        '--arch', arch,
         '--prefix', prefix,
     ]
     log(f'Extracting the library to {prefix}')
@@ -390,6 +391,8 @@ class Controller:
             kind = WHEEL_LINUX_CONFIGS[cuda_version]['kind']
             arch = WHEEL_LINUX_CONFIGS[cuda_version].get('arch', 'x86_64')
             preloads = WHEEL_LINUX_CONFIGS[cuda_version]['preloads']
+            preloads_cuda_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
+                'preloads_cuda_version', cuda_version)
             platform_version = WHEEL_LINUX_CONFIGS[cuda_version].get(
                 'platform_version', cuda_version)
             base_image = WHEEL_LINUX_CONFIGS[cuda_version]['image']
@@ -424,6 +427,7 @@ class Controller:
             kind = 'cuda'
             arch = None
             preloads = []
+            preloads_cuda_version = None
             base_image = SDIST_CONFIG['image']
             builder_dockerfile = 'Dockerfile'
             package_name = 'cupy'
@@ -487,9 +491,11 @@ class Controller:
                 f'builder directory: {optlib_workdir}')
             os.mkdir(optlib_workdir)
             for p in preloads:
-                assert cuda_version is not None
+                assert preloads_cuda_version is not None
+                assert arch is not None
                 install_cuda_opt_library(
-                    p, cuda_version, optlib_workdir, workdir=workdir)
+                    p, preloads_cuda_version, arch, optlib_workdir,
+                    workdir=workdir)
 
             # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
@@ -648,7 +654,8 @@ class Controller:
             os.mkdir(optlib_workdir)
             for p in preloads:
                 install_cuda_opt_library(
-                    p, cuda_version, optlib_workdir, workdir=workdir)
+                    p, cuda_version, 'x86_64', optlib_workdir,
+                    workdir=workdir)
 
             # Create a wheel metadata file for preload.
             log('Creating wheel metadata')
