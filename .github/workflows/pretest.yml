@@ -7,30 +7,21 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: setup python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: install
-      run: |
-        pip install -U pip wheel
-        pip install -r requirements.txt
-        pip install ruff autopep8 mypy
+      - name: install
+        run: |
+          pip install -U pip wheel
+          pip install -r requirements.txt
+          pip install pre-commit
 
-    - name: ruff
-      run: |
-        ruff check
-
-    - name: autopep8
-      run: |
-        autopep8 -r . --global-config .pep8 --diff | tee check_autopep8
-        test ! -s check_autopep8
-
-    - name: mypy
-      run: |
-        mypy
+      - name: run pre-commit
+        run: |
+          pre-commit run -a --show-diff-on-failure
