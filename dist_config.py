@@ -41,6 +41,7 @@ class _WheelLinuxConfig(TypedDict):
     libs: list[str]
     includes: list[tuple[str, str]]
     preloads: list[str]
+    preloads_cuda_version: NotRequired[str]
     builder_dockerfile: NotRequired[str]
     verify_image: str
     verify_systems: list[str]
@@ -58,6 +59,8 @@ class _WheelLinuxConfig(TypedDict):
 # - `libs`: a list of shared libraries to be bundled in wheel
 # - `includes`: a list of header files to be bundled in wheel
 # - `preloads`: optional CUDA libraries to be used
+# - `preloads_cuda_version`: CUDA version used to install optional CUDA
+#                            libraries (optional, default: dict key)
 # - `verify_image`: a name of the base docker image name used for verify
 # - `verify_systems`: a list of systems to verify on; expaneded as {system} in
 #                     `verify_image`.
@@ -98,6 +101,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
+        'preloads_cuda_version': '11.x',
         'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
@@ -149,6 +153,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
+        'preloads_cuda_version': '12.x',
         'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
