@@ -3,7 +3,7 @@ line-length = 79
 extend-exclude = [".pfnci", "cupy"]
 
 [tool.ruff.lint]
-extend-select = ["I002", "Q"]
+select = ["Q", "E", "F", "W", "UP", "I002", "FA", "PYI", "PLC01"]
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
