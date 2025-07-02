@@ -499,9 +499,9 @@ class Controller:
 
             # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
-                assert cuda_version is not None
+                assert preloads_cuda_version is not None
                 wheel_metadata = generate_wheel_metadata(
-                    preloads, cuda_version)
+                    preloads, preloads_cuda_version)
                 log('Writing wheel metadata')
                 with open(
                     f'{workdir}/_wheel.json', 'w', encoding='UTF-8'
