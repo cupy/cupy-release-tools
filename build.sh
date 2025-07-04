@@ -49,5 +49,6 @@ if [[ "${CUPY_RELEASE_SKIP_VERIFY:-0}" != "1" ]]; then
   if [[ "${CUPY_RELEASE_VERIFY_REMOVE_IMAGE:-0}" = "1" ]]; then
     VERIFY_ARGS="${VERIFY_ARGS} --rmi"
   fi
+  python3 -m twine check --strict "${DIST_FILE_NAME}"
   ./dist.py --action verify ${DIST_OPTIONS} --dist ${DIST_FILE_NAME} ${VERIFY_ARGS}
 fi
