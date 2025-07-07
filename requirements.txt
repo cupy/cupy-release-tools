@@ -1,4 +1,5 @@
 build==1.2.*
+twine==6.1.*
 distlib==0.3.*
 tomli-w==1.2.*
 tomli==2.2.*
