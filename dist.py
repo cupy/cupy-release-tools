@@ -449,7 +449,10 @@ class Controller:
         ]
 
         # Environmental variables to pass to builder
-        setup_args = ['--env', 'CUPY_LONG_DESCRIPTION_PATH=../description.rst']
+        setup_args = [
+            '--env',
+            'CUPY_INSTALL_LONG_DESCRIPTION=../description.rst',
+        ]
         if target == 'wheel-linux':
             setup_args += [
                 '--env',
@@ -623,7 +626,7 @@ class Controller:
         # Environmental variables to pass to builder
         agent_args += [
             '--env',
-            'CUPY_INSTALL_LONG_DESCRIPTION_PATH=../description.rst',
+            'CUPY_INSTALL_LONG_DESCRIPTION=../description.rst',
             '--env',
             'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
         ]
