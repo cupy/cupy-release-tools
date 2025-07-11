@@ -149,7 +149,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '12.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.8.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
