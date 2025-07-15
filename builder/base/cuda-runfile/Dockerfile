@@ -12,10 +12,10 @@ RUN curl -sL -o /tmp/cuda_installer "${CUDA_INSTALLER_URL}" && \
     ls -al /usr/local/cuda && \
     rm /tmp/cuda_installer
 
-ENV CUDA_PATH /usr/local/cuda
-ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64
-ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
+ENV CUDA_PATH=/usr/local/cuda
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
 
 # NVIDIA Container Toolkit (nvidia-docker)
-ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_VISIBLE_DEVICES=all
