@@ -103,10 +103,10 @@ To verify the built distribution, use the following command:
 
 ::
 
-  ./dist.py --action verify --target wheel-linux --python 3.8 --cuda 10.0 --dist cupy_cuda100-9.0.0b2-cp38-cp38-manylinux_x86_64.whl --test release_tests/common --test release_tests/cudnn --test release_tests/nccl
+  ./dist.py --action verify --target wheel-linux --python 3.8 --cuda 10.0 --dist cupy_cuda100-9.0.0b2-cp38-cp38-manylinux_x86_64.whl --test release-tests/common --test release-tests/cudnn --test release-tests/nccl
 
 You can specify test suites directory to ``--test`` argument.
-``release_tests`` is a minimal test cases handy for final check before release.
+``release-tests`` is a minimal test cases handy for final check before release.
 Of course, you can also run the full unit test suites from CuPy source tree.
 
 Publish

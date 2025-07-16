@@ -104,7 +104,7 @@ InstallZLIB
 echo ">> Validating with twine check..."
 RunOrDie python -m twine check --strict $wheel_file
 echo ">> Starting verification..."
-RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release_tests/common --test release_tests/cudnn --test release_tests/pkg_wheel
+RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
