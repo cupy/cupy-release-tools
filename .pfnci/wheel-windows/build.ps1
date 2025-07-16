@@ -101,6 +101,8 @@ echo ">> Installing zlib"
 InstallZLIB
 
 # Verify
+echo ">> Validating with twine check..."
+RunOrDie python -m twine check --strict $wheel_file
 echo ">> Starting verification..."
 RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release_tests/common --test release_tests/cudnn --test release_tests/pkg_wheel
 

@@ -449,7 +449,10 @@ class Controller:
         ]
 
         # Environmental variables to pass to builder
-        setup_args = ['--env', 'CUPY_LONG_DESCRIPTION_PATH=../description.rst']
+        setup_args = [
+            '--env',
+            'CUPY_INSTALL_LONG_DESCRIPTION=../description.rst',
+        ]
         if target == 'wheel-linux':
             setup_args += [
                 '--env',
@@ -499,9 +502,9 @@ class Controller:
 
             # Create a wheel metadata file for preload.
             if target == 'wheel-linux':
-                assert cuda_version is not None
+                assert preloads_cuda_version is not None
                 wheel_metadata = generate_wheel_metadata(
-                    preloads, cuda_version)
+                    preloads, preloads_cuda_version)
                 log('Writing wheel metadata')
                 with open(
                     f'{workdir}/_wheel.json', 'w', encoding='UTF-8'
@@ -623,7 +626,7 @@ class Controller:
         # Environmental variables to pass to builder
         agent_args += [
             '--env',
-            'CUPY_INSTALL_LONG_DESCRIPTION_PATH=../description.rst',
+            'CUPY_INSTALL_LONG_DESCRIPTION=../description.rst',
             '--env',
             'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
         ]
