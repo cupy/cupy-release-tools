@@ -171,16 +171,16 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'system_packages': '',
     },
     '13.x': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        # CUDA Enhanced Compatibility wheel (for CUDA 13.x)
         'name': 'cupy-cuda13x',
         'kind': 'cuda',
         'platform_version': '13.x',
         # Use the latest CUDA version for build.
-        # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
+        # Note: oldest RHEL supported in CUDA 13 is v8
         'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-centos7',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': ['nccl'],  # TODO(kmaehashi): Re-add cuTENSOR
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -189,13 +189,13 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'system_packages': '',
     },
     '13.x-aarch64': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        # CUDA Enhanced Compatibility wheel (for CUDA 13.x)
         'name': 'cupy-cuda13x',
         'kind': 'cuda',
         'arch': 'aarch64',
         'platform_version': '13.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.9.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
@@ -270,13 +270,13 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'check_version': lambda x: 12090 <= x < 12100,  # CUDA 12.9
     }
     '13.x': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        # CUDA Enhanced Compatibility wheel (for CUDA 13.x)
         'name': 'cupy-cuda13x',
         'kind': 'cuda',
         'libs': [],
-        'preloads': ['cutensor', 'cudnn'],
+        'preloads': [],  # TODO(kmaehashi): Re-add cuTENSOR
         'cudart_lib': 'cudart64_13',  # binary compatible between CUDA 13.x
-        'check_version': lambda x: 13090 <= x < 13000,  # CUDA 13.9
+        'check_version': lambda x: 13000 <= x < 13000,  # CUDA 13.0
     }
 }
 
