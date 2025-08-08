@@ -170,6 +170,44 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         ],
         'system_packages': '',
     },
+    '13.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda13x',
+        'kind': 'cuda',
+        'platform_version': '13.x',
+        # Use the latest CUDA version for build.
+        # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-centos7',
+        'libs': [],
+        'includes': [],
+        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '13.0.0-runtime-ubuntu22.04',
+        ],
+        'system_packages': '',
+    },
+    '13.x-aarch64': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda13x',
+        'kind': 'cuda',
+        'arch': 'aarch64',
+        'platform_version': '13.x',
+        # Use the latest image.
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.9.0-el8',
+        'libs': [],
+        'includes': [],
+        'preloads': ['nccl'],
+        'preloads_cuda_version': '13.x',
+        'builder_dockerfile': 'Dockerfile.el8',
+        'verify_image': 'nvidia/cuda:{system}',
+        'verify_systems': [
+            # Test on all supported CUDA version variants.
+            '13.0.0-runtime-ubi8',
+        ],
+        'system_packages': '',
+    },
     'rocm-4.3': {
         'name': 'cupy-rocm-4-3',
         'kind': 'rocm',
@@ -231,6 +269,15 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
         'check_version': lambda x: 12090 <= x < 12100,  # CUDA 12.9
     }
+    '13.x': {
+        # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
+        'name': 'cupy-cuda13x',
+        'kind': 'cuda',
+        'libs': [],
+        'preloads': ['cutensor', 'cudnn'],
+        'cudart_lib': 'cudart64_13',  # binary compatible between CUDA 13.x
+        'check_version': lambda x: 13090 <= x < 13000,  # CUDA 13.9
+    }
 }
 
 
@@ -251,6 +298,7 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
+- `cupy-cuda13x <https://pypi.org/project/cupy-cuda13x/>`_ (for CUDA 13.x)
 - `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for CUDA 12.x)
 - `cupy-cuda11x <https://pypi.org/project/cupy-cuda11x/>`_ (for CUDA 11.2 ~ 11.x)
 
