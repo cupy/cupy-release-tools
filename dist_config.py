@@ -276,7 +276,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'libs': [],
         'preloads': [],  # TODO(kmaehashi): Re-add cuTENSOR
         'cudart_lib': 'cudart64_13',  # binary compatible between CUDA 13.x
-        'check_version': lambda x: 13000 <= x < 13000,  # CUDA 13.0
+        'check_version': lambda x: 13000 <= x < 13010,  # CUDA 13.0
     }
 }
 
