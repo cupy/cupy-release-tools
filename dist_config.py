@@ -268,7 +268,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'preloads': ['cutensor', 'cudnn'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
         'check_version': lambda x: 12090 <= x < 12100,  # CUDA 12.9
-    }
+    },
     '13.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 13.x)
         'name': 'cupy-cuda13x',
