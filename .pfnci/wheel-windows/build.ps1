@@ -35,7 +35,6 @@ function UninstallCuTENSOR($cuda_path) {
 
 # Activate target CUDA and uninstall existing cuDNN for the target CUDA
 ActivateCUDA $cuda
-ActivateNVTX1
 $cuda_path = $Env:CUDA_PATH
 
 # Activate target Python
