@@ -33,12 +33,13 @@ function UninstallCuTENSOR($cuda_path) {
     }
 }
 
-# Activate target CUDA and uninstall existing cuDNN for the target CUDA
+# Activate target CUDA/cuDNN/Python
 ActivateCUDA $cuda
-ActivateNVTX1
 $cuda_path = $Env:CUDA_PATH
-
-# Activate target Python
+$has_cudnn = ($cuda.startswith("11.") -or $cuda.startswith("12."))
+if ($has_cudnn) {
+    ActivateCuDNN "8.8" $cuda
+}
 ActivatePython $python
 
 # Show build configuration
@@ -97,14 +98,20 @@ UninstallCuDNN $cuda_path
 UninstallCuTENSOR $cuda_path
 
 # Install dependency for cuDNN 8.3+
-echo ">> Installing zlib"
-InstallZLIB
+if ($has_cudnn) {
+    echo ">> Installing zlib"
+    InstallZLIB
+}
 
 # Verify
 echo ">> Validating with twine check..."
 RunOrDie python -m twine check --strict $wheel_file
 echo ">> Starting verification..."
-RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
+if ($has_cudnn) {
+    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
+} else {
+    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
+}
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
