@@ -4,7 +4,6 @@ import sys
 import unittest
 
 import cupy
-import cupy.cuda.cudnn as libcudnn
 import cupy.cuda.cutensor as libcutensor
 import cupy.cuda.nccl as libnccl
 
@@ -15,17 +14,6 @@ class TestPreload(unittest.TestCase):
         config = cupy._environment.get_preload_config()
         assert config is not None
         return config
-
-    def test_cudnn(self):
-        if 13000 <= cupy.cuda.runtime.runtimeGetVersion():
-            # cuDNN support is only available in pre-CUDA 13.
-            return
-        preload_version = self._get_config()['cudnn']['version']
-        major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
-        expected_version = major * 1000 + minor * 100 + patchlevel
-        assert libcudnn.available
-        assert libcudnn.get_build_version() == expected_version
-        assert libcudnn.getVersion() == expected_version
 
     def test_nccl(self):
         if sys.platform == 'win32':

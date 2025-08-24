@@ -95,21 +95,10 @@ def main() -> None:
                 'lib': 'lib64',
                 'include': 'include',
             })
-        _install_library(
-            'cudnn', src_dir, dst_dir, {
-                'lib64': 'lib64',
-                'include': 'include',
-            })
     elif sys.platform == 'win32':
         _install_library(
             'cutensor', src_dir, dst_dir, {
                 'lib': 'bin',
-                'include': 'include',
-            })
-        _install_library(
-            'cudnn', src_dir, dst_dir, {
-                'bin': 'bin',
-                'lib': 'lib',
                 'include': 'include',
             })
     else:

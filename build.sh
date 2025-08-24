@@ -20,7 +20,7 @@ VERIFY_ARGS="--test release-tests/common"
 case ${CUDA} in
   sdist )
     # CUDA (sdist)
-    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl --test release-tests/pkg_sdist"
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/nccl --test release-tests/pkg_sdist"
     ;;
   rocm-* )
     # ROCm (wheel)
@@ -32,7 +32,7 @@ case ${CUDA} in
     ;;
   * )
     # CUDA (wheel)
-    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/cudnn --test release-tests/nccl --test release-tests/pkg_wheel"
+    VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/nccl --test release-tests/pkg_wheel"
     ;;
 esac
 

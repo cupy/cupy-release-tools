@@ -26,8 +26,8 @@ class _SDistConfig(TypedDict):
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG: _SDistConfig = {
     'image': 'nvidia/cuda:11.2.2-devel-centos7',
-    # This image contains cuDNN and NCCL.
-    'verify_image': 'nvidia/cuda:11.4.3-cudnn8-devel-{system}',
+    # This image contains NCCL.
+    'verify_image': 'nvidia/cuda:11.4.3-devel-{system}',
     'verify_systems': ['ubuntu18.04'],
 }
 
@@ -76,7 +76,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-centos7',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': ['cutensor', 'nccl'],
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -126,7 +126,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-centos7',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl', 'cudnn'],
+        'preloads': ['cutensor', 'nccl'],
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -256,7 +256,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'name': 'cupy-cuda11x',
         'kind': 'cuda',
         'libs': [],
-        'preloads': ['cutensor', 'cudnn'],
+        'preloads': ['cutensor'],
         'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
         'check_version': lambda x: 11080 <= x < 11090,  # CUDA 11.8
     },
@@ -265,7 +265,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'name': 'cupy-cuda12x',
         'kind': 'cuda',
         'libs': [],
-        'preloads': ['cutensor', 'cudnn'],
+        'preloads': ['cutensor'],
         'cudart_lib': 'cudart64_12',  # binary compatible between CUDA 12.x
         'check_version': lambda x: 12090 <= x < 12100,  # CUDA 12.9
     },
