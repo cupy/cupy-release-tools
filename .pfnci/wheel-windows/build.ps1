@@ -67,7 +67,7 @@ echo ">> Packages installed:"
 RunOrDie python -m pip list
 
 # Build
-# Note: cuDNN and cuTENSOR will be installed by the tool.
+# Note: cuTENSOR will be installed by the tool.
 echo ">> Starting build..."
 RunOrDie python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
 

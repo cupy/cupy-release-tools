@@ -27,7 +27,7 @@ case ${CUDA} in
     VERIFY_ARGS="${VERIFY_ARGS}"
     ;;
   13.x )
-    # CUDA 13.0 (wheel) -- cuDNN unavailable
+    # CUDA 13.x (wheel)
     VERIFY_ARGS="${VERIFY_ARGS} --test release-tests/sparse --test release-tests/nccl --test release-tests/pkg_wheel"
     ;;
   * )
