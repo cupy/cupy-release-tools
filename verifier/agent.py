@@ -110,7 +110,7 @@ class VerifierAgent:
             *pycommand,
             '-Werror',
             '-c',
-            'import cupy; import cupy.cuda.cudnn; cupy.show_config()',
+            'import cupy; cupy.show_config()',
         ]
         self._run(*cmdline)
 

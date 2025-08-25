@@ -13,13 +13,6 @@ $ErrorActionPreference = "Stop"
 PrioritizeFlexCIDaemon
 EnableLongPaths
 
-function UninstallCuDNN($cuda_path) {
-    echo "Uninstalling cuDNN installation from ${cuda_path}"
-    Remove-Item -Force -Verbose ${cuda_path}\bin\cudnn*.dll
-    Remove-Item -Force -Verbose ${cuda_path}\include\cudnn*.h
-    Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cudnn*.lib
-}
-
 function UninstallCuTENSOR($cuda_path) {
     echo "Uninstalling cuTENSOR installation from ${cuda_path}"
     if(Test-Path ${cuda_path}\bin\cutensor.dll) {
@@ -33,13 +26,9 @@ function UninstallCuTENSOR($cuda_path) {
     }
 }
 
-# Activate target CUDA/cuDNN/Python
+# Activate target CUDA/Python
 ActivateCUDA $cuda
 $cuda_path = $Env:CUDA_PATH
-$has_cudnn = ($cuda.startswith("11.") -or $cuda.startswith("12."))
-if ($has_cudnn) {
-    ActivateCuDNN "8.8" $cuda
-}
 ActivatePython $python
 
 # Show build configuration
@@ -78,7 +67,7 @@ echo ">> Packages installed:"
 RunOrDie python -m pip list
 
 # Build
-# Note: cuDNN and cuTENSOR will be installed by the tool.
+# Note: cuTENSOR will be installed by the tool.
 echo ">> Starting build..."
 RunOrDie python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
 
@@ -93,25 +82,14 @@ echo ">> Wheel File: ${wheel_file}"
 # List files
 Get-ChildItem
 
-# Uninstall cuDNN and cuTENSOR
-UninstallCuDNN $cuda_path
+# Uninstall cuTENSOR
 UninstallCuTENSOR $cuda_path
-
-# Install dependency for cuDNN 8.3+
-if ($has_cudnn) {
-    echo ">> Installing zlib"
-    InstallZLIB
-}
 
 # Verify
 echo ">> Validating with twine check..."
 RunOrDie python -m twine check --strict $wheel_file
 echo ">> Starting verification..."
-if ($has_cudnn) {
-    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/cudnn --test release-tests/pkg_wheel
-} else {
-    RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
-}
+RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
