@@ -34,9 +34,6 @@ class TestPreload(unittest.TestCase):
         if cupy.cuda.runtime.runtimeGetVersion() < 10010:
             # cuTENSOR is only available for CUDA 10.1+.
             return
-        if 13000 <= cupy.cuda.runtime.runtimeGetVersion():
-            # TODO(kmaehashi): cuTENSOR is not yet available in CUDA 13+.
-            return
         preload_version = self._get_config()['cutensor']['version']
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
         expected_version = major * 10000 + minor * 100 + patchlevel

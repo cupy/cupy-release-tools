@@ -180,7 +180,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-centos7',
         'libs': [],
         'includes': [],
-        'preloads': ['nccl'],  # TODO(kmaehashi): Re-add cuTENSOR
+        'preloads': ['cutensor', 'nccl'],
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -198,7 +198,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8',
         'libs': [],
         'includes': [],
-        'preloads': ['nccl'],
+        'preloads': ['cutensor', 'nccl'],
         'preloads_cuda_version': '13.x',
         'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
@@ -274,7 +274,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'name': 'cupy-cuda13x',
         'kind': 'cuda',
         'libs': [],
-        'preloads': [],  # TODO(kmaehashi): Re-add cuTENSOR
+        'preloads': ['cutensor'],
         'cudart_lib': 'cudart64_13',  # binary compatible between CUDA 13.x
         'check_version': lambda x: 13000 <= x < 13010,  # CUDA 13.0
     }
