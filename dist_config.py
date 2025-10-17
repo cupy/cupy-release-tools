@@ -13,7 +13,6 @@ CUPY_MAJOR_VERSION = '14'
 
 # Tools to be used for build.
 CYTHON_VERSION = '3.0.12'
-FASTRLOCK_VERSION = '0.8.3'
 
 
 class _SDistConfig(TypedDict):
