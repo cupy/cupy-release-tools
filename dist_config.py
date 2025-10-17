@@ -198,7 +198,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8',
         'libs': [],
         'includes': [],
-        'preloads': ['cutensor', 'nccl'],
+        'preloads': ['nccl'],
         'preloads_cuda_version': '13.x',
         'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
