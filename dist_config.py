@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 CUPY_MAJOR_VERSION = '14'
 
 # Tools to be used for build.
-CYTHON_VERSION = '3.0.12'
+CYTHON_VERSION = '3.1.4'
 FASTRLOCK_VERSION = '0.8.3'
 
 
