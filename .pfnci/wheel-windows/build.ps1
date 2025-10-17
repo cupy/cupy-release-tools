@@ -56,13 +56,12 @@ if ($Env:CUPY_RELEASE_NO_CLONE -eq "1") {
 
 # Get tool versions from configuration.
 $cython_version = @(python -c "import dist_config; print(dist_config.CYTHON_VERSION)")
-$fastrlock_version = @(python -c "import dist_config; print(dist_config.FASTRLOCK_VERSION)")
 
 # Install dependencies
 echo ">> Updating packaging utilities..."
 RunOrDie python -m pip install -U setuptools pip
 echo ">> Installing dependences for wheel build..."
-RunOrDie python -m pip install -U -r ./requirements.txt wheel Cython==${cython_version} fastrlock==${fastrlock_version} pytest
+RunOrDie python -m pip install -U -r ./requirements.txt wheel Cython==${cython_version} pytest
 echo ">> Packages installed:"
 RunOrDie python -m pip list
 
