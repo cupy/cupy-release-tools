@@ -24,7 +24,7 @@ configs {
     time_limit {
       seconds: 10800
     }
-    command: ".pfnci/wheel-linux/main.sh rocm-5.0 3.9"
+    command: ".pfnci/wheel-linux/main.sh rocm-5.0 3.12"
     environment_variables { key: "CUPY_RELEASE_SKIP_VERIFY" value: "1" }
   }
 }

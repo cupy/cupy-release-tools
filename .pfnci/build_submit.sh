@@ -29,7 +29,7 @@ submit_job() {
 }
 
 # wheels (Windows)
-for CUDA in 11.x 12.x 13.x; do
+for CUDA in 12.x 13.x; do
   for PYTHON in 3.10 3.11 3.12 3.13; do
     submit_job cupy-wheel-win ".pfnci\\wheel-windows\\main.bat ${CUDA} ${PYTHON} ${BRANCH} ${JOB_GROUP}"
   done
