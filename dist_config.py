@@ -270,11 +270,6 @@ class _WheelPythonConfig(TypedDict):
 # - `python_tag`: a CPython implementation tag
 # - `abi_tag`: a CPython ABI tag
 WHEEL_PYTHON_VERSIONS: dict[str, _WheelPythonConfig] = {
-    '3.9': {
-        'pyenv': '3.9.0',
-        'python_tag': 'cp39',
-        'abi_tag': 'cp39',
-    },
     '3.10': {
         'pyenv': '3.10.0',
         'python_tag': 'cp310',
