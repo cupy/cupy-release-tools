@@ -45,12 +45,14 @@ pypi_wheel_projects = {
     '15': [
         ('cupy-cuda12x', _main_cuda_x86_matrix + _main_cuda_aarch64_matrix),
         ('cupy-cuda13x', _main_cuda_x86_matrix + _main_cuda_aarch64_matrix),
+        ('cupy-rocm-7-0', _main_rocm_matrix),
     ],
 
     # v14.x
     '14': [
         ('cupy-cuda12x', _v14_cuda_x86_matrix + _v14_cuda_aarch64_matrix),
         ('cupy-cuda13x', _v14_cuda_x86_matrix + _v14_cuda_aarch64_matrix),
+        ('cupy-rocm-7-0', _v14_rocm_matrix),
     ],
 }
 
