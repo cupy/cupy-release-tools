@@ -95,9 +95,9 @@ def get_expected_wheel_basename(
 
 
 def verify(
-    project: str, expected: Iterable[str], actual: Iterable[str]
+    title: str, expected: Iterable[str], actual: Iterable[str]
 ) -> bool:
-    print(f'🔵 Project: {project}')
+    print(f'🔵 Verifying release assets on {title}')
     expected = set(expected)
     actual = set(actual)
     error = False
@@ -178,7 +178,7 @@ def main(argv: Sequence[str]) -> int:
         for project, _ in pypi_wheel_projects[branch]:
             actual = get_basenames(project, version)
             success = verify(
-                project, expected_whl[project], actual) and success
+                f'PyPI: {project}', expected_whl[project], actual) and success
 
     if not success:
         return 1
