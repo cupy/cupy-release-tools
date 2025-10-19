@@ -25,10 +25,10 @@ class _SDistConfig(TypedDict):
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG: _SDistConfig = {
-    'image': 'nvidia/cuda:11.2.2-devel-centos7',
+    'image': 'nvidia/cuda:12.0.1-devel-centos7',
     # This image contains NCCL.
-    'verify_image': 'nvidia/cuda:11.4.3-devel-{system}',
-    'verify_systems': ['ubuntu18.04'],
+    'verify_image': 'nvidia/cuda:12.0.1-devel-{system}',
+    'verify_systems': ['ubuntu22.04'],
 }
 
 
@@ -67,55 +67,6 @@ class _WheelLinuxConfig(TypedDict):
 # - `system_packages`: a string of depending library names expanded into the
 #                      package manager command.
 WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
-    '11.x': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
-        'name': 'cupy-cuda11x',
-        'kind': 'cuda',
-        'platform_version': '11.2 - 11.8',
-        # Use the latest CUDA version for build.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-centos7',
-        'libs': [],
-        'includes': [],
-        'preloads': ['cutensor', 'nccl'],
-        'verify_image': 'nvidia/cuda:{system}',
-        'verify_systems': [
-            # Test on all supported CUDA version variants.
-            '11.2.2-runtime-ubuntu18.04',
-            '11.3.1-runtime-ubuntu18.04',
-            '11.4.3-runtime-ubuntu18.04',
-            '11.5.2-runtime-ubuntu18.04',
-            '11.6.2-runtime-ubuntu18.04',
-            '11.7.1-runtime-ubuntu18.04',
-            '11.8.0-runtime-ubuntu18.04',
-        ],
-        'system_packages': '',
-    },
-    '11.x-aarch64': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
-        'name': 'cupy-cuda11x',
-        'kind': 'cuda',
-        'arch': 'aarch64',
-        'platform_version': '11.2 - 11.8',
-        # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-11.8.0-el8',
-        'libs': [],
-        'includes': [],
-        'preloads': ['nccl'],
-        'preloads_cuda_version': '11.x',
-        'builder_dockerfile': 'Dockerfile.el8',
-        'verify_image': 'nvidia/cuda:{system}',
-        'verify_systems': [
-            # Test on all supported CUDA version variants.
-            '11.2.2-runtime-ubi8',
-            '11.3.1-runtime-ubi8',
-            '11.4.3-runtime-ubi8',
-            '11.5.2-runtime-ubi8',
-            '11.6.2-runtime-ubi8',
-            '11.7.1-runtime-ubi8',
-            '11.8.0-runtime-ubi8',
-        ],
-        'system_packages': '',
-    },
     '12.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
         'name': 'cupy-cuda12x',
@@ -208,27 +159,15 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         ],
         'system_packages': '',
     },
-    'rocm-4.3': {
-        'name': 'cupy-rocm-4-3',
+    'rocm-7.0': {
+        'name': 'cupy-rocm-7-0',
         'kind': 'rocm',
-        'platform_version': '4.3',
-        'image': 'rocm/dev-centos-7:4.3',
+        'platform_version': '7.0',
+        'image': 'rocm/rocm/dev-almalinux-8:7.0',
         'libs': [],
         'includes': [],
         'preloads': [],
-        'verify_image': 'rocm/rocm-terminal:4.3',
-        'verify_systems': ['default'],
-        'system_packages': 'rocm-dev hipblas hipfft hipsparse rocsparse rocrand rocthrust rocsolver rocfft hipcub rocprim rccl'  # NOQA
-    },
-    'rocm-5.0': {
-        'name': 'cupy-rocm-5-0',
-        'kind': 'rocm',
-        'platform_version': '5.0',
-        'image': 'rocm/dev-centos-7:5.0',
-        'libs': [],
-        'includes': [],
-        'preloads': [],
-        'verify_image': 'rocm/rocm-terminal:5.0',
+        'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
     },
@@ -251,15 +190,6 @@ class _WheelWindowsConfig(TypedDict):
 # - `cudart_lib`: name of CUDA Runtime DLL
 # - `check_version`: a function to check if the CUDA version is correct.
 WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
-    '11.x': {
-        # CUDA Enhanced Compatibility wheel (for CUDA 11.2~11.x)
-        'name': 'cupy-cuda11x',
-        'kind': 'cuda',
-        'libs': [],
-        'preloads': ['cutensor'],
-        'cudart_lib': 'cudart64_110',  # binary compatible between CUDA 11.x
-        'check_version': lambda x: 11080 <= x < 11090,  # CUDA 11.8
-    },
     '12.x': {
         # CUDA Enhanced Compatibility wheel (for CUDA 12.x)
         'name': 'cupy-cuda12x',
@@ -298,12 +228,10 @@ SDIST_LONG_DESCRIPTION = _long_description_header + '''\
 This package (``cupy``) is a source distribution.
 For most users, use of pre-build wheel distributions are recommended:
 
-- `cupy-cuda13x <https://pypi.org/project/cupy-cuda13x/>`_ (for CUDA 13.x)
-- `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for CUDA 12.x)
-- `cupy-cuda11x <https://pypi.org/project/cupy-cuda11x/>`_ (for CUDA 11.2 ~ 11.x)
+- `cupy-cuda13x <https://pypi.org/project/cupy-cuda13x/>`_ (for NVIDIA CUDA 13.x)
+- `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for NVIDIA CUDA 12.x)
 
-- `cupy-rocm-5-0 <https://pypi.org/project/cupy-rocm-5-0/>`_ (for ROCm 5.0)
-- `cupy-rocm-4-3 <https://pypi.org/project/cupy-rocm-4-3/>`_ (for ROCm 4.3)
+- `cupy-rocm-7-0 <https://pypi.org/project/cupy-rocm-7-0/>`_ (for AMD ROCm 7.0)
 
 Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
 '''  # NOQA
