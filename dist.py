@@ -125,6 +125,24 @@ def rename_project(src: str, name: str) -> None:
         tomli_w.dump(pp, f)
 
 
+def inject_cuda_wheel_deps(src: str, platform_version: str) -> None:
+    """Add needed CUDA wheels to pyproject.toml."""
+    assert src.endswith('pyproject.toml')
+    assert platform_version.endswith('.x')
+    cuda_major, _ = platform_version.split('.')
+    log(f'Inject needed CUDA {platform_version} deps to {src}')
+    with open(src, 'rb') as f:
+        pp = tomli.load(f)
+    pp['project']['name'] = name
+    pp['project']['optional-dependencies']['all'] = [
+        *data['project']['optional-dependencies']['all'],
+        "cuda-pathfinder<2.0a0",
+        f"cuda-toolkit[nvrtc,cublas,cufft,cusolver,cusparse,curand]=={cuda_major}.*",
+    ]
+    with open(src, 'wb') as f:
+        tomli_w.dump(pp, f)
+
+
 class _ControllerArgs(argparse.Namespace):
     action: Literal['build', 'verify']
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
@@ -403,13 +421,14 @@ class Controller:
                 WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
 
             if kind == 'cuda':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_CUDA
+                long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
+                    version=platform_version,
+                    wheel_suffix=''.join(platform_version.split('.')))
             elif kind == 'rocm':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
+                long_description = WHEEL_LONG_DESCRIPTION_ROCM.format(
+                    version=platform_version)
             else:
                 raise AssertionError('Unreachable')
-            long_description = long_description_tmpl.format(
-                version=platform_version)
 
             # Rename wheels to manylinux.
             asset_name = wheel_name(
@@ -476,6 +495,11 @@ class Controller:
 
             # Rename project name
             rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
+
+            # Add CUDA components to optional dependencies
+            if target == 'wheel-linux' and kind == 'cuda':
+                inject_cuda_wheel_deps(
+                    f'{workdir}/cupy/pyproject.toml', platform_version)
 
             # Add long description file.
             with open(
@@ -613,7 +637,8 @@ class Controller:
             'platform_version', cuda_version)
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
-            version=platform_version)
+            version=platform_version,
+            wheel_suffix=''.join(platform_version.split('.')))
         asset_name = wheel_name(
             package_name, version, python_version, 'win_amd64')
         asset_dest_name = asset_name
@@ -643,6 +668,10 @@ class Controller:
 
             # Rename project name
             rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
+
+            # Add CUDA components to optional dependencies
+            inject_cuda_wheel_deps(
+                f'{workdir}/cupy/pyproject.toml', platform_version)
 
             # Add long description file.
             with open(
