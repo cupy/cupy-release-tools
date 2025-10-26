@@ -133,7 +133,6 @@ def inject_cuda_wheel_deps(src: str, platform_version: str) -> None:
     log(f'Inject needed CUDA {platform_version} deps to {src}')
     with open(src, 'rb') as f:
         pp = tomli.load(f)
-    pp['project']['name'] = name
     pp['project']['optional-dependencies']['all'] = [
         *data['project']['optional-dependencies']['all'],
         "cuda-pathfinder<2.0a0",
