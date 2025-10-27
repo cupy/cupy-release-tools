@@ -133,9 +133,7 @@ def inject_cuda_wheel_deps(src: str, platform_version: str) -> None:
     log(f'Inject needed CUDA {platform_version} deps to {src}')
     with open(src, 'rb') as f:
         pp = tomli.load(f)
-    pp['project']['optional-dependencies']['all'] = [
-        *(pp['project']['optional-dependencies']['all']),
-        'cuda-pathfinder<2.0a0',
+    pp['project']['optional-dependencies']['ctk'] = [
         f'cuda-toolkit[nvrtc,cublas,cufft,cusolver,cusparse,curand]=={cuda_major}.*',
     ]
     with open(src, 'wb') as f:

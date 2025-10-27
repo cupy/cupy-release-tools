@@ -314,9 +314,9 @@ Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ 
 WHEEL_LONG_DESCRIPTION_CUDA = _long_description_header + '''\
 This is a CuPy wheel (precompiled binary) package for CUDA {version}.
 You need to install `CUDA Toolkit {version} <https://developer.nvidia.com/cuda-toolkit-archive>`_ locally to use these packages.
-Alternatively, you can install this package together with all needed CUDA components from PyPI by passing the ``[all]`` tag::
+Alternatively, you can install this package together with all needed CUDA components from PyPI by passing the ``[ctk]`` tag::
 
-   $ pip install cupy-cuda{wheel_suffix}[all]
+   $ pip install cupy-cuda{wheel_suffix}[ctk]
 
 If you have another version of CUDA, or want to build from source, refer to the `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for instructions.
 '''  # NOQA
