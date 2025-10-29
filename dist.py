@@ -125,21 +125,6 @@ def rename_project(src: str, name: str) -> None:
         tomli_w.dump(pp, f)
 
 
-def inject_cuda_wheel_deps(src: str, platform_version: str) -> None:
-    """Add needed CUDA wheels to pyproject.toml."""
-    assert src.endswith('pyproject.toml')
-    assert platform_version.endswith('.x')
-    cuda_major, _ = platform_version.split('.')
-    log(f'Inject needed CUDA {platform_version} deps to {src}')
-    with open(src, 'rb') as f:
-        pp = tomli.load(f)
-    pp['project']['optional-dependencies']['ctk'] = [
-        f'cuda-toolkit[nvrtc,cublas,cufft,cusolver,cusparse,curand]=={cuda_major}.*',
-    ]
-    with open(src, 'wb') as f:
-        tomli_w.dump(pp, f)
-
-
 class _ControllerArgs(argparse.Namespace):
     action: Literal['build', 'verify']
     target: Literal['sdist', 'wheel-linux', 'wheel-win']
@@ -493,11 +478,6 @@ class Controller:
             # Rename project name
             rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
 
-            # Add CUDA components to optional dependencies
-            if target == 'wheel-linux' and kind == 'cuda':
-                inject_cuda_wheel_deps(
-                    f'{workdir}/cupy/pyproject.toml', platform_version)
-
             # Add long description file.
             with open(
                 f'{workdir}/description.rst', 'w', encoding='UTF-8'
@@ -665,10 +645,6 @@ class Controller:
 
             # Rename project name
             rename_project(f'{workdir}/cupy/pyproject.toml', package_name)
-
-            # Add CUDA components to optional dependencies
-            inject_cuda_wheel_deps(
-                f'{workdir}/cupy/pyproject.toml', platform_version)
 
             # Add long description file.
             with open(
