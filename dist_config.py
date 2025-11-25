@@ -163,7 +163,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'name': 'cupy-rocm-7-0',
         'kind': 'rocm',
         'platform_version': '7.0',
-        'image': 'rocm/rocm/dev-almalinux-8:7.0',
+        'image': 'rocm/dev-almalinux-8:7.0',
         'libs': [],
         'includes': [],
         'preloads': [],
