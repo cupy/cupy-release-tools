@@ -163,10 +163,11 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'name': 'cupy-rocm-7-0',
         'kind': 'rocm',
         'platform_version': '7.0',
-        'image': 'rocm/dev-almalinux-8:7.0',
+        'image': 'rocm/dev-almalinux-8:7.0-complete',
         'libs': [],
         'includes': [],
         'preloads': [],
+        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
