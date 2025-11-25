@@ -16,12 +16,11 @@ RUN /setup_yum_centos7.sh && \
 # Install Python.
 ARG python_versions
 ARG cython_version
-ARG fastrlock_version
 RUN git clone https://github.com/pyenv/pyenv.git /opt/pyenv
 ENV PYENV_ROOT=/opt/pyenv
 ENV PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}
 COPY setup_python.sh /
-RUN /setup_python.sh "${python_versions}" "${cython_version}" "${fastrlock_version}"
+RUN /setup_python.sh "${python_versions}" "${cython_version}"
 
 # Install devtoolset (g++) for CuPy v8 build.
 RUN yum install -y centos-release-scl && \
