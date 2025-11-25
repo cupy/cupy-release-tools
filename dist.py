@@ -401,13 +401,14 @@ class Controller:
                 WHEEL_LINUX_CONFIGS[cuda_version]['system_packages']
 
             if kind == 'cuda':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_CUDA
+                long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
+                    version=platform_version,
+                    wheel_suffix=''.join(platform_version.split('.')))
             elif kind == 'rocm':
-                long_description_tmpl = WHEEL_LONG_DESCRIPTION_ROCM
+                long_description = WHEEL_LONG_DESCRIPTION_ROCM.format(
+                    version=platform_version)
             else:
                 raise AssertionError('Unreachable')
-            long_description = long_description_tmpl.format(
-                version=platform_version)
 
             # Rename wheels to manylinux.
             asset_name = wheel_name(
@@ -611,7 +612,8 @@ class Controller:
             'platform_version', cuda_version)
         package_name = WHEEL_WINDOWS_CONFIGS[cuda_version]['name']
         long_description = WHEEL_LONG_DESCRIPTION_CUDA.format(
-            version=platform_version)
+            version=platform_version,
+            wheel_suffix=''.join(platform_version.split('.')))
         asset_name = wheel_name(
             package_name, version, python_version, 'win_amd64')
         asset_dest_name = asset_name
