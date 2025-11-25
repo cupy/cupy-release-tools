@@ -98,7 +98,8 @@ def main() -> None:
     elif sys.platform == 'win32':
         _install_library(
             'cutensor', src_dir, dst_dir, {
-                'lib': 'bin',
+                'bin': 'bin',
+                'lib': 'lib/x64',
                 'include': 'include',
             })
     else:
