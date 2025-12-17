@@ -12,8 +12,9 @@ if [[ "$(rpm --eval '%{rhel}')" == "7" ]]; then
 fi
 
 # Install Python
+# Override "LDFLAGS" set in ROCm docker images.
 for VERSION in ${PYTHON_VERSIONS}; do
-    pyenv install ${VERSION} &
+    LDFLAGS= pyenv install ${VERSION} &
 done
 wait
 
