@@ -17,8 +17,9 @@ function UninstallCuTENSOR($cuda_path) {
     echo "Uninstalling cuTENSOR installation from ${cuda_path}"
     if(Test-Path ${cuda_path}\bin\cutensor.dll) {
         Remove-Item -Force -Verbose ${cuda_path}\bin\cutensor.dll
+        Remove-Item -Force -Verbose ${cuda_path}\bin\cutensorMg.dll
         Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cutensor.lib
-        Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cutensor_static.lib
+        Remove-Item -Force -Verbose ${cuda_path}\lib\x64\cutensorMg.lib
         Remove-Item -Force -Verbose ${cuda_path}\include\cutensor.h
         Remove-Item -Recurse -Force -Verbose ${cuda_path}\include\cutensor
     } else {
