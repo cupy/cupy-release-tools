@@ -74,7 +74,7 @@ def run_command_output(*cmd: str, cwd: str | None = None) -> str:
 
 
 def generate_wheel_metadata(
-    libraries: list[str], cuda_version: str,
+    libraries: list[str], cuda_version: str, workdir: str
 ) -> dict[str, Any]:
     machine = platform.machine()
     if machine == 'AMD64':  # Windows
@@ -93,7 +93,7 @@ def generate_wheel_metadata(
     for library in libraries:
         command += ['--library', library]
 
-    ret: dict[str, Any] = json.loads(run_command_output(*command))
+    ret: dict[str, Any] = json.loads(run_command_output(*command, cwd=workdir))
     return ret
 
 
@@ -503,7 +503,7 @@ class Controller:
             if target == 'wheel-linux':
                 assert preloads_cuda_version is not None
                 wheel_metadata = generate_wheel_metadata(
-                    preloads, preloads_cuda_version)
+                    preloads, preloads_cuda_version, workdir)
                 log('Writing wheel metadata')
                 with open(
                     f'{workdir}/_wheel.json', 'w', encoding='UTF-8'
@@ -662,7 +662,8 @@ class Controller:
 
             # Create a wheel metadata file for preload.
             log('Creating wheel metadata')
-            wheel_metadata = generate_wheel_metadata(preloads, cuda_version)
+            wheel_metadata = generate_wheel_metadata(
+                preloads, cuda_version, workdir)
             log('Writing wheel metadata')
             with open(f'{workdir}/_wheel.json', 'w', encoding='UTF-8') as f:
                 json.dump(wheel_metadata, f)
