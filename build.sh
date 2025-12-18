@@ -39,8 +39,7 @@ esac
 # Set additional environment variables
 case ${CUDA} in
   rocm-* )
-    # https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support
-    # https://rocmdocs.amd.com/en/latest/ROCm_Compiler_SDK/ROCm-Native-ISA.html#processors
+    # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
     export HCC_AMDGPU_TARGET=gfx908,gfx90a,gfx942,gfx950,gfx1030,gfx1100,gfx1101,gfx1200,gfx1201
     ;;
   * )
