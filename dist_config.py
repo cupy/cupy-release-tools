@@ -81,7 +81,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
-            '12.0.1-runtime-ubuntu18.04',
+            '12.0.1-runtime-ubuntu20.04',
             '12.1.1-runtime-ubuntu22.04',
             '12.2.0-runtime-ubuntu22.04',
             '12.3.0-runtime-ubuntu22.04',
