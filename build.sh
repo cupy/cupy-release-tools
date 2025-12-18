@@ -41,7 +41,7 @@ case ${CUDA} in
   rocm-* )
     # https://github.com/RadeonOpenCompute/ROCm#hardware-and-software-support
     # https://rocmdocs.amd.com/en/latest/ROCm_Compiler_SDK/ROCm-Native-ISA.html#processors
-    export HCC_AMDGPU_TARGET=gfx801,gfx802,gfx803,gfx900,gfx906,gfx908,gfx1010,gfx1011,gfx1012
+    export HCC_AMDGPU_TARGET=gfx908,gfx90a,gfx942,gfx950,gfx1030,gfx1100,gfx1101,gfx1200,gfx1201
     ;;
   * )
     ;;
