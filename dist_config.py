@@ -291,4 +291,9 @@ WHEEL_PYTHON_VERSIONS: dict[str, _WheelPythonConfig] = {
         'python_tag': 'cp313',
         'abi_tag': 'cp313',
     },
+    '3.14': {
+        'pyenv': '3.14.2',
+        'python_tag': 'cp314',
+        'abi_tag': 'cp314',
+    },
 }
