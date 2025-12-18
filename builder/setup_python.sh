@@ -9,12 +9,14 @@ if [[ "$(rpm --eval '%{rhel}')" == "7" ]]; then
     export CFLAGS="-I/usr/include/openssl11"
     export CPPFLAGS="-I/usr/include/openssl11"
     export LDFLAGS="-L/usr/lib64/openssl11"
+else
+    # Explicitly override "LDFLAGS" set in ROCm docker images.
+    export LDFLAGS=""
 fi
 
 # Install Python
-# Override "LDFLAGS" set in ROCm docker images.
 for VERSION in ${PYTHON_VERSIONS}; do
-    LDFLAGS= pyenv install ${VERSION} &
+    pyenv install ${VERSION} &
 done
 wait
 
