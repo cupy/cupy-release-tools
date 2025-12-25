@@ -35,13 +35,11 @@ RUN for VERSION in ${python_versions}; do \
 
 # Install Python libraries.
 # The last version installed will be used to run the verifier agent.
-# Pin to NumPy v2.2.6 as NumPy v2.3+ wheels require glibc-2.28 where Ubuntu 18.04 uses glibc-2.27.
 RUN for VERSION in ${python_versions}; do \
       echo "Installing libraries on Python ${VERSION}..." && \
       pyenv global ${VERSION} && \
       pip install -U pip setuptools && \
       pip install pytest mock; \
-      pip install "numpy==2.2.6" "scipy==1.15.3"; \
     done
 
 # Install additional dependencies.
