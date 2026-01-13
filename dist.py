@@ -20,7 +20,6 @@ import tomli_w
 
 from dist_config import (
     CUPY_MAJOR_VERSION,
-    CYTHON_VERSION,
     SDIST_CONFIG,
     SDIST_LONG_DESCRIPTION,
     WHEEL_LINUX_CONFIGS,
@@ -246,7 +245,6 @@ class Controller:
             '--build-arg', 'BUILDKIT_INLINE_CACHE=1',
             '--build-arg', f'base_image={base_image}',
             '--build-arg', f'python_versions={python_versions}',
-            '--build-arg', f'cython_version={CYTHON_VERSION}',
             '--build-arg', f'system_packages={system_packages}',
             docker_ctx,
             extra_env={'DOCKER_BUILDKIT': '1'},
