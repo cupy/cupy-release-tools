@@ -72,8 +72,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'kind': 'cuda',
         'platform_version': '12.x',
         # Use the latest CUDA version for build.
-        # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8-amd64',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl'],
@@ -99,7 +98,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '12.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8-aarch64',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
@@ -126,7 +125,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'platform_version': '13.x',
         # Use the latest CUDA version for build.
         # Note: oldest RHEL supported in CUDA 13 is v8
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-amd64',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl'],
@@ -144,7 +143,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '13.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-aarch64',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
