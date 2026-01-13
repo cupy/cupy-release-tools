@@ -104,7 +104,6 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'includes': [],
         'preloads': ['nccl'],
         'preloads_cuda_version': '12.x',
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -150,7 +149,6 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'includes': [],
         'preloads': ['nccl'],
         'preloads_cuda_version': '13.x',
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -166,7 +164,6 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'libs': [],
         'includes': [],
         'preloads': [],
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
