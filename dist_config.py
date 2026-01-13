@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from typing_extensions import NotRequired
 
 # CuPy major version supported by this tool.
-CUPY_MAJOR_VERSION = '14'
+CUPY_MAJOR_VERSION = '15'
 
 # Tools to be used for build.
 CYTHON_VERSION = '3.1.4'
