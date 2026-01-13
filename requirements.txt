@@ -1,3 +1,5 @@
+# Requirements for cupy-release-tools.
+
 build==1.2.*
 twine==6.1.*
 packaging>=24.2  # https://github.com/pypa/twine/issues/1216
