@@ -1,1 +1,0 @@
-base/cuda-runfile/setup_yum_centos7.sh
