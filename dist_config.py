@@ -72,8 +72,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'kind': 'cuda',
         'platform_version': '12.x',
         # Use the latest CUDA version for build.
-        # Note: CUDA 12 still supports RHEL/CentOS 7 on x86_64
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8-amd64',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl'],
@@ -99,12 +98,11 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '12.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-12.9.0-el8-aarch64',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
         'preloads_cuda_version': '12.x',
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -127,7 +125,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'platform_version': '13.x',
         # Use the latest CUDA version for build.
         # Note: oldest RHEL supported in CUDA 13 is v8
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-centos7',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-amd64',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl'],
@@ -145,12 +143,11 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '13.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-aarch64',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
         'preloads_cuda_version': '13.x',
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'nvidia/cuda:{system}',
         'verify_systems': [
             # Test on all supported CUDA version variants.
@@ -166,7 +163,6 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'libs': [],
         'includes': [],
         'preloads': [],
-        'builder_dockerfile': 'Dockerfile.el8',
         'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
