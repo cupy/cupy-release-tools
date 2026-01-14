@@ -1,0 +1,6 @@
+# Specific version of dependencies to be used when building CuPy.
+# Must be in sync with CuPy's `pyproject.toml` > `build-system.requires`.
+cython==3.1.4
+numpy==2.3.5; python_version == '3.14'
+numpy==2.1.3; python_version == '3.13'
+numpy==2.0.2; python_version <= '3.12'
