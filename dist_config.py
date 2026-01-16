@@ -22,7 +22,7 @@ class _SDistConfig(TypedDict):
 # Key-value of sdist build settings.
 # See descriptions of WHEEL_LINUX_CONFIGS for details.
 SDIST_CONFIG: _SDistConfig = {
-    'image': 'nvidia/cuda:12.0.1-devel-centos7',
+    'image': 'nvidia/cuda:12.0.1-devel-rockylinux8',
     # This image contains NCCL.
     'verify_image': 'nvidia/cuda:12.0.1-devel-{system}',
     'verify_systems': ['ubuntu22.04'],
