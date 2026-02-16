@@ -50,7 +50,7 @@ configs {
     requirement {
       cpu: 8
       gpu: 1
-      memory: 12
+      memory: 24
       disk: 30
       image: "windows"
     }
