@@ -28,7 +28,12 @@ class TestPreload(unittest.TestCase):
         expected_version = major * major_mult + minor * 100 + patchlevel
         assert libnccl.available
         assert libnccl.get_build_version() == expected_version
-        assert libnccl.get_version() == expected_version
+        # Note: Previously build-time version and runtime version were same,
+        # because we preferred preloading NCCL from ~/.cupy/cuda_libs installed
+        # by install_library.py tool. However, starting CuPy v14.0.0, NCCL
+        # version at runtime depends on NCCL installed on host, because
+        # cuda-pathfinder is now the primary method to discover libraries.
+        # assert libnccl.get_version() == expected_version
 
     def test_cutensor(self):
         if cupy.cuda.runtime.runtimeGetVersion() < 10010:
@@ -38,4 +43,5 @@ class TestPreload(unittest.TestCase):
         major, minor, patchlevel = (int(x) for x in preload_version.split('.'))
         expected_version = major * 10000 + minor * 100 + patchlevel
         assert libcutensor.available
+        # Note: cuda-pathfinder does not yet support libcutensor.
         assert libcutensor.get_version() == expected_version
