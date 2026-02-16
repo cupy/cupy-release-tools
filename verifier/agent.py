@@ -23,10 +23,11 @@ class VerifierAgent:
     def _log(msg: str) -> None:
         print(f'[VerifierAgent] [{time.asctime()}]: {msg}', flush=True)
 
-    def _run(self, *cmd: str) -> None:
+    def _run(self, *cmd: str, debug_library_load=False) -> None:
         self._log(f'Running command: {shlex.join(cmd)}')
         env = dict(os.environ)
-        env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
+        if debug_library_load:
+            env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
         subprocess.check_call(cmd, env=env)
 
     @staticmethod
@@ -90,7 +91,7 @@ class VerifierAgent:
             '-c',
             'import cupy; cupy.show_config()',
         ]
-        self._run(*cmdline)
+        self._run(*cmdline, debug_library_load=True)
 
         for p in args.preload:
             assert args.cuda is not None
@@ -113,11 +114,11 @@ class VerifierAgent:
             '-c',
             'import cupy; cupy.show_config()',
         ]
-        self._run(*cmdline)
+        self._run(*cmdline, debug_library_load=True)
 
         try:
             cmdline = [*pycommand, '-m', 'pytest', *pytest_args]
-            self._run(*cmdline)
+            self._run(*cmdline, debug_library_load=True)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
