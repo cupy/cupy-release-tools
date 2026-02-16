@@ -154,14 +154,14 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'system_packages': '',
     },
     'rocm-7.0': {
-        'name': 'cupy-rocm-7-0',
+        'name': 'cupy-rocm-7-1',
         'kind': 'rocm',
-        'platform_version': '7.0',
-        'image': 'rocm/dev-almalinux-8:7.0-complete',
+        'platform_version': '7.1',
+        'image': 'rocm/dev-almalinux-8:7.1.1-complete',
         'libs': [],
         'includes': [],
         'preloads': [],
-        'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
+        'verify_image': 'rocm/dev-ubuntu-24.04:7.1.1',
         'verify_systems': ['default'],
         'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
     },
@@ -225,7 +225,7 @@ For most users, use of pre-build wheel distributions are recommended:
 - `cupy-cuda13x <https://pypi.org/project/cupy-cuda13x/>`_ (for NVIDIA CUDA 13.x)
 - `cupy-cuda12x <https://pypi.org/project/cupy-cuda12x/>`_ (for NVIDIA CUDA 12.x)
 
-- `cupy-rocm-7-0 <https://pypi.org/project/cupy-rocm-7-0/>`_ (for AMD ROCm 7.0)
+- `cupy-rocm-7-1 <https://pypi.org/project/cupy-rocm-7-1/>`_ (for AMD ROCm 7.1)
 
 Please see `Installation Guide <https://docs.cupy.dev/en/latest/install.html>`_ for the detailed instructions.
 '''  # NOQA
