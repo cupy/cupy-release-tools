@@ -123,7 +123,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'platform_version': '13.x',
         # Use the latest CUDA version for build.
         # Note: oldest RHEL supported in CUDA 13 is v8
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-amd64',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.1.0-el8-amd64',
         'libs': [],
         'includes': [],
         'preloads': ['cutensor', 'nccl'],
@@ -131,6 +131,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'verify_systems': [
             # Test on all supported CUDA version variants.
             '13.0.0-runtime-ubuntu22.04',
+            '13.1.0-runtime-ubuntu22.04',
         ],
         'system_packages': '',
     },
@@ -141,7 +142,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'arch': 'aarch64',
         'platform_version': '13.x',
         # Use the latest image.
-        'image': 'cupy/cupy-release-tools:cuda-runfile-13.0.0-el8-aarch64',
+        'image': 'cupy/cupy-release-tools:cuda-runfile-13.1.0-el8-aarch64',
         'libs': [],
         'includes': [],
         'preloads': ['nccl'],
@@ -150,6 +151,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'verify_systems': [
             # Test on all supported CUDA version variants.
             '13.0.0-runtime-ubi8',
+            '13.1.0-runtime-ubi8',
         ],
         'system_packages': '',
     },
@@ -200,7 +202,7 @@ WHEEL_WINDOWS_CONFIGS: dict[str, _WheelWindowsConfig] = {
         'libs': [],
         'preloads': ['cutensor'],
         'cudart_lib': 'cudart64_13',  # binary compatible between CUDA 13.x
-        'check_version': lambda x: 13000 <= x < 13010,  # CUDA 13.0
+        'check_version': lambda x: 13010 <= x < 13020,  # CUDA 13.1
     }
 }
 
