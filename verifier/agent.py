@@ -95,16 +95,33 @@ class VerifierAgent:
 
         for p in args.preload:
             assert args.cuda is not None
-            self._log(f'Installing preload libraries ({p})...')
-            cmdline = [
-                *pycommand,
-                '-m',
-                'cupyx.tools.install_library',
-                '--library',
-                p,
-                '--cuda',
-                args.cuda,
-            ]
+            if p == 'nccl':
+                self._log('Installing NCCL library with Pip...')
+                cuda_major = args.cuda.split('.')[0]
+                # TODO(kmaehashi): The version should not be pinned here, but
+                # unfortunately there's no way to extract the NCCL version
+                # supported by CuPy.
+                nccl_package = f'nvidia-nccl-cu{cuda_major}==2.27.7'
+                cmdline = [
+                    *pycommand,
+                    '-m',
+                    'pip',
+                    'install',
+                    nccl_package,
+                ]
+            elif p == 'cutensor':
+                self._log(f'Installing preload library ({p})...')
+                cmdline = [
+                    *pycommand,
+                    '-m',
+                    'cupyx.tools.install_library',
+                    '--library',
+                    p,
+                    '--cuda',
+                    args.cuda,
+                ]
+            else:
+                raise AssertionError(f'Unknown preload library: {p}')
             self._run(*cmdline)
 
         self._log('CuPy Configuration (after preloading)')
