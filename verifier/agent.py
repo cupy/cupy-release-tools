@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -23,7 +24,7 @@ class VerifierAgent:
         print(f'[VerifierAgent] [{time.asctime()}]: {msg}', flush=True)
 
     def _run(self, *cmd: str) -> None:
-        self._log(f'Running command: {cmd}')
+        self._log(f'Running command: {shlex.join(cmd)}')
         env = dict(os.environ)
         env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
         subprocess.check_call(cmd, env=env)
