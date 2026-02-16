@@ -23,7 +23,7 @@ class VerifierAgent:
     def _log(msg: str) -> None:
         print(f'[VerifierAgent] [{time.asctime()}]: {msg}', flush=True)
 
-    def _run(self, *cmd: str, debug_library_load=False) -> None:
+    def _run(self, *cmd: str, debug_library_load: bool = False) -> None:
         self._log(f'Running command: {shlex.join(cmd)}')
         env = dict(os.environ)
         if debug_library_load:
