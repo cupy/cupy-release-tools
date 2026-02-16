@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -22,10 +23,11 @@ class VerifierAgent:
     def _log(msg: str) -> None:
         print(f'[VerifierAgent] [{time.asctime()}]: {msg}', flush=True)
 
-    def _run(self, *cmd: str) -> None:
-        self._log(f'Running command: {cmd}')
+    def _run(self, *cmd: str, debug_library_load: bool = False) -> None:
+        self._log(f'Running command: {shlex.join(cmd)}')
         env = dict(os.environ)
-        env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
+        if debug_library_load:
+            env['CUPY_DEBUG_LIBRARY_LOAD'] = '1'
         subprocess.check_call(cmd, env=env)
 
     @staticmethod
@@ -89,20 +91,37 @@ class VerifierAgent:
             '-c',
             'import cupy; cupy.show_config()',
         ]
-        self._run(*cmdline)
+        self._run(*cmdline, debug_library_load=True)
 
         for p in args.preload:
             assert args.cuda is not None
-            self._log(f'Installing preload libraries ({p})...')
-            cmdline = [
-                *pycommand,
-                '-m',
-                'cupyx.tools.install_library',
-                '--library',
-                p,
-                '--cuda',
-                args.cuda,
-            ]
+            if p == 'nccl':
+                self._log('Installing NCCL library with Pip...')
+                cuda_major = args.cuda.split('.')[0]
+                # TODO(kmaehashi): The version should not be pinned here, but
+                # unfortunately there's no way to extract the NCCL version
+                # supported by CuPy.
+                nccl_package = f'nvidia-nccl-cu{cuda_major}==2.27.7'
+                cmdline = [
+                    *pycommand,
+                    '-m',
+                    'pip',
+                    'install',
+                    nccl_package,
+                ]
+            elif p == 'cutensor':
+                self._log(f'Installing preload library ({p})...')
+                cmdline = [
+                    *pycommand,
+                    '-m',
+                    'cupyx.tools.install_library',
+                    '--library',
+                    p,
+                    '--cuda',
+                    args.cuda,
+                ]
+            else:
+                raise AssertionError(f'Unknown preload library: {p}')
             self._run(*cmdline)
 
         self._log('CuPy Configuration (after preloading)')
@@ -112,11 +131,11 @@ class VerifierAgent:
             '-c',
             'import cupy; cupy.show_config()',
         ]
-        self._run(*cmdline)
+        self._run(*cmdline, debug_library_load=True)
 
         try:
             cmdline = [*pycommand, '-m', 'pytest', *pytest_args]
-            self._run(*cmdline)
+            self._run(*cmdline, debug_library_load=True)
         finally:
             if args.chown:
                 self._log('Resetting owner/group of the source tree...')
