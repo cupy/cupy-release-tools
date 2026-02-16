@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -63,12 +64,12 @@ def run_command(
     if extra_env is not None:
         env = os.environ.copy()
         env.update(extra_env)
-    log(f'Running command: {cmd}')
+    log(f'Running command: {shlex.join(cmd)}')
     subprocess.check_call(cmd, env=env, cwd=cwd, encoding='UTF-8')
 
 
 def run_command_output(*cmd: str, cwd: str | None = None) -> str:
-    log(f'Running command: {cmd}')
+    log(f'Running command: {shlex.join(cmd)}')
     return subprocess.check_output(cmd, cwd=cwd, encoding='UTF-8')
 
 
