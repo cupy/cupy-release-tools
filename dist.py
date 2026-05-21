@@ -10,6 +10,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import sysconfig
 import tempfile
 import time
 import typing
@@ -71,6 +72,13 @@ def run_command(
 def run_command_output(*cmd: str, cwd: str | None = None) -> str:
     log(f'Running command: {shlex.join(cmd)}')
     return subprocess.check_output(cmd, cwd=cwd, encoding='UTF-8')
+
+
+def get_current_python_version() -> str:
+    python_version = '.'.join(map(str, sys.version_info[0:2]))
+    if sysconfig.get_config_var('Py_GIL_DISABLED'):
+        python_version += 't'
+    return python_version
 
 
 def generate_wheel_metadata(
@@ -560,7 +568,7 @@ class Controller:
                 f'you are on non-Windows system: {sys.platform}')
 
         # Check Python version.
-        current_python_version = '.'.join(map(str, sys.version_info[0:2]))
+        current_python_version = get_current_python_version()
         if python_version != current_python_version:
             raise RuntimeError(
                 f'Cannot build a wheel for Python {python_version} '
@@ -629,6 +637,14 @@ class Controller:
             '--env',
             'CUPY_INSTALL_WHEEL_METADATA=../_wheel.json',
         ]
+        if python_version.endswith('t'):
+            # Windows free-threaded extension builds need this macro passed
+            # explicitly to the compiler.
+            cl_flags = os.environ.get('CL', '')
+            agent_args += [
+                '--env',
+                f'CL=/DPy_GIL_DISABLED=1 {cl_flags}'.rstrip(),
+            ]
 
         # Create a working directory.
         workdir = tempfile.mkdtemp(prefix='cupy-dist-')
