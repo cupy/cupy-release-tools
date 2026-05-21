@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -31,7 +32,7 @@ class BuilderAgent:
     def _run(
         self, *cmd: str, env: Mapping[str, str] | None = None
     ) -> None:
-        self._log(f'Running command: {cmd}')
+        self._log(f'Running command: {shlex.join(cmd)}')
         subprocess.check_call(cmd, env=env)
 
     @staticmethod
