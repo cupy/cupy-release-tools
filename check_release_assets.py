@@ -18,6 +18,7 @@ CP311 = 'cp311-cp311'
 CP312 = 'cp312-cp312'
 CP313 = 'cp313-cp313'
 CP314 = 'cp314-cp314'
+CP314T = 'cp314t-cp314t'
 LINUX = 'manylinux2014_x86_64'
 LINUX_AARCH64 = 'manylinux2014_aarch64'
 WINDOWS = 'win_amd64'
@@ -28,17 +29,17 @@ sdist_project = 'cupy'
 _MatrixType = list[tuple[str, str]]
 
 _main_cuda_x86_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX, WINDOWS)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX, WINDOWS)))
 _main_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX_AARCH64,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
 _main_rocm_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
 _v14_cuda_x86_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX, WINDOWS)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX, WINDOWS)))
 _v14_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX_AARCH64,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
 _v14_rocm_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
 
 pypi_wheel_projects = {
     # v15.x
