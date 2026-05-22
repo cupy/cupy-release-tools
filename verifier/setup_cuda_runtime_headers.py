@@ -16,11 +16,7 @@ def main() -> None:
 
     # Only install if CUDA 12.2+.
     (major, minor) = cupy.cuda.nvrtc.getVersion()
-    if major == 11:
-        return
-    elif major == 12:
-        if minor < 2:
-            return
+    if major == 12:
         suffix = '-cu12'
     elif major == 13:
         suffix = ''
