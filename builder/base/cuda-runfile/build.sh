@@ -18,15 +18,28 @@ case ${CUDA} in
     PLATFORM="linux/arm64"
     IMAGE_SUFFIX="el8-aarch64"
     ;;
-  13.0 )
-    CUDA_VERSION="13.0.0"
-    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.0.0/local_installers/cuda_13.0.0_580.65.06_linux.run"
+  13.1 )
+    CUDA_VERSION="13.1.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.1.0/local_installers/cuda_13.1.0_590.44.01_linux.run"
     PLATFORM="linux/amd64"
     IMAGE_SUFFIX="el8-amd64"
     ;;
-  13.0-aarch64 )
-    CUDA_VERSION="13.0.0"
-    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.0.0/local_installers/cuda_13.0.0_580.65.06_linux_sbsa.run"
+  13.1-aarch64 )
+    CUDA_VERSION="13.1.0"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.1.0/local_installers/cuda_13.1.0_590.44.01_linux_sbsa.run"
+    BASE_IMAGE="oraclelinux:8"
+    IMAGE_SUFFIX="el8"
+    PLATFORM="linux/arm64"
+    ;;
+  13.2 )
+    CUDA_VERSION="13.2.1"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.2.1/local_installers/cuda_13.2.1_595.58.03_linux.run"
+    PLATFORM="linux/amd64"
+    IMAGE_SUFFIX="el8-amd64"
+    ;;
+  13.2-aarch64 )
+    CUDA_VERSION="13.2.1"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.2.1/local_installers/cuda_13.2.1_595.58.03_linux_sbsa.run"
     PLATFORM="linux/arm64"
     IMAGE_SUFFIX="el8-aarch64"
     ;;
