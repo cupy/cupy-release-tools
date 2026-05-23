@@ -36,7 +36,8 @@ _main_cuda_x86_matrix: _MatrixType = [
 _main_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
     (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
 _main_rocm_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
+
 _v14_cuda_x86_matrix: _MatrixType = [
     *itertools.product((CP310, CP311, CP312, CP313, CP314),
                        (LINUX, WINDOWS)),
@@ -45,7 +46,7 @@ _v14_cuda_x86_matrix: _MatrixType = [
 _v14_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
     (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
 _v14_rocm_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314), (LINUX,)))
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
 
 pypi_wheel_projects = {
     # v15.x
