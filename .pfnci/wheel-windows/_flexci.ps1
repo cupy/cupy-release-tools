@@ -1,4 +1,5 @@
 function ActivatePython($version) {
+    $pyexe = "python.exe"
     if ($version -eq "3.9") {
         $pydir = "Python39"
     } elseif ($version -eq "3.10") {
@@ -11,10 +12,14 @@ function ActivatePython($version) {
         $pydir = "Python313"
     } elseif ($version -eq "3.14") {
         $pydir = "Python314"
+    } elseif ($version -eq "3.14t") {
+        $pydir = "Python314"
+        $pyexe = "python3.14t.exe"
     } else {
         throw "Unsupported Python version: $version"
     }
     $Env:PATH = "C:\Development\Python\$pydir;C:\Development\Python\$pydir\Scripts;" + $Env:PATH
+    return "C:\Development\Python\$pydir\$pyexe"
 }
 
 function ActivateCUDA($version) {
