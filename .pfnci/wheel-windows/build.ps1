@@ -30,14 +30,14 @@ function UninstallCuTENSOR($cuda_path) {
 # Activate target CUDA/Python
 ActivateCUDA $cuda
 $cuda_path = $Env:CUDA_PATH
-ActivatePython $python
+$python_exe = ActivatePython $python
 
 # Show build configuration
 echo ">> Environment Variables"
 echo "     CUDA_PATH:   $cuda_path"
 echo "     PATH:        $Env:PATH"
 echo ">> Python Version:"
-RunOrDie python -V
+RunOrDie $python_exe -V
 
 # Clone CuPy and checkout the target branch
 if ($Env:CUPY_RELEASE_NO_CLONE -eq "1") {
@@ -57,20 +57,20 @@ if ($Env:CUPY_RELEASE_NO_CLONE -eq "1") {
 
 # Install dependencies
 echo ">> Updating packaging utilities..."
-RunOrDie python -m pip install -U setuptools pip
+RunOrDie $python_exe -m pip install -U setuptools pip
 echo ">> Installing dependences for wheel build..."
-RunOrDie python -m pip install -U -r ./requirements.txt -r ./builder/requirements.cupy-build.txt wheel pytest
+RunOrDie $python_exe -m pip install -U -r ./requirements.txt -r ./builder/requirements.cupy-build.txt wheel pytest
 echo ">> Packages installed:"
-RunOrDie python -m pip list
+RunOrDie $python_exe -m pip list
 
 # Build
 # Note: cuTENSOR will be installed by the tool.
 echo ">> Starting build..."
-RunOrDie python ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
+RunOrDie $python_exe ./dist.py --action build --target wheel-win --source cupy --python $python --cuda $cuda
 
 # Get wheel name
 $dist_config = @(
-    python .\get_dist_info.py --target wheel-win --source cupy --python $python --cuda $cuda `
+    & $python_exe .\get_dist_info.py --target wheel-win --source cupy --python $python --cuda $cuda `
     | ConvertFrom-Csv -Delimiter "=" -Header "Key", "Value"
 )
 $wheel_file = $dist_config[0].Value
@@ -84,13 +84,13 @@ UninstallCuTENSOR $cuda_path
 
 # Verify
 echo ">> Validating with twine check..."
-RunOrDie python -m twine check --strict $wheel_file
+RunOrDie $python_exe -m twine check --strict $wheel_file
 echo ">> Starting verification..."
-RunOrDie python ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
+RunOrDie $python_exe ./dist.py --action verify --target wheel-win --python $python --cuda $cuda --dist $wheel_file --test release-tests/common --test release-tests/pkg_wheel
 
 # Show build configuration in CuPy
 echo ">> Build configuration"
-RunOrDie python -c "import cupy; cupy.show_config()"
+RunOrDie $python_exe -c "import cupy; cupy.show_config()"
 
 # Upload to GCS
 if ($job_group -eq "") {

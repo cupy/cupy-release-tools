@@ -71,7 +71,7 @@ class BuilderAgent:
         env: dict[str, str] = {}
 
         for kv in args.env:
-            pair = kv.split('=', 2)
+            pair = kv.split('=', 1)
             assert len(pair) == 2, 'invalid --env format'
             env[pair[0]] = pair[1]
 
