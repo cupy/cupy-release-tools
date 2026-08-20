@@ -29,14 +29,14 @@ from dist_config import (
     WHEEL_LONG_DESCRIPTION_ROCM,
     WHEEL_PYTHON_VERSIONS,
     WHEEL_WINDOWS_CONFIGS,
-)  # NOQA
+)
 from dist_utils import (
     get_system_cuda_version,
     get_version_from_source_tree,
     sdist_name,
     wheel_linux_platform_tag,
     wheel_name,
-)  # NOQA
+)
 
 if typing.TYPE_CHECKING:
     from collections.abc import Collection, Iterable, Iterator, Mapping
