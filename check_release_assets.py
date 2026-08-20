@@ -28,25 +28,16 @@ sdist_project = 'cupy'
 
 _MatrixType = list[tuple[str, str]]
 
-_main_cuda_x86_matrix: _MatrixType = [
-    *itertools.product((CP310, CP311, CP312, CP313, CP314),
-                       (LINUX, WINDOWS)),
-    (CP314T, LINUX),
-]
+_main_cuda_x86_matrix: _MatrixType = list(itertools.product(
+    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX, WINDOWS)))
 _main_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
     (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
 _main_rocm_matrix: _MatrixType = list(itertools.product(
     (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
 
-_v14_cuda_x86_matrix: _MatrixType = [
-    *itertools.product((CP310, CP311, CP312, CP313, CP314),
-                       (LINUX, WINDOWS)),
-    (CP314T, LINUX),
-]
-_v14_cuda_aarch64_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX_AARCH64,)))
-_v14_rocm_matrix: _MatrixType = list(itertools.product(
-    (CP310, CP311, CP312, CP313, CP314, CP314T), (LINUX,)))
+_v14_cuda_x86_matrix = _main_cuda_x86_matrix
+_v14_cuda_aarch64_matrix = _main_cuda_aarch64_matrix
+_v14_rocm_matrix = _main_rocm_matrix
 
 pypi_wheel_projects = {
     # v15.x
