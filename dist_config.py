@@ -167,7 +167,7 @@ WHEEL_LINUX_CONFIGS: dict[str, _WheelLinuxConfig] = {
         'preloads': [],
         'verify_image': 'rocm/dev-ubuntu-24.04:7.0.2',
         'verify_systems': ['default'],
-        'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'  # NOQA
+        'system_packages': 'rocm-hip-sdk hip-runtime-amd roctracer-dev'
     },
 }
 

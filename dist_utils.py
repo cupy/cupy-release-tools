@@ -36,7 +36,7 @@ def get_version_from_source_tree(source_tree: str) -> str:
     version_file_path = f'{source_tree}/cupy/_version.py'
     exec_locals: dict[str, str] = {}
     with open(version_file_path, encoding='UTF-8') as f:
-        exec(f.read(), None, exec_locals)
+        exec(f.read(), None, exec_locals)  # noqa: S102
     return exec_locals['__version__']
 
 
