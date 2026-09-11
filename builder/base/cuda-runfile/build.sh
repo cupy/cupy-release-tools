@@ -43,6 +43,18 @@ case ${CUDA} in
     PLATFORM="linux/arm64"
     IMAGE_SUFFIX="el8-aarch64"
     ;;
+  13.3 )
+    CUDA_VERSION="13.3.1"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_610.43.02_linux.run"
+    PLATFORM="linux/amd64"
+    IMAGE_SUFFIX="el8-amd64"
+    ;;
+  13.3-aarch64 )
+    CUDA_VERSION="13.3.1"
+    CUDA_INSTALLER_URL="https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_610.43.02_linux_sbsa.run"
+    PLATFORM="linux/arm64"
+    IMAGE_SUFFIX="el8-aarch64"
+    ;;
 
   * )
     echo "Unknown CUDA version: ${CUDA}"
