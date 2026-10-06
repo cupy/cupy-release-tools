@@ -40,7 +40,7 @@ esac
 case ${CUDA} in
   rocm-* )
     # https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html
-    export HCC_AMDGPU_TARGET=gfx908,gfx90a,gfx942,gfx950,gfx1030,gfx1100,gfx1101,gfx1200,gfx1201
+    export HCC_AMDGPU_TARGET=gfx908,gfx90a,gfx942,gfx950,gfx1030,gfx1100,gfx1101,gfx1151,gfx1200,gfx1201
     ;;
   * )
     ;;
